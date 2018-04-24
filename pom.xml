@@ -2,16 +2,37 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>eu.europa.ec.joinup.sat</groupId>
-        <artifactId>nbdemetra-parent</artifactId>
-        <version>2.2.2-SNAPSHOT</version>
-    </parent>
 
+    <groupId>eu.europa.ec.joinup.sat</groupId>
     <artifactId>nbdemetra-utils</artifactId>
-    <name>NbDemetra - Utilities</name>
+    <version>2.2.2-SNAPSHOT</version>
+
+    <name>java-desktop-util</name>
+    <description>Desktop utilities for Java</description>
+
+    <url>https://github.com/nbbrd/java-desktop-util</url>
+    <licenses>
+        <license>
+            <name>European Union Public Licence (EUPL)</name>
+            <url>https://joinup.ec.europa.eu/page/eupl-text-11-12</url>
+        </license>
+    </licenses>
 
     <properties>
+        <!-- build -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
+        <maven-source-plugin.version>2.4</maven-source-plugin.version>
+        
+        <!-- build dependencies -->
+        <jsr305.version>3.0.2</jsr305.version>
+        <netbeans.version>RELEASE82</netbeans.version>
+        <junit.version>4.12</junit.version>
+        <assertj.version>3.9.1</assertj.version>
+
+        <!-- dependencies -->
         <jna.version>4.5.1</jna.version>
         <jfreechart.version>1.0.19</jfreechart.version>
         <jfreesvg.version>3.2</jfreesvg.version>
@@ -19,6 +40,29 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- build dependencies -->
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>${jsr305.version}</version>
+            </dependency>   
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-util-lookup</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+            </dependency>
+
+            <!-- dependencies -->
             <dependency>
                 <groupId>org.jfree</groupId>
                 <artifactId>jfreechart</artifactId>
@@ -53,7 +97,7 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- compilation only -->
+        <!-- compile only -->
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
@@ -64,7 +108,8 @@
             <artifactId>org-openide-util-lookup</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!-- compilation and runtime -->
+
+        <!-- compile and runtime -->
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
@@ -82,12 +127,92 @@
             <artifactId>jfreesvg</artifactId>
             <optional>true</optional>
         </dependency>
+        
         <!-- test only -->
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+    
+    <repositories>
+        <repository>
+            <id>netbeans</id>
+            <url>http://bits.netbeans.org/nexus/content/groups/netbeans/</url>
+        </repository>
+        <repository>
+            <id>oss-jfrog-artifactory-releases</id>
+            <url>https://oss.jfrog.org/artifactory/oss-release-local</url>
+        </repository>
+        <repository>
+            <id>oss-jfrog-artifactory-snapshots</id>
+            <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+        </repository>
+    </repositories>
+    
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven-source-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>  
+    
+    <profiles>
+        <!-- Deploy SNAPSHOTS to jfrog with sources -->
+        <profile>
+            <id>deploy-snapshots</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>oss-jfrog-artifactory</id>
+                    <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+                </snapshotRepository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
+        <!-- Deploy RELEASES to jfrog with sources -->
+        <profile>
+            <id>deploy-releases</id>
+            <distributionManagement>
+                <repository>
+                    <id>oss-jfrog-artifactory</id>
+                    <url>https://oss.jfrog.org/artifactory/oss-release-local</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
