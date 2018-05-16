@@ -73,7 +73,7 @@ public class XTable extends JTable {
     }
 
     private void initTable() {
-        ofNullable(StandardSwingColor.CONTROL.value()).ifPresent(this::setGridColor);
+        StandardSwingColor.CONTROL.lookup().ifPresent(this::setGridColor);
         onCellPaddingChange();
     }
 

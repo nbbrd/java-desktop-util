@@ -18,6 +18,7 @@ package ec.util.various.swing;
 
 import java.awt.Color;
 import java.util.Objects;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JPanel;
@@ -42,10 +43,6 @@ public enum StandardSwingColor {
     TEXT_FIELD_INACTIVE_BACKGROUND("TextField.inactiveBackground"),
     TEXT_FIELD_INACTIVE_FOREGROUND("TextField.inactiveForeground"),
     CONTROL("control");
-
-    private static final JTable TABLE = new JTable();
-    private static final JTextField TEXT_FIELD = new JTextField();
-    private static final JPanel PANEL = new JPanel();
 
     private final String key;
 
@@ -93,9 +90,19 @@ public enum StandardSwingColor {
     }
 
     @Nonnull
+    public Optional<Color> lookup() {
+        return Optional.ofNullable(value());
+    }
+
+    @Deprecated
+    @Nonnull
     public Color or(@Nonnull Color fallback) {
         Objects.requireNonNull(fallback);
         Color result = value();
         return result != null ? result : fallback;
     }
+
+    private static final JTable TABLE = new JTable();
+    private static final JTextField TEXT_FIELD = new JTextField();
+    private static final JPanel PANEL = new JPanel();
 }

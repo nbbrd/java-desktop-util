@@ -863,12 +863,12 @@ public final class JGrid extends AGrid {
             private final CellUIResource cellBoth;
 
             private GridColorsImpl() {
-                Color headerBackground = TABLE_HEADER_BACKGROUND.or(new Color(240, 240, 240));
-                Color headerForeground = TABLE_HEADER_FOREGROUND.or(Color.BLACK);
-                Color background = TABLE_BACKGROUND.or(Color.WHITE);
-                Color foreground = TABLE_FOREGROUND.or(Color.BLACK);
-                Color selectionBackground = TABLE_SELECTION_BACKGROUND.or(new Color(51, 153, 255));
-                Color selectionForeground = TABLE_SELECTION_FOREGROUND.or(new Color(255, 255, 255));
+                Color headerBackground = TABLE_HEADER_BACKGROUND.lookup().orElseGet(() -> new Color(240, 240, 240));
+                Color headerForeground = TABLE_HEADER_FOREGROUND.lookup().orElse(Color.BLACK);
+                Color background = TABLE_BACKGROUND.lookup().orElse(Color.WHITE);
+                Color foreground = TABLE_FOREGROUND.lookup().orElse(Color.BLACK);
+                Color selectionBackground = TABLE_SELECTION_BACKGROUND.lookup().orElseGet(() -> new Color(51, 153, 255));
+                Color selectionForeground = TABLE_SELECTION_FOREGROUND.lookup().orElseGet(() -> new Color(255, 255, 255));
 
                 Border headerBorder = BorderFactory.createCompoundBorder(
                         new LineBorder2(headerBackground.brighter(), 0, 0, 1, 1),
