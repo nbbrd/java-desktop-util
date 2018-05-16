@@ -16,6 +16,7 @@
  */
 package ec.util.grid.swing;
 
+import ec.util.table.swing.JTables;
 import ec.util.various.swing.JCommand;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
@@ -90,7 +91,7 @@ abstract class XTableCommand extends JCommand<XTable> {
         return new XTableCommand() {
             @Override
             public void execute(XTable component) {
-                XTable.setWidthAsPercentages(component, percentages);
+                JTables.setWidthAsPercentages(component, percentages);
             }
         };
     }

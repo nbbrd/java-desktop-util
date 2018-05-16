@@ -157,7 +157,7 @@ public final class JTimeSeriesRendererSupportDemo extends JPanel {
     }
 
     private Component createSeriesTable(ListSelectionModel seriesSelectionModel) {
-        XTable result = new XTable();
+        JTable result = new XTable();
         result.setSelectionModel(seriesSelectionModel);
         result.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         result.setModel(new SeriesModel(support.seriesInfos));
@@ -176,7 +176,7 @@ public final class JTimeSeriesRendererSupportDemo extends JPanel {
     }
 
     private Component createObsTable(ListSelectionModel seriesSelectionModel) {
-        final XTable result = new XTable();
+        final JTable result = new XTable();
         ColorCellRenderer renderer = new ColorCellRenderer(FontAwesome.FA_CIRCLE_O);
         result.setDefaultRenderer(Color.class, renderer);
         result.setDefaultEditor(Color.class, new ColorCellEditor(colorSchemeSupport, renderer));
