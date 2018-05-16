@@ -124,8 +124,8 @@ public final class DesktopDemo extends javax.swing.JPanel {
         moveToTrashButton.setEnabled(desktop.isSupported(Desktop.Action.MOVE_TO_TRASH));
 
         searchField.setEnabled(desktop.isSupported(Desktop.Action.SEARCH));
-        new TextPrompt(searchField.isEnabled() ? "type enter to launch search" : "Not supported", searchField)
-                .setForeground(StandardSwingColor.TEXT_FIELD_INACTIVE_FOREGROUND.value());
+        TextPrompt prompt = new TextPrompt(searchField.isEnabled() ? "type enter to launch search" : "Not supported", searchField);
+        StandardSwingColor.TEXT_FIELD_INACTIVE_FOREGROUND.lookup().ifPresent(prompt::setForeground);
 
         searchResult.setCellRenderer(new FileListCellRenderer(Executors.newSingleThreadExecutor()));
         searchResult.setEnabled(desktop.isSupported(Desktop.Action.SEARCH));

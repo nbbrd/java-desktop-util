@@ -76,7 +76,7 @@ abstract class AGrid extends JComponent {
         this.crosshairVisible = DEFAULT_CROSSHAIR_VISIBLE;
 
         this.dragEnabled = DEFAULT_DRAG_ENABLED;
-        this.gridColor = StandardSwingColor.CONTROL.or(Color.LIGHT_GRAY);
+        this.gridColor = StandardSwingColor.CONTROL.lookup().orElse(Color.LIGHT_GRAY);
         this.noDataRenderer = DEFAULT_NO_DATA_RENDERER;
         this.rowSelectionModel = new DefaultListSelectionModel();
         this.columnSelectionModel = new DefaultListSelectionModel();
@@ -163,7 +163,7 @@ abstract class AGrid extends JComponent {
 
     public void setGridColor(@Nullable Color gridColor) {
         Color old = this.gridColor;
-        this.gridColor = gridColor != null ? gridColor : StandardSwingColor.CONTROL.or(Color.LIGHT_GRAY);
+        this.gridColor = gridColor != null ? gridColor : StandardSwingColor.CONTROL.lookup().orElse(Color.LIGHT_GRAY);
         firePropertyChange(GRID_COLOR_PROPERTY, old, this.gridColor);
     }
 

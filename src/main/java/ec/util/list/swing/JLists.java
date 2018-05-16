@@ -105,6 +105,11 @@ public final class JLists {
                 .filter(model::isSelectedIndex);
     }
 
+    public static void setSelectionIndexStream(@Nonnull ListSelectionModel model, @Nonnull IntStream selection) {
+        model.clearSelection();
+        addSelectionIndexStream(model, selection);
+    }
+    
     public static void addSelectionIndexStream(@Nonnull ListSelectionModel model, @Nonnull IntStream selection) {
         selection.forEach(x -> model.addSelectionInterval(x, x));
     }
@@ -112,7 +117,15 @@ public final class JLists {
     public static void removeSelectionIndexStream(@Nonnull ListSelectionModel model, @Nonnull IntStream selection) {
         selection.forEach(x -> model.removeSelectionInterval(x, x));
     }
+    
+    public static int getSelectionIndexSize(@Nonnull ListSelectionModel model) {
+        return (int) getSelectionIndexStream(model).count();
+    }
 
+    public static boolean isSingleSelectionIndex(@Nonnull ListSelectionModel model) {
+        return !model.isSelectionEmpty() && model.getMinSelectionIndex() == model.getMaxSelectionIndex();
+    }
+    
     // NOT public
     static void move(DefaultListModel from, DefaultListModel to, int[] selection, int dropIndex) {
         List reversedItems = new ArrayList(selection.length);

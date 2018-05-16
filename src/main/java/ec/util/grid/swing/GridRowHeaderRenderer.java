@@ -38,7 +38,7 @@ public class GridRowHeaderRenderer extends DefaultTableCellRenderer {
     private final Border padding;
 
     public GridRowHeaderRenderer() {
-        this.background = StandardSwingColor.CONTROL.or(Color.LIGHT_GRAY);
+        this.background = StandardSwingColor.CONTROL.lookup().orElse(Color.LIGHT_GRAY);
         this.padding = createCompoundBorder(new LineBorder2(background.darker(), 0, 0, 1, 1), createEmptyBorder(0, 5, 0, 4));
     }
 

@@ -17,6 +17,7 @@
 package ec.util.grid.swing;
 
 import static ec.util.chart.swing.SwingColorSchemeSupport.withAlpha;
+import ec.util.table.swing.JTables;
 import static ec.util.various.swing.ModernUI.createDropBorder;
 import ec.util.various.swing.StandardSwingColor;
 import java.awt.*;
@@ -27,8 +28,6 @@ import javax.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
 /**
  * Improved JTable that adds these functionalities: <li>alternate background for
@@ -73,7 +72,7 @@ public class XTable extends JTable {
     }
 
     private void initTable() {
-        ofNullable(StandardSwingColor.CONTROL.value()).ifPresent(this::setGridColor);
+        StandardSwingColor.CONTROL.lookup().ifPresent(this::setGridColor);
         onCellPaddingChange();
     }
 
@@ -305,24 +304,8 @@ public class XTable extends JTable {
     }
     //</editor-fold>
 
-    /**
-     * Set the width of the columns as percentages.
-     *
-     * @param table the {@link JTable} whose columns will be set
-     * @param percentages the widths of the columns as percentages; note: this
-     * method does NOT verify that all percentages add up to 100% and for the
-     * columns to appear properly, it is recommended that the widths for ALL
-     * columns be specified
-     *
-     * @see
-     * http://kahdev.wordpress.com/2011/10/30/java-specifying-the-column-widths-of-a-jtable-as-percentages/
-     */
+    @Deprecated
     public static void setWidthAsPercentages(JTable table, double... percentages) {
-        final double factor = 10000;
-        TableColumnModel model = table.getColumnModel();
-        for (int columnIndex = 0; columnIndex < percentages.length; columnIndex++) {
-            TableColumn column = model.getColumn(columnIndex);
-            column.setPreferredWidth((int) (percentages[columnIndex] * factor));
-        }
+        JTables.setWidthAsPercentages(table, percentages);
     }
 }
