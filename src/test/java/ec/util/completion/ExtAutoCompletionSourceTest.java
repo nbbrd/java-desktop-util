@@ -118,9 +118,9 @@ public class ExtAutoCompletionSourceTest {
         assertThat(source.toString("value")).isEqualTo("VALUE");
         assertThat(source.getBehavior("")).isEqualTo(NONE);
         assertThat(source.getBehavior("ll")).isEqualTo(SYNC);
-        assertThat(source.getValues("ll")).containsExactly("hello");
+        assertThat(source.getValues("ll")).extracting(String.class::cast).containsExactly("hello");
         assertThat(source.getRequest("ll").getBehavior()).isEqualTo(SYNC);
         assertThat(source.getRequest("ll").getTerm()).isEqualTo("ll");
-        assertThat(source.getRequest("ll").call()).containsExactly("hello");
+        assertThat(source.getRequest("ll").call()).extracting(String.class::cast).containsExactly("hello");
     }
 }
