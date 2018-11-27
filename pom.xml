@@ -5,7 +5,7 @@
 
     <groupId>eu.europa.ec.joinup.sat</groupId>
     <artifactId>nbdemetra-utils</artifactId>
-    <version>2.2.2</version>
+    <version>2.2.3-SNAPSHOT</version>
 
     <name>java-desktop-util</name>
     <description>Desktop utilities for Java</description>
