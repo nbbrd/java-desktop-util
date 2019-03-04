@@ -16,6 +16,7 @@
  */
 package ec.util.list.swing;
 
+import ec.util.datatransfer.LocalObjectDataFlavor;
 import ec.util.various.swing.FontAwesome;
 import static ec.util.various.swing.FontAwesome.FA_ANGLE_DOUBLE_DOWN;
 import static ec.util.various.swing.FontAwesome.FA_ANGLE_DOUBLE_LEFT;
@@ -29,18 +30,13 @@ import ec.util.various.swing.JCommand;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.activation.ActivationDataFlavor;
-import javax.activation.DataHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.ActionMap;
@@ -384,28 +380,19 @@ public final class JListSelection<E> extends JComponent {
     }
 
     //<editor-fold defaultstate="collapsed" desc="DataTransfer">
+    @lombok.RequiredArgsConstructor
     private static final class CustomTransferHandler extends TransferHandler {
 
-        private static final DataFlavor DATA_FLAVOR = new ActivationDataFlavor(JList.class, DataFlavor.javaJVMLocalObjectMimeType, "List");
+        private static final LocalObjectDataFlavor<JList> LIST = LocalObjectDataFlavor.of(JList.class);
 
+        @lombok.NonNull
         private final JList<?> sourceList;
-        private final JList<?> targetList;
 
-        public CustomTransferHandler(JList<?> sourceList, JList<?> targetList) {
-            this.sourceList = sourceList;
-            this.targetList = targetList;
-        }
+        @lombok.NonNull
+        private final JList<?> targetList;
 
         private boolean isValidComponent(Component c) {
             return c == sourceList || c == targetList;
-        }
-
-        private static JList<?> getData(TransferSupport support) {
-            try {
-                return (JList<?>) support.getTransferable().getTransferData(DATA_FLAVOR);
-            } catch (UnsupportedFlavorException | IOException ex) {
-                throw new RuntimeException(ex);
-            }
         }
 
         @Override
@@ -416,34 +403,35 @@ public final class JListSelection<E> extends JComponent {
         @Override
         public boolean canImport(TransferSupport support) {
             return support.isDrop()
-                    && support.isDataFlavorSupported(DATA_FLAVOR)
+                    && support.isDataFlavorSupported(LIST)
                     && isValidComponent(support.getComponent())
-                    && isValidComponent(getData(support));
+                    && LIST.getLocalObject(support.getTransferable()).map(this::isValidComponent).orElse(false);
         }
 
         @Override
         public boolean importData(TransferSupport support) {
-            if (canImport(support)) {
-                JList<?> from = getData(support);
-                JList<?> to = (JList<?>) support.getComponent();
-
-                int dropIndex = ((JList.DropLocation) support.getDropLocation()).getIndex();
-                int[] selection = JLists.getSelectionIndexStream(from.getSelectionModel()).toArray();
-                if (from == to && selection[0] < dropIndex) {
-                    dropIndex = dropIndex - selection.length;
-                }
-
-                JLists.move((DefaultListModel) from.getModel(), (DefaultListModel) to.getModel(), selection, dropIndex);
-                to.getSelectionModel().setSelectionInterval(dropIndex, dropIndex + selection.length - 1);
-
-                return true;
+            if (!canImport(support)) {
+                return false;
             }
-            return false;
+            LIST.getLocalObject(support.getTransferable())
+                    .ifPresent(source -> importData(source, (JList<?>) support.getComponent(), (JList.DropLocation) support.getDropLocation()));
+            return true;
+        }
+
+        private void importData(JList<?> from, JList<?> to, JList.DropLocation dl) {
+            int dropIndex = dl.getIndex();
+            int[] selection = JLists.getSelectionIndexStream(from.getSelectionModel()).toArray();
+            if (from == to && selection[0] < dropIndex) {
+                dropIndex = dropIndex - selection.length;
+            }
+
+            JLists.move((DefaultListModel) from.getModel(), (DefaultListModel) to.getModel(), selection, dropIndex);
+            to.getSelectionModel().setSelectionInterval(dropIndex, dropIndex + selection.length - 1);
         }
 
         @Override
         protected Transferable createTransferable(JComponent c) {
-            return new DataHandler(c, DATA_FLAVOR.getMimeType());
+            return LIST.createTransferable((JList) c);
         }
     }
     //</editor-fold>

@@ -16,15 +16,11 @@
  */
 package ec.util.list.swing;
 
+import ec.util.datatransfer.LocalObjectDataFlavor;
 import ec.util.various.swing.JCommand;
 import ec.util.various.swing.ModernUI;
 import java.awt.BorderLayout;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
-import javax.activation.ActivationDataFlavor;
-import javax.activation.DataHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.ActionMap;
@@ -193,20 +189,16 @@ public final class JListOrdering<T> extends JComponent {
     //http://docs.oracle.com/javase/tutorial/uiswing/dnd/dropmodedemo.html
     private static final class ListItemTransferHandler extends TransferHandler {
 
-        private final DataFlavor flavor;
-
-        public ListItemTransferHandler() {
-            flavor = new ActivationDataFlavor(int[].class, DataFlavor.javaJVMLocalObjectMimeType, "Array of indices");
-        }
+        private static final LocalObjectDataFlavor<int[]> INT_ARRAY = LocalObjectDataFlavor.of(int[].class);
 
         @Override
         protected Transferable createTransferable(JComponent c) {
-            return new DataHandler(((JList) c).getSelectedIndices(), flavor.getMimeType());
+            return INT_ARRAY.createTransferable(((JList) c).getSelectedIndices());
         }
 
         @Override
         public boolean canImport(TransferHandler.TransferSupport info) {
-            return !(!info.isDrop() || !info.isDataFlavorSupported(flavor));
+            return !(!info.isDrop() || !info.isDataFlavorSupported(INT_ARRAY));
         }
 
         @Override
@@ -216,24 +208,22 @@ public final class JListOrdering<T> extends JComponent {
 
         @SuppressWarnings("unchecked")
         @Override
-        public boolean importData(TransferHandler.TransferSupport info) {
-            if (!canImport(info)) {
+        public boolean importData(TransferHandler.TransferSupport support) {
+            if (!canImport(support)) {
                 return false;
             }
-            JList target = (JList) info.getComponent();
-            JList.DropLocation dl = (JList.DropLocation) info.getDropLocation();
+            INT_ARRAY.getLocalObject(support.getTransferable())
+                    .ifPresent(o -> importData(o, (JList) support.getComponent(), (JList.DropLocation) support.getDropLocation()));
+            return true;
+        }
+
+        private void importData(int[] indices, JList target, JList.DropLocation dl) {
             int index = dl.getIndex();
-            try {
-                int[] indices = (int[]) info.getTransferable().getTransferData(flavor);
-                if (indices[0] < index) {
-                    index = index - indices.length;
-                }
-                JLists.move((DefaultListModel) target.getModel(), (DefaultListModel) target.getModel(), indices, index);
-                target.getSelectionModel().setSelectionInterval(index, index + indices.length - 1);
-                return true;
-            } catch (UnsupportedFlavorException | IOException ex) {
-                throw new RuntimeException(ex);
+            if (indices[0] < index) {
+                index = index - indices.length;
             }
+            JLists.move((DefaultListModel) target.getModel(), (DefaultListModel) target.getModel(), indices, index);
+            target.getSelectionModel().setSelectionInterval(index, index + indices.length - 1);
         }
     }
     //</editor-fold>
