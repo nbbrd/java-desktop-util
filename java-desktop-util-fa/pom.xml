@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>eu.europa.ec.joinup.sat</groupId>
+        <groupId>be.nbb.rd</groupId>
         <artifactId>java-desktop-util-parent</artifactId>
         <version>2.2.3-SNAPSHOT</version>
     </parent>

@@ -4,29 +4,34 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>eu.europa.ec.joinup.sat</groupId>
+        <groupId>be.nbb.rd</groupId>
         <artifactId>java-desktop-util-parent</artifactId>
         <version>2.2.3-SNAPSHOT</version>
     </parent>
 	
     <groupId>eu.europa.ec.joinup.sat</groupId>
     <artifactId>nbdemetra-utils</artifactId>
+    <packaging>pom</packaging>
 
     <name>java-desktop-util-bom</name>
+
+    <properties>
+        <java-desktop-util.version>${project.version}</java-desktop-util.version>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>be.nbb.rd</groupId>
                 <artifactId>java-desktop-util-chart</artifactId>
-                <version>${project.version}</version>
+                <version>${java-desktop-util.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>be.nbb.rd</groupId>
                 <artifactId>java-desktop-util-os</artifactId>
-                <version>${project.version}</version>
+                <version>${java-desktop-util.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -35,24 +40,24 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>be.nbb.rd</groupId>
             <artifactId>java-desktop-util-swing</artifactId>
-            <version>${project.version}</version>
+            <version>${java-desktop-util.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>be.nbb.rd</groupId>
             <artifactId>java-desktop-util-chart</artifactId>
-            <version>${project.version}</version>
+            <version>${java-desktop-util.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>be.nbb.rd</groupId>
             <artifactId>java-desktop-util-fa</artifactId>
-            <version>${project.version}</version>
+            <version>${java-desktop-util.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>be.nbb.rd</groupId>
             <artifactId>java-desktop-util-os</artifactId>
-            <version>${project.version}</version>
+            <version>${java-desktop-util.version}</version>
         </dependency>
         
         <!-- runtime -->
