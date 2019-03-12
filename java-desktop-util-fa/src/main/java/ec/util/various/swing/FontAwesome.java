@@ -550,12 +550,12 @@ public enum FontAwesome {
 
     @Nonnull
     public Icon getIcon(@Nonnull Color color, float size) {
-        return new ImageIcon(createImage(color, size, 0));
+        return new AwesomeIcon(this, color, size, 0);
     }
 
     @Nonnull
     public Icon getIcon(@Nonnull Color color, float size, double angle) {
-        return new ImageIcon(createImage(color, size, angle));
+        return new AwesomeIcon(this, color, size, angle);
     }
 
     @Nonnull
@@ -583,43 +583,77 @@ public enum FontAwesome {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
-    @Nonnull
-    private BufferedImage createImage(@Nonnull Color color, float size, double angle) {
+    private int getWidth(float size) {
         // https://github.com/FortAwesome/Font-Awesome/blob/master/less/fixed-width.less
-        float w = (18 * size / 14);
-        float h = size;
-        
-        BufferedImage result = new BufferedImage((int) w, (int) h, BufferedImage.TYPE_INT_ARGB);
-        
-        Graphics2D g = (Graphics2D) result.getGraphics();
-        
-        if (angle != 0) {
-            AffineTransform trans = new AffineTransform();
-            trans.rotate(Math.toRadians(angle), w / 2.0, h / 2.0);
-            g.setTransform(trans);
-        }
-        
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        return (int) (18 * size / 14);
+    }
+
+    private int getHeight(float size) {
+        return (int) size;
+    }
+
+    private void renderIcon(Graphics2D g, Color color, float size, double angle) {
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         g.setFont(getFont().deriveFont(Font.PLAIN, size));
         g.setColor(color);
-        
+
         FontMetrics fm = g.getFontMetrics();
-        float x = (w - fm.charWidth(iconAsChar)) / 2f;
-        float y = (fm.getAscent() + (h - (fm.getAscent() + fm.getDescent())) / 2f);
-        
+        float x = (getWidth(size) - fm.charWidth(iconAsChar)) / 2f;
+        float y = (fm.getAscent() + (fm.getHeight() - (fm.getAscent() + fm.getDescent())) / 2f);
+
+        if (angle != 0) {
+            AffineTransform trans = new AffineTransform();
+            trans.rotate(Math.toRadians(angle), getWidth(size) / 2f, getHeight(size) / 2f);
+            g.transform(trans);
+        }
+
         g.drawString(String.valueOf(iconAsChar), x, y);
-        
+    }
+
+    @lombok.AllArgsConstructor
+    private static final class AwesomeIcon implements Icon {
+
+        private final FontAwesome item;
+        private final Color color;
+        private final float size;
+        private final double angle;
+
+        @Override
+        public void paintIcon(Component c, Graphics g, int xx, int yy) {
+            Graphics2D g2d = (Graphics2D) g.create(xx, yy, getIconWidth(), getIconHeight());
+            item.renderIcon(g2d, color, size, angle);
+            g2d.dispose();
+        }
+
+        @Override
+        public int getIconWidth() {
+            return item.getWidth(size);
+        }
+
+        @Override
+        public int getIconHeight() {
+            return item.getHeight(size);
+        }
+    }
+
+    @Nonnull
+    private BufferedImage createImage(@Nonnull Color color, float size, double angle) {
+        BufferedImage result = new BufferedImage(getWidth(size), getHeight(size), BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g = result.createGraphics();
+        renderIcon(g, color, size, angle);
         g.dispose();
-        
+
         return result;
     }
-    
+
     private static final class LazyHolder {
-        
+
         private static final Font INSTANCE = create();
-        
+
         private static final String PATH = "/ec/util/various/swing/fontawesome-webfont.ttf";
-        
+
         private static Font create() {
             try (InputStream stream = LazyHolder.class.getResourceAsStream(PATH)) {
                 Font result = Font.createFont(Font.TRUETYPE_FONT, stream);
@@ -630,69 +664,69 @@ public enum FontAwesome {
             }
         }
     }
-    
+
     private static final class SpinningIcon implements Icon, Puppet {
-        
+
         private static final int DURATION = 2000;
-        
+
         private final Component component;
         private final ImageIcon imageIcon;
         private double position;
-        
+
         private SpinningIcon(Component c, BufferedImage image) {
             this.component = c;
             this.imageIcon = new ImageIcon(image);
             Animator.INSTANCE.register(this);
         }
-        
+
         @Override
         public void refresh(long timeInMillis) {
             position = 1f * (timeInMillis % DURATION) / DURATION;
             component.repaint();
         }
-        
+
         @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
             double angle = Math.PI * 2 * position;
-            
+
             BufferedImage image = (BufferedImage) imageIcon.getImage();
-            
+
             Graphics2D g2d = (Graphics2D) g;
             g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            
+
             AffineTransform trans = new AffineTransform();
             trans.translate(x, y);
             trans.rotate(angle, getIconWidth() / 2d, getIconHeight() / 2d);
-            
+
             g2d.drawImage(image, trans, c);
         }
-        
+
         @Override
         public int getIconWidth() {
             return imageIcon.getIconWidth();
         }
-        
+
         @Override
         public int getIconHeight() {
             return imageIcon.getIconHeight();
         }
     }
-    
+
     private static final class Animator implements ActionListener {
-        
+
         private static final int FPS = 60;
         public static final Animator INSTANCE = new Animator();
-        
+
         private final Timer timer;
         private final List<WeakReference<Puppet>> items;
-        
+
         private Animator() {
             this.timer = new Timer(1000 / FPS, this);
             timer.start();
             this.items = new ArrayList<>();
         }
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             long time = System.currentTimeMillis();
@@ -707,14 +741,14 @@ public enum FontAwesome {
                 }
             }
         }
-        
+
         public void register(Puppet stuff) {
             items.add(new WeakReference(stuff));
         }
     }
-    
+
     private interface Puppet {
-        
+
         void refresh(long timeInMillis);
     }
     //</editor-fold>
