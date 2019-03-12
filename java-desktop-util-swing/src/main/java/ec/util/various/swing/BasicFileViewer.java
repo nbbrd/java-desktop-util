@@ -16,7 +16,7 @@
  */
 package ec.util.various.swing;
 
-import internal.InternalUtil;
+import internal.Colors;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.datatransfer.DataFlavor;
@@ -414,7 +414,7 @@ public final class BasicFileViewer extends JPanel {
             component.setHorizontalAlignment(SwingConstants.CENTER);
             component.setFont(resource.getFont().deriveFont(resource.getFont().getSize2D() * 2));
             component.setBackground(resource.getBackground());
-            component.setForeground(InternalUtil.withAlpha(resource.getForeground(), 100));
+            component.setForeground(Colors.withAlpha(resource.getForeground(), 100));
             component.setText("Drop file here");
         }
 
@@ -436,7 +436,7 @@ public final class BasicFileViewer extends JPanel {
             component.setOpaque(true);
             component.setHorizontalAlignment(SwingConstants.CENTER);
             component.setFont(resource.getFont().deriveFont(resource.getFont().getSize2D() * 2));
-            component.setBackground(InternalUtil.withAlpha(resource.getSelectionBackground(), 200));
+            component.setBackground(Colors.withAlpha(resource.getSelectionBackground(), 200));
             component.setForeground(resource.getSelectionForeground());
             component.setBorder(ModernUI.createDropBorder(resource.getSelectionForeground()));
             component.setText("Drop file here");

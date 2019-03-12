@@ -19,11 +19,14 @@ package _demo;
 import ec.util.list.swing.JLists;
 import ec.util.various.swing.BasicSwingLauncher;
 import ec.util.various.swing.FontAwesome;
+import internal.SpinningIcon;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeEvent;
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -49,21 +52,25 @@ public final class FontAwesomeDemo extends JComponent {
     private static final String SELECTED_ICON_PROPERTY = "selectedIcon";
     private static final String ANGLE_PROPERTY = "angle";
     private static final String SPINNING_PROPERTY = "spinning";
+    private static final String IMAGE_PROPERTY = "image";
 
     private final JComboBox<FontAwesome> master;
     private final JLabel detail;
     private final JSlider angleSlider;
     private final JCheckBox spinningCheckBox;
+    private final JCheckBox imageCheckBox;
 
     private FontAwesome selectedIcon;
     private int angle;
     private boolean spinning;
+    private boolean image;
 
     public FontAwesomeDemo() {
         this.master = new JComboBox(FontAwesome.values());
         this.detail = new JLabel();
         this.angleSlider = new JSlider(JSlider.HORIZONTAL, 0, 360, 0);
         this.spinningCheckBox = new JCheckBox();
+        this.imageCheckBox = new JCheckBox();
         initComponents();
     }
 
@@ -77,15 +84,19 @@ public final class FontAwesomeDemo extends JComponent {
         detail.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         add(detail);
 
-        angleSlider.addChangeListener(this::onAngleChange);
+        angleSlider.addChangeListener(this::onAngleSliderChange);
         add(angleSlider);
 
-        spinningCheckBox.addChangeListener(this::onSpinningChange);
+        spinningCheckBox.addChangeListener(this::onSpinningBoxChange);
         add(spinningCheckBox);
+
+        imageCheckBox.addChangeListener(this::onImageBoxChange);
+        add(imageCheckBox);
 
         addPropertyChangeListener(SELECTED_ICON_PROPERTY, this::onSelectedIconChange);
         addPropertyChangeListener(ANGLE_PROPERTY, this::onAngleChange);
         addPropertyChangeListener(SPINNING_PROPERTY, this::onSpinningChange);
+        addPropertyChangeListener(IMAGE_PROPERTY, this::onImageChange);
 
         master.setSelectedItem(FontAwesome.FA_DESKTOP);
     }
@@ -94,14 +105,18 @@ public final class FontAwesomeDemo extends JComponent {
         firePropertyChange(SELECTED_ICON_PROPERTY, selectedIcon, this.selectedIcon = (FontAwesome) event.getItem());
     }
 
-    private void onAngleChange(ChangeEvent event) {
+    private void onAngleSliderChange(ChangeEvent event) {
         if (!angleSlider.getValueIsAdjusting()) {
             firePropertyChange(ANGLE_PROPERTY, angle, this.angle = angleSlider.getValue());
         }
     }
 
-    private void onSpinningChange(ChangeEvent event) {
+    private void onSpinningBoxChange(ChangeEvent event) {
         firePropertyChange(SPINNING_PROPERTY, spinning, this.spinning = spinningCheckBox.isSelected());
+    }
+
+    private void onImageBoxChange(ChangeEvent event) {
+        firePropertyChange(IMAGE_PROPERTY, image, this.image = imageCheckBox.isSelected());
     }
 
     private void onSelectedIconChange(PropertyChangeEvent event) {
@@ -116,10 +131,19 @@ public final class FontAwesomeDemo extends JComponent {
         refreshIcon();
     }
 
+    private void onImageChange(PropertyChangeEvent event) {
+        refreshIcon();
+    }
+
     private void refreshIcon() {
-        detail.setIcon(spinning
-                ? selectedIcon.getSpinningIcon(detail, Color.GREEN.darker(), 100)
-                : selectedIcon.getIcon(Color.GREEN.darker(), 100, angle));
+        if (image) {
+            Icon icon = new ImageIcon(selectedIcon.getImage(Color.GREEN.darker(), 100, angle));
+            detail.setIcon(spinning ? new SpinningIcon(detail, icon) : icon);
+        } else {
+            detail.setIcon(spinning
+                    ? selectedIcon.getSpinningIcon(detail, Color.GREEN.darker(), 100)
+                    : selectedIcon.getIcon(Color.GREEN.darker(), 100, angle));
+        }
     }
 
     private static void renderFontAwesome(JLabel label, Object value) {

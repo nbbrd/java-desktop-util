@@ -53,7 +53,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
-import org.kordamp.ikonli.swing.FontIcon;
 
 /**
  *
@@ -148,7 +147,7 @@ public final class JAutoCompletionDemo extends javax.swing.JPanel {
             @Override
             protected Icon toIcon(String term, JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 MaterialDesign icon = emoticons.get((String) value);
-                return FontIcon.of(icon, 32, isSelected ? list.getSelectionForeground() : Color.ORANGE.darker());
+                return DemoUtil.getIcon(icon, 32, isSelected ? list.getSelectionForeground() : Color.ORANGE.darker());
             }
 
             @Override
@@ -216,7 +215,7 @@ public final class JAutoCompletionDemo extends javax.swing.JPanel {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 MaterialDesign icon = (MaterialDesign) value;
                 setText("<html><b>" + icon.name().replace("MDI_", "").replace("_", " ") + "</b><br>" + icon.getDescription());
-                setIcon(FontIcon.of(icon, getFont().getSize() * 2, getForeground()));
+                setIcon(DemoUtil.getIcon(icon, getFont().getSize() * 2, getForeground()));
                 setBorder(border);
                 return this;
             }

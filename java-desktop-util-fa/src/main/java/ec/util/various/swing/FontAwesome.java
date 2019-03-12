@@ -16,18 +16,15 @@
  */
 package ec.util.various.swing;
 
+import internal.FontIcon;
 import internal.SpinningIcon;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontFormatException;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -545,27 +542,33 @@ public enum FontAwesome {
 
     @Nonnull
     public Icon getIcon(@Nonnull Color color, float size) {
-        return new AwesomeIcon(this, color, size, 0);
+        return getIcon(color, size, 0);
     }
 
     @Nonnull
     public Icon getIcon(@Nonnull Color color, float size, double angle) {
-        return new AwesomeIcon(this, color, size, angle);
+        return FontIcon.of(getIconAsChar(), getFont().deriveFont(size), getWidth(size), getHeight(size), color, angle);
     }
 
     @Nonnull
     public Icon getSpinningIcon(@Nonnull Component component, @Nonnull Color color, float size) {
-        return new SpinningIcon(component, new AwesomeIcon(this, color, size, 0));
+        return new SpinningIcon(component, getIcon(color, size));
     }
 
     @Nonnull
     public Image getImage(@Nonnull Color color, float size) {
-        return createImage(color, size, 0);
+        return getImage(color, size, 0);
     }
 
     @Nonnull
     public Image getImage(@Nonnull Color color, float size, double angle) {
-        return createImage(color, size, angle);
+        BufferedImage result = new BufferedImage(getWidth(size), getHeight(size), BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g = result.createGraphics();
+        getIcon(color, size, angle).paintIcon(null, g, 0, 0);
+        g.dispose();
+
+        return result;
     }
 
     @Nonnull
@@ -585,68 +588,6 @@ public enum FontAwesome {
 
     private int getHeight(float size) {
         return (int) size;
-    }
-
-    private void renderIcon(Graphics2D g, Color color, float size, double angle) {
-        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-        g.setFont(getFont().deriveFont(Font.PLAIN, size));
-        g.setColor(color);
-
-        // Fix FontMetrics & rotate bug https://bugs.openjdk.java.net/browse/JDK-8205046
-        AffineTransform savedTransform = g.getTransform();
-        g.setTransform(new AffineTransform());
-
-        FontMetrics fm = g.getFontMetrics();
-        float x = (getWidth(size) - fm.charWidth(iconAsChar)) / 2f;
-        float y = (fm.getAscent() + (fm.getHeight() - (fm.getAscent() + fm.getDescent())) / 2f);
-
-        g.setTransform(savedTransform);
-
-        if (angle != 0) {
-            AffineTransform trans = new AffineTransform();
-            trans.rotate(Math.toRadians(angle), getWidth(size) / 2f, getHeight(size) / 2f);
-            g.transform(trans);
-        }
-
-        g.drawString(String.valueOf(iconAsChar), x, y);
-    }
-
-    @lombok.AllArgsConstructor
-    private static final class AwesomeIcon implements Icon {
-
-        private final FontAwesome item;
-        private final Color color;
-        private final float size;
-        private final double angle;
-
-        @Override
-        public void paintIcon(Component c, Graphics g, int xx, int yy) {
-            Graphics2D g2d = (Graphics2D) g.create(xx, yy, getIconWidth(), getIconHeight());
-            item.renderIcon(g2d, color, size, angle);
-            g2d.dispose();
-        }
-
-        @Override
-        public int getIconWidth() {
-            return item.getWidth(size);
-        }
-
-        @Override
-        public int getIconHeight() {
-            return item.getHeight(size);
-        }
-    }
-
-    @Nonnull
-    private BufferedImage createImage(@Nonnull Color color, float size, double angle) {
-        BufferedImage result = new BufferedImage(getWidth(size), getHeight(size), BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D g = result.createGraphics();
-        renderIcon(g, color, size, angle);
-        g.dispose();
-
-        return result;
     }
 
     private static final class LazyHolder {

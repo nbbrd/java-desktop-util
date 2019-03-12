@@ -72,7 +72,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import static ec.util.various.swing.ModernUI.withEmptyBorders;
-import internal.InternalUtil;
+import internal.Colors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -882,8 +882,8 @@ public final class JGrid extends AGrid {
 
                 this.cell = CellUIResource.of(background, foreground, noBorder);
                 this.cellSelection = CellUIResource.of(selectionBackground, selectionForeground, noBorder);
-                this.cellFocus = CellUIResource.of(InternalUtil.withAlpha(selectionBackground, 200), selectionForeground, noBorder);
-                this.cellBoth = CellUIResource.of(InternalUtil.withAlpha(selectionBackground, 200), selectionForeground, noBorder);
+                this.cellFocus = CellUIResource.of(Colors.withAlpha(selectionBackground, 200), selectionForeground, noBorder);
+                this.cellBoth = CellUIResource.of(Colors.withAlpha(selectionBackground, 200), selectionForeground, noBorder);
             }
 
             @Override
