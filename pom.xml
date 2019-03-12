@@ -3,14 +3,19 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>eu.europa.ec.joinup.sat</groupId>
-    <artifactId>nbdemetra-utils</artifactId>
+    <groupId>be.nbb.rd</groupId>
+    <artifactId>java-desktop-util-parent</artifactId>
     <version>2.2.3-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
     <name>java-desktop-util</name>
     <description>Desktop utilities for Java</description>
-
     <url>https://github.com/nbbrd/java-desktop-util</url>
+
+    <organization>
+        <name>National Bank of Belgium</name>
+    </organization>
+
     <licenses>
         <license>
             <name>European Union Public Licence (EUPL)</name>
@@ -32,16 +37,19 @@
         <assertj.version>3.11.1</assertj.version>
         <netbeans.version>RELEASE82</netbeans.version>
         <lombok.version>1.18.4</lombok.version>
-
-        <!-- dependencies -->
-        <jna.version>4.5.1</jna.version>
-        <jfreechart.version>1.0.19</jfreechart.version>
-        <jfreesvg.version>3.2</jfreesvg.version>
     </properties>
 
+    <modules>
+        <module>nbdemetra-utils</module>
+        <module>java-desktop-util-fa</module>
+        <module>java-desktop-util-chart</module>
+        <module>java-desktop-util-swing</module>
+        <module>java-desktop-util-os</module>
+    </modules>
+	
     <dependencyManagement>
         <dependencies>
-            <!-- build dependencies -->
+            <!-- dev support -->
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>jsr305</artifactId>
@@ -55,7 +63,6 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <scope>provided</scope>
                 <version>${lombok.version}</version>
             </dependency>
             <dependency>
@@ -68,102 +75,29 @@
                 <artifactId>assertj-core</artifactId>
                 <version>${assertj.version}</version>
             </dependency>
-
-            <!-- dependencies -->
+            <!-- demos resources -->
             <dependency>
-                <groupId>org.jfree</groupId>
-                <artifactId>jfreechart</artifactId>
-                <version>${jfreechart.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>xml-apis</groupId>
-                        <artifactId>xml-apis</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.lowagie</groupId>
-                        <artifactId>itext</artifactId>
-                    </exclusion>
-                </exclusions>
+                <groupId>org.kordamp.ikonli</groupId>
+                <artifactId>ikonli-swing</artifactId>
+                <version>2.4.0</version>
             </dependency>
             <dependency>
-                <groupId>org.jfree</groupId>
-                <artifactId>jfreesvg</artifactId>
-                <version>${jfreesvg.version}</version>
+                <groupId>org.kordamp.ikonli</groupId>
+                <artifactId>ikonli-materialdesign-pack</artifactId>
+                <version>2.4.0</version>
             </dependency>
             <dependency>
-                <groupId>net.java.dev.jna</groupId>
-                <artifactId>jna</artifactId>
-                <version>${jna.version}</version>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>2.4.0-b180830.0359</version>
             </dependency>
             <dependency>
-                <groupId>net.java.dev.jna</groupId>
-                <artifactId>jna-platform</artifactId>
-                <version>${jna.version}</version>
-            </dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>2.4.0-b180830.0438</version>
+            </dependency>                
         </dependencies>
     </dependencyManagement>
-
-    <dependencies>
-        <!-- compile only -->
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <scope>provided</scope>
-        </dependency>   
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util-lookup</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- compile and runtime -->
-        <dependency>
-            <groupId>org.jfree</groupId>
-            <artifactId>jfreechart</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna-platform</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jfree</groupId>
-            <artifactId>jfreesvg</artifactId>
-            <optional>true</optional>
-        </dependency>
-        
-        <!-- test only -->
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.4.0-b180830.0359</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <version>2.4.0-b180830.0438</version>
-            <scope>test</scope>
-        </dependency>                
-    </dependencies>
     
     <build>
         <pluginManagement>
@@ -237,13 +171,6 @@
         <repository>
             <id>oss-jfrog-artifactory-snapshots</id>
             <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
-        </repository>
-        <repository>
-            <id>projectlombok.org</id>
-            <url>https://projectlombok.org/edge-releases</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
         </repository>
     </repositories>
 </project>
