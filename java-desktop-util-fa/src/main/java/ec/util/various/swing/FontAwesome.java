@@ -16,6 +16,7 @@
  */
 package ec.util.various.swing;
 
+import internal.SpinningIcon;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -26,20 +27,14 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.Timer;
 
 /**
  * Convenient enum that provides access to the "Font Awesome" font set (v4.2).
@@ -560,7 +555,7 @@ public enum FontAwesome {
 
     @Nonnull
     public Icon getSpinningIcon(@Nonnull Component component, @Nonnull Color color, float size) {
-        return new SpinningIcon(component, createImage(color, size, 0));
+        return new SpinningIcon(component, new AwesomeIcon(this, color, size, 0));
     }
 
     @Nonnull
@@ -598,9 +593,15 @@ public enum FontAwesome {
         g.setFont(getFont().deriveFont(Font.PLAIN, size));
         g.setColor(color);
 
+        // Fix FontMetrics & rotate bug https://bugs.openjdk.java.net/browse/JDK-8205046
+        AffineTransform savedTransform = g.getTransform();
+        g.setTransform(new AffineTransform());
+
         FontMetrics fm = g.getFontMetrics();
         float x = (getWidth(size) - fm.charWidth(iconAsChar)) / 2f;
         float y = (fm.getAscent() + (fm.getHeight() - (fm.getAscent() + fm.getDescent())) / 2f);
+
+        g.setTransform(savedTransform);
 
         if (angle != 0) {
             AffineTransform trans = new AffineTransform();
@@ -663,93 +664,6 @@ public enum FontAwesome {
                 throw new RuntimeException("Cannot load font", ex);
             }
         }
-    }
-
-    private static final class SpinningIcon implements Icon, Puppet {
-
-        private static final int DURATION = 2000;
-
-        private final Component component;
-        private final ImageIcon imageIcon;
-        private double position;
-
-        private SpinningIcon(Component c, BufferedImage image) {
-            this.component = c;
-            this.imageIcon = new ImageIcon(image);
-            Animator.INSTANCE.register(this);
-        }
-
-        @Override
-        public void refresh(long timeInMillis) {
-            position = 1f * (timeInMillis % DURATION) / DURATION;
-            component.repaint();
-        }
-
-        @Override
-        public void paintIcon(Component c, Graphics g, int x, int y) {
-            double angle = Math.PI * 2 * position;
-
-            BufferedImage image = (BufferedImage) imageIcon.getImage();
-
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-
-            AffineTransform trans = new AffineTransform();
-            trans.translate(x, y);
-            trans.rotate(angle, getIconWidth() / 2d, getIconHeight() / 2d);
-
-            g2d.drawImage(image, trans, c);
-        }
-
-        @Override
-        public int getIconWidth() {
-            return imageIcon.getIconWidth();
-        }
-
-        @Override
-        public int getIconHeight() {
-            return imageIcon.getIconHeight();
-        }
-    }
-
-    private static final class Animator implements ActionListener {
-
-        private static final int FPS = 60;
-        public static final Animator INSTANCE = new Animator();
-
-        private final Timer timer;
-        private final List<WeakReference<Puppet>> items;
-
-        private Animator() {
-            this.timer = new Timer(1000 / FPS, this);
-            timer.start();
-            this.items = new ArrayList<>();
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            long time = System.currentTimeMillis();
-            Iterator<WeakReference<Puppet>> iterator = items.iterator();
-            while (iterator.hasNext()) {
-                WeakReference<Puppet> ref = iterator.next();
-                Puppet o = ref.get();
-                if (o != null) {
-                    o.refresh(time);
-                } else {
-                    iterator.remove();
-                }
-            }
-        }
-
-        public void register(Puppet stuff) {
-            items.add(new WeakReference(stuff));
-        }
-    }
-
-    private interface Puppet {
-
-        void refresh(long timeInMillis);
     }
     //</editor-fold>
 }

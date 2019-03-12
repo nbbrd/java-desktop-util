@@ -118,7 +118,7 @@ public final class FontAwesomeDemo extends JComponent {
 
     private void refreshIcon() {
         detail.setIcon(spinning
-                ? selectedIcon.getSpinningIcon(this, Color.GREEN.darker(), 100)
+                ? selectedIcon.getSpinningIcon(detail, Color.GREEN.darker(), 100)
                 : selectedIcon.getIcon(Color.GREEN.darker(), 100, angle));
     }
 

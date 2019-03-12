@@ -24,12 +24,11 @@
             <scope>provided</scope>
         </dependency>
         
-        <!-- test only -->
+        <!-- compile & runtime -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>java-desktop-util-swing</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
