@@ -14,30 +14,28 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal;
+package _demo;
 
+import java.awt.Color;
 import java.awt.Font;
-import javax.annotation.Nonnull;
+import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.IkonHandler;
+import org.kordamp.ikonli.swing.IkonResolver;
 
 /**
  *
  * @author Philippe Charles
  */
 @lombok.experimental.UtilityClass
-public class InternalUtil {
+class Ikons {
 
-    @Nonnull
-    public Font resizeByFactor(@Nonnull Font font, float factor) {
-        return font.deriveFont(font.getSize2D() * factor);
+    public internal.FontIcon of(Ikon icon, float size) {
+        return of(icon, size, null);
     }
 
-    public final char RIGHTWARDS_TRIANGLE_HEADED_ARROW = '\u2b62';
-    public final char DOWNWARDS_TRIANGLE_HEADED_ARROW = '\u2b63';
-    public final char LEFTWARDS_TRIANGLE_HEADED_ARROW = '\u2b60';
-    public final char UPWARDS_TRIANGLE_HEADED_ARROW = '\u2b61';
-
-    public final char RIGHTWARDS_DOUBLE_ARROW = '\u21d2';
-    public final char DOWNWARDS_DOUBLE_ARROW = '\u21d3';
-    public final char LEFTWARDS_DOUBLE_ARROW = '\u21d0';
-    public final char UPWARDS_DOUBLE_ARROW = '\u21d1';
+    public internal.FontIcon of(Ikon icon, float size, Color color) {
+        IkonHandler handler = IkonResolver.getInstance().resolve(icon.getDescription());
+        Font font = ((Font) handler.getFont()).deriveFont(size);
+        return internal.FontIcon.of(icon.getCode(), font, color, 0);
+    }
 }

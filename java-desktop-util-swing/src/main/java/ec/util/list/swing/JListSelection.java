@@ -18,6 +18,7 @@ package ec.util.list.swing;
 
 import ec.util.datatransfer.LocalObjectDataFlavor;
 import ec.util.various.swing.JCommand;
+import internal.FontIcon;
 import static internal.InternalUtil.*;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -367,7 +368,7 @@ public final class JListSelection<E> extends JComponent {
 
     private JButton newButton(String actionKey, char icon) {
         JButton result = new JButton(getActionMap().get(actionKey));
-        result.setIcon(getIcon(icon, resizeByFactor(result.getFont(), 2), result.getForeground()));
+        result.setIcon(FontIcon.of(icon, resizeByFactor(result.getFont(), 2), result.getForeground(), 0));
         return result;
     }
 

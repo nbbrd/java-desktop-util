@@ -21,9 +21,7 @@ import ec.util.list.swing.JLists;
 import static ec.util.list.swing.JListOrdering.MOVE_DOWN_ACTION;
 import static ec.util.list.swing.JListOrdering.MOVE_UP_ACTION;
 import ec.util.various.swing.BasicSwingLauncher;
-import ec.util.various.swing.StandardSwingColor;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.util.logging.Level;
 import java.util.stream.Stream;
@@ -33,7 +31,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
-import org.kordamp.ikonli.swing.FontIcon;
 
 /**
  *
@@ -72,12 +69,10 @@ final class JListOrderingDemo {
 
     private static void applyIcon(JLabel c, MaterialDesign icon) {
         c.setText(icon.getDescription());
-        c.setIcon(FontIcon.of(icon, c.getFont().getSize(), c.getForeground()));
+        c.setIcon(Ikons.of(icon, c.getFont().getSize()));
     }
 
     private static void applyIcon(JButton c, MaterialDesign icon) {
-        int size = c.getFont().getSize() * 2;
-        c.setIcon(FontIcon.of(icon, size, c.getForeground()));
-        c.setDisabledIcon(FontIcon.of(icon, size, StandardSwingColor.TEXT_FIELD_INACTIVE_FOREGROUND.lookup().orElse(Color.DARK_GRAY)));
+        c.setIcon(Ikons.of(icon, c.getFont().getSize() * 2));
     }
 }

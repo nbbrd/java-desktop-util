@@ -103,4 +103,9 @@ public class Colors {
     public static String toHex(@Nonnull Color color) {
         return RGB.toHex(color.getRed(), color.getGreen(), color.getBlue());
     }
+
+    @Nonnull
+    public static Color toGray(@Nonnull Color color) {
+        return rgbToColor(RGB.toGray(colorToRgb(color)));
+    }
 }

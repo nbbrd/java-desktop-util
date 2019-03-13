@@ -35,7 +35,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.SwingConstants;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
-import org.kordamp.ikonli.swing.FontIcon;
 
 /**
  *
@@ -111,6 +110,6 @@ public final class JListSelectionDemo {
 
     private static void applyIcon(JLabel c, MaterialDesign icon) {
         c.setText(icon.getDescription());
-        c.setIcon(FontIcon.of(icon, c.getFont().getSize(), c.getForeground()));
+        c.setIcon(Ikons.of(icon, c.getFont().getSize()));
     }
 }

@@ -16,28 +16,28 @@
  */
 package internal;
 
-import java.awt.Font;
-import javax.annotation.Nonnull;
+import java.awt.Component;
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.experimental.UtilityClass
-public class InternalUtil {
+@lombok.RequiredArgsConstructor
+final class Animation {
 
-    @Nonnull
-    public Font resizeByFactor(@Nonnull Font font, float factor) {
-        return font.deriveFont(font.getSize2D() * factor);
+    @lombok.NonNull
+    private final Component component;
+
+    private final int durationInMilli;
+
+    @lombok.Getter
+    private double position = 0;
+
+    void refresh(long timeInMillis) {
+        double newPosition = 1f * (timeInMillis % durationInMilli) / durationInMilli;
+        if (newPosition != position) {
+            position = newPosition;
+            component.repaint();
+        }
     }
-
-    public final char RIGHTWARDS_TRIANGLE_HEADED_ARROW = '\u2b62';
-    public final char DOWNWARDS_TRIANGLE_HEADED_ARROW = '\u2b63';
-    public final char LEFTWARDS_TRIANGLE_HEADED_ARROW = '\u2b60';
-    public final char UPWARDS_TRIANGLE_HEADED_ARROW = '\u2b61';
-
-    public final char RIGHTWARDS_DOUBLE_ARROW = '\u21d2';
-    public final char DOWNWARDS_DOUBLE_ARROW = '\u21d3';
-    public final char LEFTWARDS_DOUBLE_ARROW = '\u21d0';
-    public final char UPWARDS_DOUBLE_ARROW = '\u21d1';
 }

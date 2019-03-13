@@ -19,7 +19,7 @@ package ec.util.grid.swing;
 import ec.util.table.swing.JTables;
 import static ec.util.various.swing.ModernUI.createDropBorder;
 import ec.util.various.swing.StandardSwingColor;
-import internal.InternalUtil;
+import internal.Colors;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import static java.util.Optional.ofNullable;
@@ -264,11 +264,11 @@ public class XTable extends JTable {
             if (hasDropLocation) {
                 label.setText(onDropMessage);
                 label.setForeground(table.getSelectionForeground());
-                label.setBackground(InternalUtil.withAlpha(table.getSelectionBackground(), 200));
+                label.setBackground(Colors.withAlpha(table.getSelectionBackground(), 200));
                 label.setBorder(createDropBorder(label.getForeground()));
             } else {
                 label.setText(message);
-                label.setForeground(InternalUtil.withAlpha(table.getForeground(), 100));
+                label.setForeground(Colors.withAlpha(table.getForeground(), 100));
                 label.setBackground(table.getBackground());
                 label.setBorder(null);
             }

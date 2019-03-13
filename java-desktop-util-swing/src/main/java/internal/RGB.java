@@ -131,4 +131,28 @@ public class RGB {
     public static String toHex(int r, int g, int b) {
         return String.format("#%02x%02x%02x", r, g, b);
     }
+
+    /**
+     * @see http://www.java2s.com/Code/Java/2D-Graphics-GUI/RGBGrayFilter.htm
+     * @param rgb
+     * @return
+     */
+    public static int toGray(int rgb) {
+        // Find the average of red, green, and blue.
+        float avg = (((rgb >> 16) & 0xff) / 255f
+                + ((rgb >> 8) & 0xff) / 255f
+                + (rgb & 0xff) / 255f) / 3;
+        // Pull out the alpha channel.
+        float alpha = (((rgb >> 24) & 0xff) / 255f);
+
+        // Calculate the average.
+        // Sun's formula: Math.min(1.0f, (1f - avg) / (100.0f / 35.0f) + avg);
+        // The following formula uses less operations and hence is faster.
+        avg = Math.min(1.0f, 0.35f + 0.65f * avg);
+        // Convert back into RGB.
+        return (int) (alpha * 255f) << 24
+                | (int) (avg * 255f) << 16
+                | (int) (avg * 255f) << 8
+                | (int) (avg * 255f);
+    }
 }

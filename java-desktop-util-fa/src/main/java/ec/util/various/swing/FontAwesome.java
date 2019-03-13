@@ -16,30 +16,24 @@
  */
 package ec.util.various.swing;
 
+import internal.FontIcon;
+import internal.SpinningIcon;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontFormatException;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.Timer;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 
 /**
  * Convenient enum that provides access to the "Font Awesome" font set (v4.2).
@@ -550,27 +544,33 @@ public enum FontAwesome {
 
     @Nonnull
     public Icon getIcon(@Nonnull Color color, float size) {
-        return new ImageIcon(createImage(color, size, 0));
+        return getIcon(color, size, 0);
     }
 
     @Nonnull
     public Icon getIcon(@Nonnull Color color, float size, double angle) {
-        return new ImageIcon(createImage(color, size, angle));
+        return FontIcon.of(getIconAsChar(), getFont().deriveFont(size), getWidth(size), getHeight(size), color, angle);
     }
 
     @Nonnull
     public Icon getSpinningIcon(@Nonnull Component component, @Nonnull Color color, float size) {
-        return new SpinningIcon(component, createImage(color, size, 0));
+        return new SpinningIcon(component, getIcon(color, size));
     }
 
     @Nonnull
     public Image getImage(@Nonnull Color color, float size) {
-        return createImage(color, size, 0);
+        return getImage(color, size, 0);
     }
 
     @Nonnull
     public Image getImage(@Nonnull Color color, float size, double angle) {
-        return createImage(color, size, angle);
+        BufferedImage result = new BufferedImage(getWidth(size), getHeight(size), BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g = result.createGraphics();
+        getIcon(color, size, angle).paintIcon(DUMMY_COMPONENT, g, 0, 0);
+        g.dispose();
+
+        return result;
     }
 
     @Nonnull
@@ -583,43 +583,23 @@ public enum FontAwesome {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
-    @Nonnull
-    private BufferedImage createImage(@Nonnull Color color, float size, double angle) {
+    private int getWidth(float size) {
         // https://github.com/FortAwesome/Font-Awesome/blob/master/less/fixed-width.less
-        float w = (18 * size / 14);
-        float h = size;
-        
-        BufferedImage result = new BufferedImage((int) w, (int) h, BufferedImage.TYPE_INT_ARGB);
-        
-        Graphics2D g = (Graphics2D) result.getGraphics();
-        
-        if (angle != 0) {
-            AffineTransform trans = new AffineTransform();
-            trans.rotate(Math.toRadians(angle), w / 2.0, h / 2.0);
-            g.setTransform(trans);
-        }
-        
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setFont(getFont().deriveFont(Font.PLAIN, size));
-        g.setColor(color);
-        
-        FontMetrics fm = g.getFontMetrics();
-        float x = (w - fm.charWidth(iconAsChar)) / 2f;
-        float y = (fm.getAscent() + (h - (fm.getAscent() + fm.getDescent())) / 2f);
-        
-        g.drawString(String.valueOf(iconAsChar), x, y);
-        
-        g.dispose();
-        
-        return result;
+        return (int) (18 * size / 14);
     }
-    
+
+    private int getHeight(float size) {
+        return (int) size;
+    }
+
+    private static final JComponent DUMMY_COMPONENT = new JLabel();
+
     private static final class LazyHolder {
-        
+
         private static final Font INSTANCE = create();
-        
+
         private static final String PATH = "/ec/util/various/swing/fontawesome-webfont.ttf";
-        
+
         private static Font create() {
             try (InputStream stream = LazyHolder.class.getResourceAsStream(PATH)) {
                 Font result = Font.createFont(Font.TRUETYPE_FONT, stream);
@@ -629,93 +609,6 @@ public enum FontAwesome {
                 throw new RuntimeException("Cannot load font", ex);
             }
         }
-    }
-    
-    private static final class SpinningIcon implements Icon, Puppet {
-        
-        private static final int DURATION = 2000;
-        
-        private final Component component;
-        private final ImageIcon imageIcon;
-        private double position;
-        
-        private SpinningIcon(Component c, BufferedImage image) {
-            this.component = c;
-            this.imageIcon = new ImageIcon(image);
-            Animator.INSTANCE.register(this);
-        }
-        
-        @Override
-        public void refresh(long timeInMillis) {
-            position = 1f * (timeInMillis % DURATION) / DURATION;
-            component.repaint();
-        }
-        
-        @Override
-        public void paintIcon(Component c, Graphics g, int x, int y) {
-            double angle = Math.PI * 2 * position;
-            
-            BufferedImage image = (BufferedImage) imageIcon.getImage();
-            
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            
-            AffineTransform trans = new AffineTransform();
-            trans.translate(x, y);
-            trans.rotate(angle, getIconWidth() / 2d, getIconHeight() / 2d);
-            
-            g2d.drawImage(image, trans, c);
-        }
-        
-        @Override
-        public int getIconWidth() {
-            return imageIcon.getIconWidth();
-        }
-        
-        @Override
-        public int getIconHeight() {
-            return imageIcon.getIconHeight();
-        }
-    }
-    
-    private static final class Animator implements ActionListener {
-        
-        private static final int FPS = 60;
-        public static final Animator INSTANCE = new Animator();
-        
-        private final Timer timer;
-        private final List<WeakReference<Puppet>> items;
-        
-        private Animator() {
-            this.timer = new Timer(1000 / FPS, this);
-            timer.start();
-            this.items = new ArrayList<>();
-        }
-        
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            long time = System.currentTimeMillis();
-            Iterator<WeakReference<Puppet>> iterator = items.iterator();
-            while (iterator.hasNext()) {
-                WeakReference<Puppet> ref = iterator.next();
-                Puppet o = ref.get();
-                if (o != null) {
-                    o.refresh(time);
-                } else {
-                    iterator.remove();
-                }
-            }
-        }
-        
-        public void register(Puppet stuff) {
-            items.add(new WeakReference(stuff));
-        }
-    }
-    
-    private interface Puppet {
-        
-        void refresh(long timeInMillis);
     }
     //</editor-fold>
 }
