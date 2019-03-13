@@ -25,9 +25,9 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.beans.PropertyChangeEvent;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -52,20 +52,24 @@ public class SpinningIconDemo extends JComponent {
 
     private static final String FACTORY_PROPERTY = "factory";
     private static final String SPINNING_PROPERTY = "spinning";
+    private static final String DISABLED_PROPERTY = "disabled";
 
     private final JComboBox<IconFactory> factories;
     private final JCheckBox spinningBox;
-    private final JLabel icon;
-    private final JLabel info;
+    private final JCheckBox disabledBox;
+    private final JButton button;
+    private final JLabel status;
 
     private IconFactory factory;
     private boolean spinning;
+    private boolean disabled;
 
     public SpinningIconDemo() {
         this.factories = new JComboBox<>(IconFactory.values());
         this.spinningBox = new JCheckBox();
-        this.icon = new JLabel();
-        this.info = new JLabel();
+        this.disabledBox = new JCheckBox();
+        this.button = new JButton();
+        this.status = new JLabel();
         initComponents();
     }
 
@@ -77,20 +81,21 @@ public class SpinningIconDemo extends JComponent {
         header.add(factories);
         spinningBox.addChangeListener(event -> firePropertyChange(SPINNING_PROPERTY, spinning, spinning = spinningBox.isSelected()));
         header.add(spinningBox);
+        disabledBox.addChangeListener(event -> firePropertyChange(DISABLED_PROPERTY, disabled, disabled = disabledBox.isSelected()));
+        header.add(disabledBox);
         add(header);
 
         JPanel body = new JPanel(new FlowLayout());
-        icon.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
-        icon.setIconTextGap(0);
-        body.add(icon);
+        body.add(button);
         add(body);
 
         JPanel footer = new JPanel(new FlowLayout());
-        footer.add(info);
+        footer.add(status);
         add(footer);
 
         addPropertyChangeListener(FACTORY_PROPERTY, this::onFactoryChange);
         addPropertyChangeListener(SPINNING_PROPERTY, this::onSpinningChange);
+        addPropertyChangeListener(DISABLED_PROPERTY, this::onDisabledChange);
 
         factories.setSelectedIndex(-1);
         factories.setSelectedIndex(0);
@@ -104,11 +109,15 @@ public class SpinningIconDemo extends JComponent {
         refreshIcon();
     }
 
+    private void onDisabledChange(PropertyChangeEvent event) {
+        button.setEnabled(!disabled);
+    }
+
     private void refreshIcon() {
         if (factory != null) {
-            Icon x = factory.getIcon(50, Color.DARK_GRAY);
-            icon.setIcon(spinning ? new SpinningIcon(icon, x) : x);
-            info.setText(x.getIconWidth() + "x" + x.getIconHeight());
+            Icon x = factory.getIcon(50, Color.BLUE);
+            button.setIcon(spinning ? new SpinningIcon(button, x) : x);
+            status.setText(x.getIconWidth() + "x" + x.getIconHeight());
         }
     }
 
@@ -128,7 +137,7 @@ public class SpinningIconDemo extends JComponent {
             @Override
             Icon getIcon(float size, Color color) {
                 Ikon icon = MaterialDesign.MDI_AUTORENEW;
-                return DemoUtil.getIcon(icon, size, color);
+                return Ikons.of(icon, size, color);
             }
         }, ARROW {
             @Override

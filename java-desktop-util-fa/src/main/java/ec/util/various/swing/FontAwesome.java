@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.swing.Icon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 
 /**
  * Convenient enum that provides access to the "Font Awesome" font set (v4.2).
@@ -565,7 +567,7 @@ public enum FontAwesome {
         BufferedImage result = new BufferedImage(getWidth(size), getHeight(size), BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D g = result.createGraphics();
-        getIcon(color, size, angle).paintIcon(null, g, 0, 0);
+        getIcon(color, size, angle).paintIcon(DUMMY_COMPONENT, g, 0, 0);
         g.dispose();
 
         return result;
@@ -589,6 +591,8 @@ public enum FontAwesome {
     private int getHeight(float size) {
         return (int) size;
     }
+
+    private static final JComponent DUMMY_COMPONENT = new JLabel();
 
     private static final class LazyHolder {
 

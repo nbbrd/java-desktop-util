@@ -147,7 +147,7 @@ public final class JAutoCompletionDemo extends javax.swing.JPanel {
             @Override
             protected Icon toIcon(String term, JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 MaterialDesign icon = emoticons.get((String) value);
-                return DemoUtil.getIcon(icon, 32, isSelected ? list.getSelectionForeground() : Color.ORANGE.darker());
+                return Ikons.of(icon, 32, isSelected ? list.getSelectionForeground() : Color.ORANGE.darker());
             }
 
             @Override
@@ -215,7 +215,7 @@ public final class JAutoCompletionDemo extends javax.swing.JPanel {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 MaterialDesign icon = (MaterialDesign) value;
                 setText("<html><b>" + icon.name().replace("MDI_", "").replace("_", " ") + "</b><br>" + icon.getDescription());
-                setIcon(DemoUtil.getIcon(icon, getFont().getSize() * 2, getForeground()));
+                setIcon(Ikons.of(icon, getFont().getSize() * 2));
                 setBorder(border);
                 return this;
             }

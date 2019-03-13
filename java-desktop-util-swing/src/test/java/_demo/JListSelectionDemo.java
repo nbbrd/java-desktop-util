@@ -110,6 +110,6 @@ public final class JListSelectionDemo {
 
     private static void applyIcon(JLabel c, MaterialDesign icon) {
         c.setText(icon.getDescription());
-        c.setIcon(DemoUtil.getIcon(icon, c.getFont().getSize(), c.getForeground()));
+        c.setIcon(Ikons.of(icon, c.getFont().getSize()));
     }
 }

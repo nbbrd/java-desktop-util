@@ -26,6 +26,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import lombok.AccessLevel;
@@ -38,11 +40,13 @@ import lombok.AccessLevel;
 @lombok.RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FontIcon implements Icon {
 
-    public static FontIcon of(char code, Font font, int width, int height, Color color, double angle) {
+    @Nonnull
+    public static FontIcon of(char code, @Nonnull Font font, int width, int height, @Nullable Color color, double angle) {
         return new FontIcon(code, font, width, height, color, angle);
     }
 
-    public static FontIcon of(char code, Font font, Color color, double angle) {
+    @Nonnull
+    public static FontIcon of(char code, @Nonnull Font font, @Nullable Color color, double angle) {
         Dimension iconSize = getIconSize(code, font);
         return new FontIcon(code, font, iconSize.width, iconSize.height, color, angle);
     }
@@ -51,29 +55,16 @@ public final class FontIcon implements Icon {
     private final Font font;
     private final int width;
     private final int height;
+    @Nullable
     private final Color color;
     private final double angle;
-
-    private Point2D.Float getCharPosition(Graphics2D g2d) {
-        // Fix FontMetrics & rotate bug https://bugs.openjdk.java.net/browse/JDK-8205046
-        AffineTransform savedTransform = g2d.getTransform();
-        g2d.setTransform(new AffineTransform());
-
-        FontMetrics fm = g2d.getFontMetrics();
-        float x = (width - fm.charWidth(code)) / 2f;
-        float y = (fm.getAscent() + (fm.getHeight() - (fm.getAscent() + fm.getDescent())) / 2f);
-
-        g2d.setTransform(savedTransform);
-
-        return new Point2D.Float(x, y);
-    }
 
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
         Graphics2D g2d = (Graphics2D) g.create(x, y, width, height);
 
         g2d.setFont(font);
-        g2d.setColor(color);
+        g2d.setColor(getColor(c));
 
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
@@ -99,6 +90,25 @@ public final class FontIcon implements Icon {
     @Override
     public int getIconHeight() {
         return height;
+    }
+
+    private Color getColor(Component c) {
+        Color foreground = color != null ? color : c.getForeground();
+        return c.isEnabled() ? foreground : Colors.toGray(foreground);
+    }
+
+    private Point2D.Float getCharPosition(Graphics2D g2d) {
+        // Fix FontMetrics & rotate bug https://bugs.openjdk.java.net/browse/JDK-8205046
+        AffineTransform savedTransform = g2d.getTransform();
+        g2d.setTransform(new AffineTransform());
+
+        FontMetrics fm = g2d.getFontMetrics();
+        float x = (width - fm.charWidth(code)) / 2f;
+        float y = (fm.getAscent() + (fm.getHeight() - (fm.getAscent() + fm.getDescent())) / 2f);
+
+        g2d.setTransform(savedTransform);
+
+        return new Point2D.Float(x, y);
     }
 
     private static Dimension getIconSize(char code, Font font) {

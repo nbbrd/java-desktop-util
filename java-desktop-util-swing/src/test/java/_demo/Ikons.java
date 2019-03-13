@@ -27,9 +27,13 @@ import org.kordamp.ikonli.swing.IkonResolver;
  * @author Philippe Charles
  */
 @lombok.experimental.UtilityClass
-class DemoUtil {
+class Ikons {
 
-    public internal.FontIcon getIcon(Ikon icon, float size, Color color) {
+    public internal.FontIcon of(Ikon icon, float size) {
+        return of(icon, size, null);
+    }
+
+    public internal.FontIcon of(Ikon icon, float size, Color color) {
         IkonHandler handler = IkonResolver.getInstance().resolve(icon.getDescription());
         Font font = ((Font) handler.getFont()).deriveFont(size);
         return internal.FontIcon.of(icon.getCode(), font, color, 0);

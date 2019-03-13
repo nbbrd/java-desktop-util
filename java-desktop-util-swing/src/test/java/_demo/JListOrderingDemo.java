@@ -21,7 +21,6 @@ import ec.util.list.swing.JLists;
 import static ec.util.list.swing.JListOrdering.MOVE_DOWN_ACTION;
 import static ec.util.list.swing.JListOrdering.MOVE_UP_ACTION;
 import ec.util.various.swing.BasicSwingLauncher;
-import internal.InternalUtil;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.logging.Level;
@@ -70,12 +69,10 @@ final class JListOrderingDemo {
 
     private static void applyIcon(JLabel c, MaterialDesign icon) {
         c.setText(icon.getDescription());
-        c.setIcon(DemoUtil.getIcon(icon, c.getFont().getSize(), c.getForeground()));
+        c.setIcon(Ikons.of(icon, c.getFont().getSize()));
     }
 
     private static void applyIcon(JButton c, MaterialDesign icon) {
-        int size = c.getFont().getSize() * 2;
-        c.setIcon(DemoUtil.getIcon(icon, size, c.getForeground()));
-        c.setDisabledIcon(DemoUtil.getIcon(icon, size, InternalUtil.getDisabledIconColor()));
+        c.setIcon(Ikons.of(icon, c.getFont().getSize() * 2));
     }
 }

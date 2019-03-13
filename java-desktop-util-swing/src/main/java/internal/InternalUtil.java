@@ -16,8 +16,6 @@
  */
 package internal;
 
-import ec.util.various.swing.StandardSwingColor;
-import java.awt.Color;
 import java.awt.Font;
 import javax.annotation.Nonnull;
 
@@ -27,11 +25,6 @@ import javax.annotation.Nonnull;
  */
 @lombok.experimental.UtilityClass
 public class InternalUtil {
-
-    @Nonnull
-    public Color getDisabledIconColor() {
-        return StandardSwingColor.TEXT_FIELD_INACTIVE_FOREGROUND.lookup().orElse(Color.DARK_GRAY);
-    }
 
     @Nonnull
     public Font resizeByFactor(@Nonnull Font font, float factor) {
