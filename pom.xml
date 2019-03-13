@@ -40,7 +40,6 @@
     </properties>
 
     <modules>
-        <module>nbdemetra-utils</module>
         <module>java-desktop-util-fa</module>
         <module>java-desktop-util-chart</module>
         <module>java-desktop-util-swing</module>
