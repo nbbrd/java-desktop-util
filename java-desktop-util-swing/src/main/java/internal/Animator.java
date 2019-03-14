@@ -33,6 +33,7 @@ enum Animator {
 
     private static final int DEFAULT_FPS = 60;
 
+    private final Clock clock;
     private final Timer timer;
     private final List<WeakReference<Animation>> animations;
 
@@ -41,6 +42,7 @@ enum Animator {
     }
 
     private Animator(int fps, Clock clock) {
+        this.clock = clock;
         this.timer = new Timer(1000 / fps, event -> broadcast(clock.millis()));
         this.animations = new ArrayList<>();
         timer.start();
@@ -50,9 +52,7 @@ enum Animator {
         Iterator<WeakReference<Animation>> iterator = animations.iterator();
         while (iterator.hasNext()) {
             Animation o = iterator.next().get();
-            if (o != null) {
-                o.refresh(currentTimeInMillis);
-            } else {
+            if (o == null || !o.refresh(currentTimeInMillis)) {
                 iterator.remove();
             }
         }
@@ -60,6 +60,8 @@ enum Animator {
 
     @OnEDT
     public void register(Animation animation) {
-        animations.add(new WeakReference(animation));
+        if (animation.refresh(clock.millis())) {
+            animations.add(new WeakReference(animation));
+        }
     }
 }

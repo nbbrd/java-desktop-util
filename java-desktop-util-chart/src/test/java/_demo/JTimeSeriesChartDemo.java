@@ -564,7 +564,7 @@ public final class JTimeSeriesChartDemo extends JPanel {
             Color color = chart.getColorSchemeSupport().getLineColor(o.getSeries());
             setText("<html><b>" + serie + "</b><br>" + period + ": " + value);
             setIcon(forecast
-                    ? new SpinningIcon(this, FontIcon.of(MaterialDesign.MDI_AUTORENEW, 24, color))
+                    ? SpinningIcon.of(FontIcon.of(MaterialDesign.MDI_AUTORENEW, 24, color))
                     : FontIcon.of(getIconByIndex(o.getSeries()), 24, color)
             );
             return this;

@@ -554,7 +554,7 @@ public enum FontAwesome {
 
     @Nonnull
     public Icon getSpinningIcon(@Nonnull Component component, @Nonnull Color color, float size) {
-        return new SpinningIcon(component, getIcon(color, size));
+        return SpinningIcon.of(getIcon(color, size), component);
     }
 
     @Nonnull

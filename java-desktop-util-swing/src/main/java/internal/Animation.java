@@ -16,28 +16,20 @@
  */
 package internal;
 
-import java.awt.Component;
+import java.util.function.DoubleConsumer;
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.RequiredArgsConstructor
-final class Animation {
+interface Animation {
 
-    @lombok.NonNull
-    private final Component component;
+    boolean refresh(long timeInMillis);
 
-    private final int durationInMilli;
-
-    @lombok.Getter
-    private double position = 0;
-
-    void refresh(long timeInMillis) {
-        double newPosition = 1f * (timeInMillis % durationInMilli) / durationInMilli;
-        if (newPosition != position) {
-            position = newPosition;
-            component.repaint();
-        }
+    static Animation cycle(long durationInMillis, DoubleConsumer callback) {
+        return timeInMillis -> {
+            callback.accept(1f * (timeInMillis % durationInMillis) / durationInMillis);
+            return true;
+        };
     }
 }
