@@ -116,7 +116,7 @@ public class SpinningIconDemo extends JComponent {
     private void refreshIcon() {
         if (factory != null) {
             Icon x = factory.getIcon(50, Color.BLUE);
-            button.setIcon(spinning ? new SpinningIcon(button, x) : x);
+            button.setIcon(spinning ? SpinningIcon.of(x) : x);
             status.setText(x.getIconWidth() + "x" + x.getIconHeight());
         }
     }

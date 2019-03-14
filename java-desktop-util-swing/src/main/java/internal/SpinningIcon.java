@@ -21,6 +21,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
 /**
@@ -29,29 +30,60 @@ import javax.swing.Icon;
  */
 public final class SpinningIcon implements Icon {
 
+    @Nonnull
+    public static SpinningIcon of(@Nonnull Icon icon) {
+        return new SpinningIcon(icon);
+    }
+
+    @Nonnull
+    public static SpinningIcon of(@Nonnull Icon icon, @Nonnull Component animated) {
+        SpinningIcon result = new SpinningIcon(icon);
+        result.init(animated);
+        return result;
+    }
+
     private static final int DURATION = 2000;
 
     private final Animation animation;
     private final Icon icon;
 
-    public SpinningIcon(Component c, Icon icon) {
-        this.animation = new Animation(c, DURATION);
+    private Component animated;
+    private double angle;
+
+    private SpinningIcon(Icon icon) {
+        this.animation = Animation.cycle(DURATION, this::refresh);
         this.icon = icon;
-        Animator.INSTANCE.register(animation);
+        this.animated = null;
+        this.angle = 0;
     }
 
-    private double getAngle() {
-        return Math.PI * 2 * animation.getPosition();
+    private void refresh(double position) {
+        double newAngle = Math.PI * 2 * position;
+        if (angle != newAngle) {
+            angle = newAngle;
+            if (animated != null) {
+                animated.repaint();
+            }
+        }
+    }
+
+    private void init(Component c) {
+        Animator.INSTANCE.register(animation);
+        animated = c;
     }
 
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
+        if (animated == null) {
+            init(c);
+        }
+
         Graphics2D g2d = (Graphics2D) g.create();
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
         AffineTransform trans = new AffineTransform();
         trans.translate(x, y);
-        trans.rotate(getAngle(), getIconWidth() / 2d, getIconHeight() / 2d);
+        trans.rotate(angle, getIconWidth() / 2d, getIconHeight() / 2d);
         g2d.transform(trans);
 
         icon.paintIcon(c, g2d, 0, 0);
