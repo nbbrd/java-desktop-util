@@ -16,7 +16,7 @@
  */
 package ec.util.list.swing;
 
-import ec.util.datatransfer.LocalObjectDataFlavor;
+import ec.util.datatransfer.LocalDataTransfer;
 import ec.util.various.swing.JCommand;
 import ec.util.various.swing.ModernUI;
 import java.awt.BorderLayout;
@@ -189,7 +189,7 @@ public final class JListOrdering<T> extends JComponent {
     //http://docs.oracle.com/javase/tutorial/uiswing/dnd/dropmodedemo.html
     private static final class ListItemTransferHandler extends TransferHandler {
 
-        private static final LocalObjectDataFlavor<int[]> INT_ARRAY = LocalObjectDataFlavor.of(int[].class);
+        private static final LocalDataTransfer<int[]> INT_ARRAY = LocalDataTransfer.of(int[].class);
 
         @Override
         protected Transferable createTransferable(JComponent c) {
@@ -198,7 +198,7 @@ public final class JListOrdering<T> extends JComponent {
 
         @Override
         public boolean canImport(TransferHandler.TransferSupport info) {
-            return !(!info.isDrop() || !info.isDataFlavorSupported(INT_ARRAY));
+            return info.isDrop() && INT_ARRAY.canImport(info);
         }
 
         @Override
@@ -212,7 +212,7 @@ public final class JListOrdering<T> extends JComponent {
             if (!canImport(support)) {
                 return false;
             }
-            INT_ARRAY.getLocalObject(support.getTransferable())
+            INT_ARRAY.getData(support)
                     .ifPresent(o -> importData(o, (JList) support.getComponent(), (JList.DropLocation) support.getDropLocation()));
             return true;
         }

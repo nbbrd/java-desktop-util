@@ -28,26 +28,26 @@ import org.junit.Test;
  *
  * @author Philippe Charles
  */
-public class LocalObjectDataFlavorTest {
+public class LocalDataTransferTest {
 
     @Test
     @SuppressWarnings("null")
     public void testFactory() {
-        assertThatNullPointerException().isThrownBy(() -> LocalObjectDataFlavor.of(null));
-        assertThat(LocalObjectDataFlavor.of(Integer.class).getLocalObjectType()).isEqualTo(Integer.class);
+        assertThatNullPointerException().isThrownBy(() -> LocalDataTransfer.of(null));
+        assertThat(LocalDataTransfer.of(Integer.class).getDataType()).isEqualTo(Integer.class);
     }
 
     @Test
     @SuppressWarnings("null")
     public void testCreateTransferable() throws UnsupportedFlavorException, IOException {
-        LocalObjectDataFlavor<Integer> flavor = LocalObjectDataFlavor.of(Integer.class);
+        LocalDataTransfer<Integer> dt = LocalDataTransfer.of(Integer.class);
 
-        assertThatNullPointerException().isThrownBy(() -> flavor.createTransferable(null));
+        assertThatNullPointerException().isThrownBy(() -> dt.createTransferable(null));
 
-        Transferable transferable = flavor.createTransferable(123);
+        Transferable transferable = dt.createTransferable(123);
         assertThat(transferable).isNotNull();
-        assertThat(transferable.getTransferData(flavor)).isEqualTo(123);
-        assertThat(transferable.getTransferDataFlavors()).containsOnly(flavor);
+        assertThat(transferable.getTransferData(dt.getDataFlavor())).isEqualTo(123);
+        assertThat(transferable.getTransferDataFlavors()).containsOnly(dt.getDataFlavor());
         assertThatExceptionOfType(UnsupportedFlavorException.class)
                 .isThrownBy(() -> transferable.getTransferData(DataFlavor.stringFlavor));
     }
@@ -55,11 +55,11 @@ public class LocalObjectDataFlavorTest {
     @Test
     @SuppressWarnings("null")
     public void getLocalObject() {
-        LocalObjectDataFlavor<Integer> flavor = LocalObjectDataFlavor.of(Integer.class);
+        LocalDataTransfer<Integer> flavor = LocalDataTransfer.of(Integer.class);
 
-        assertThatNullPointerException().isThrownBy(() -> flavor.getLocalObject(null));
+        assertThatNullPointerException().isThrownBy(() -> flavor.getData((Transferable)null));
 
-        assertThat(flavor.getLocalObject(flavor.createTransferable(123))).contains(123);
-        assertThat(flavor.getLocalObject(new StringSelection("hello"))).isEmpty();
+        assertThat(flavor.getData(flavor.createTransferable(123))).contains(123);
+        assertThat(flavor.getData(new StringSelection("hello"))).isEmpty();
     }
 }

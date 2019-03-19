@@ -16,7 +16,7 @@
  */
 package ec.util.list.swing;
 
-import ec.util.datatransfer.LocalObjectDataFlavor;
+import ec.util.datatransfer.LocalDataTransfer;
 import ec.util.various.swing.JCommand;
 import internal.FontIcon;
 import static internal.InternalUtil.*;
@@ -376,7 +376,7 @@ public final class JListSelection<E> extends JComponent {
     @lombok.RequiredArgsConstructor
     private static final class CustomTransferHandler extends TransferHandler {
 
-        private static final LocalObjectDataFlavor<JList> LIST = LocalObjectDataFlavor.of(JList.class);
+        private static final LocalDataTransfer<JList> LIST = LocalDataTransfer.of(JList.class);
 
         @lombok.NonNull
         private final JList<?> sourceList;
@@ -396,9 +396,9 @@ public final class JListSelection<E> extends JComponent {
         @Override
         public boolean canImport(TransferSupport support) {
             return support.isDrop()
-                    && support.isDataFlavorSupported(LIST)
+                    && LIST.canImport(support)
                     && isValidComponent(support.getComponent())
-                    && LIST.getLocalObject(support.getTransferable()).map(this::isValidComponent).orElse(false);
+                    && LIST.getData(support).map(this::isValidComponent).orElse(false);
         }
 
         @Override
@@ -406,7 +406,7 @@ public final class JListSelection<E> extends JComponent {
             if (!canImport(support)) {
                 return false;
             }
-            LIST.getLocalObject(support.getTransferable())
+            LIST.getData(support)
                     .ifPresent(source -> importData(source, (JList<?>) support.getComponent(), (JList.DropLocation) support.getDropLocation()));
             return true;
         }
