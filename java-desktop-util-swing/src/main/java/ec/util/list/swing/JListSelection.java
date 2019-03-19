@@ -29,6 +29,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -72,6 +73,7 @@ public final class JListSelection<E> extends JComponent {
     public static final String UNSELECT_ACTION = "unselect";
     public static final String SELECT_ALL_ACTION = "selectAll";
     public static final String UNSELECT_ALL_ACTION = "unselectAll";
+    public static final String INVERT_ACTION = "invert";
     public static final String APPLY_HORIZONTAL_ACTION = "applyHorizontal";
     public static final String APPLY_VERTICAL_ACTION = "applyVertical";
 
@@ -118,6 +120,7 @@ public final class JListSelection<E> extends JComponent {
         am.put(UNSELECT_ACTION, new UnselectCommand().toAction(this));
         am.put(SELECT_ALL_ACTION, new SelectAllCommand().toAction(this));
         am.put(UNSELECT_ALL_ACTION, new UnselectAllCommand().toAction(this));
+        am.put(INVERT_ACTION, new InvertCommand().toAction(this));
         am.put(APPLY_HORIZONTAL_ACTION, new ApplyHorizontalCommand().toAction(this));
         am.put(APPLY_VERTICAL_ACTION, new ApplyVerticalCommand().toAction(this));
 
@@ -231,6 +234,7 @@ public final class JListSelection<E> extends JComponent {
         toolBar.add(newButton(UNSELECT_ACTION, horizontal ? LEFTWARDS_TRIANGLE_HEADED_ARROW : UPWARDS_TRIANGLE_HEADED_ARROW));
         toolBar.add(newButton(SELECT_ALL_ACTION, horizontal ? RIGHTWARDS_DOUBLE_ARROW : DOWNWARDS_DOUBLE_ARROW));
         toolBar.add(newButton(UNSELECT_ALL_ACTION, horizontal ? LEFTWARDS_DOUBLE_ARROW : UPWARDS_DOUBLE_ARROW));
+        toolBar.add(newButton(INVERT_ACTION, horizontal ? LEFTWARDS_ARROW_OVER_RIGHTWARDS_ARROW : UPWARDS_ARROW_LEFTWARDS_OF_DOWNWARDS_ARROW));
         toolBar.setOrientation(horizontal ? SwingConstants.VERTICAL : SwingConstants.HORIZONTAL);
 
         setLayout(new BoxLayout(this, horizontal ? BoxLayout.X_AXIS : BoxLayout.Y_AXIS));
@@ -533,6 +537,42 @@ public final class JListSelection<E> extends JComponent {
         @Override
         public ActionAdapter toAction(JListSelection<T> c) {
             ActionAdapter result = super.toAction(c);
+            addListDataListener(result, c.targetList);
+            return result;
+        }
+    }
+
+    private static final class InvertCommand<T> extends JCommand<JListSelection<T>> {
+
+        @Override
+        public void execute(JListSelection<T> c) throws Exception {
+            List<T> items = JLists.stream(c.sourceModel).collect(Collectors.toList());
+            int[] sourceSelection = JLists.getSelectionIndexStream(c.sourceList.getSelectionModel()).toArray();
+            int[] targetSelection = JLists.getSelectionIndexStream(c.targetList.getSelectionModel()).toArray();
+
+            c.sourceList.getSelectionModel().clearSelection();
+            c.targetList.getSelectionModel().clearSelection();
+            c.sourceModel.clear();
+            while (!c.targetModel.isEmpty()) {
+                c.sourceModel.addElement(c.targetModel.remove(0));
+            }
+            while (!items.isEmpty()) {
+                c.targetModel.addElement(items.remove(0));
+            }
+
+            JLists.setSelectionIndexStream(c.targetList.getSelectionModel(), IntStream.of(sourceSelection));
+            JLists.setSelectionIndexStream(c.sourceList.getSelectionModel(), IntStream.of(targetSelection));
+        }
+
+        @Override
+        public boolean isEnabled(JListSelection<T> c) {
+            return !c.sourceModel.isEmpty() || !c.targetModel.isEmpty();
+        }
+
+        @Override
+        public ActionAdapter toAction(JListSelection<T> c) {
+            ActionAdapter result = super.toAction(c);
+            addListDataListener(result, c.sourceList);
             addListDataListener(result, c.targetList);
             return result;
         }

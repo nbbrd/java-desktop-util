@@ -40,4 +40,7 @@ public class InternalUtil {
     public final char DOWNWARDS_DOUBLE_ARROW = '\u21d3';
     public final char LEFTWARDS_DOUBLE_ARROW = '\u21d0';
     public final char UPWARDS_DOUBLE_ARROW = '\u21d1';
+
+    public final char LEFTWARDS_ARROW_OVER_RIGHTWARDS_ARROW = '\u21c4';
+    public final char UPWARDS_ARROW_LEFTWARDS_OF_DOWNWARDS_ARROW = '\u21c5';
 }
