@@ -17,7 +17,6 @@
 package _demo;
 
 import ec.util.various.swing.BasicSwingLauncher;
-import internal.InternalUtil;
 import internal.SpinningIcon;
 import java.awt.Color;
 import java.awt.Component;
@@ -142,7 +141,7 @@ public class SpinningIconDemo extends JComponent {
         }, ARROW {
             @Override
             Icon getIcon(float size, Color color) {
-                char icon = InternalUtil.DOWNWARDS_DOUBLE_ARROW;
+                char icon = '\u21d3';
                 Font font = new JLabel().getFont().deriveFont(size);
                 return internal.FontIcon.of(icon, font, color, 0);
             }

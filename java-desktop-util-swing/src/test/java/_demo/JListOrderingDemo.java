@@ -18,15 +18,12 @@ package _demo;
 
 import ec.util.list.swing.JListOrdering;
 import ec.util.list.swing.JLists;
-import static ec.util.list.swing.JListOrdering.MOVE_DOWN_ACTION;
-import static ec.util.list.swing.JListOrdering.MOVE_UP_ACTION;
 import ec.util.various.swing.BasicSwingLauncher;
+import internal.ToolBarIcon;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.logging.Level;
 import java.util.stream.Stream;
-import javax.swing.ActionMap;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
@@ -47,18 +44,15 @@ final class JListOrderingDemo {
     }
 
     private static Component create() throws Exception {
+        overrideDefaultIcons();
+
         JListOrdering<MaterialDesign> list = new JListOrdering<>();
         Stream.of(MaterialDesign.values()).limit(10).forEach(list.getModel()::addElement);
         list.setCellRenderer(JLists.cellRendererOf(JListOrderingDemo::applyIcon));
 
-        JToolBar toolBar = new JToolBar();
+        JToolBar toolBar = list.createToolBar();
         toolBar.setOrientation(JToolBar.VERTICAL);
         toolBar.setFloatable(false);
-
-        ActionMap am = list.getActionMap();
-
-        applyIcon(toolBar.add(am.get(MOVE_UP_ACTION)), MaterialDesign.MDI_ARROW_UP_DROP_CIRCLE_OUTLINE);
-        applyIcon(toolBar.add(am.get(MOVE_DOWN_ACTION)), MaterialDesign.MDI_ARROW_DOWN_DROP_CIRCLE_OUTLINE);
 
         JPanel result = new JPanel();
         result.setLayout(new BorderLayout());
@@ -67,12 +61,13 @@ final class JListOrderingDemo {
         return result;
     }
 
+    private static void overrideDefaultIcons() {
+        ToolBarIcon.MOVE_UP.put(Ikons.of(MaterialDesign.MDI_ARROW_UP_BOLD, 20));
+        ToolBarIcon.MOVE_DOWN.put(Ikons.of(MaterialDesign.MDI_ARROW_DOWN_BOLD, 20));
+    }
+
     private static void applyIcon(JLabel c, MaterialDesign icon) {
         c.setText(icon.getDescription());
         c.setIcon(Ikons.of(icon, c.getFont().getSize()));
-    }
-
-    private static void applyIcon(JButton c, MaterialDesign icon) {
-        c.setIcon(Ikons.of(icon, c.getFont().getSize() * 2));
     }
 }

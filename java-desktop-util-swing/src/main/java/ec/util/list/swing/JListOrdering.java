@@ -19,6 +19,7 @@ package ec.util.list.swing;
 import ec.util.datatransfer.LocalDataTransfer;
 import ec.util.various.swing.JCommand;
 import ec.util.various.swing.ModernUI;
+import internal.ToolBarIcon;
 import java.awt.BorderLayout;
 import java.awt.datatransfer.Transferable;
 import javax.annotation.Nonnull;
@@ -31,6 +32,7 @@ import javax.swing.DropMode;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.JToolBar;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
@@ -183,6 +185,14 @@ public final class JListOrdering<T> extends JComponent {
      */
     public void ensureIndexIsVisible(int index) {
         list.ensureIndexIsVisible(index);
+    }
+
+    public JToolBar createToolBar() {
+        ActionMap am = getActionMap();
+        JToolBar result = new JToolBar();
+        result.add(am.get(MOVE_UP_ACTION)).setIcon(ToolBarIcon.MOVE_UP.get());
+        result.add(am.get(MOVE_DOWN_ACTION)).setIcon(ToolBarIcon.MOVE_DOWN.get());
+        return result;
     }
 
     //<editor-fold defaultstate="collapsed" desc="DataTransfer">

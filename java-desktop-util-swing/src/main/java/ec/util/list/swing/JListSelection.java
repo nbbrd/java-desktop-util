@@ -18,8 +18,7 @@ package ec.util.list.swing;
 
 import ec.util.datatransfer.LocalDataTransfer;
 import ec.util.various.swing.JCommand;
-import internal.FontIcon;
-import static internal.InternalUtil.*;
+import internal.ToolBarIcon;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -40,8 +39,10 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -230,11 +231,11 @@ public final class JListSelection<E> extends JComponent {
         boolean horizontal = orientation == SwingConstants.HORIZONTAL;
 
         toolBar.removeAll();
-        toolBar.add(newButton(SELECT_ACTION, horizontal ? RIGHTWARDS_TRIANGLE_HEADED_ARROW : DOWNWARDS_TRIANGLE_HEADED_ARROW));
-        toolBar.add(newButton(UNSELECT_ACTION, horizontal ? LEFTWARDS_TRIANGLE_HEADED_ARROW : UPWARDS_TRIANGLE_HEADED_ARROW));
-        toolBar.add(newButton(SELECT_ALL_ACTION, horizontal ? RIGHTWARDS_DOUBLE_ARROW : DOWNWARDS_DOUBLE_ARROW));
-        toolBar.add(newButton(UNSELECT_ALL_ACTION, horizontal ? LEFTWARDS_DOUBLE_ARROW : UPWARDS_DOUBLE_ARROW));
-        toolBar.add(newButton(INVERT_ACTION, horizontal ? LEFTWARDS_ARROW_OVER_RIGHTWARDS_ARROW : UPWARDS_ARROW_LEFTWARDS_OF_DOWNWARDS_ARROW));
+        toolBar.add(newButton(SELECT_ACTION, horizontal ? ToolBarIcon.MOVE_RIGHT : ToolBarIcon.MOVE_DOWN));
+        toolBar.add(newButton(UNSELECT_ACTION, horizontal ? ToolBarIcon.MOVE_LEFT : ToolBarIcon.MOVE_UP));
+        toolBar.add(newButton(SELECT_ALL_ACTION, horizontal ? ToolBarIcon.MOVE_ALL_RIGHT : ToolBarIcon.MOVE_ALL_DOWN));
+        toolBar.add(newButton(UNSELECT_ALL_ACTION, horizontal ? ToolBarIcon.MOVE_ALL_LEFT : ToolBarIcon.MOVE_ALL_UP));
+        toolBar.add(newButton(INVERT_ACTION, horizontal ? ToolBarIcon.MOVE_HORIZONTALLY : ToolBarIcon.MOVE_VERTICALLY));
         toolBar.setOrientation(horizontal ? SwingConstants.VERTICAL : SwingConstants.HORIZONTAL);
 
         setLayout(new BoxLayout(this, horizontal ? BoxLayout.X_AXIS : BoxLayout.Y_AXIS));
@@ -370,9 +371,22 @@ public final class JListSelection<E> extends JComponent {
         return JLists.stream(targetModel).collect(Collectors.toList());
     }
 
-    private JButton newButton(String actionKey, char icon) {
+    public JPopupMenu createPopupMenu() {
+        ActionMap am = getActionMap();
+        JMenu result = new JMenu();
+        result.add(new JCheckBoxMenuItem(am.get(SELECT_ACTION))).setText("Select");
+        result.add(new JCheckBoxMenuItem(am.get(UNSELECT_ACTION))).setText("Unselect");
+        result.add(new JCheckBoxMenuItem(am.get(SELECT_ALL_ACTION))).setText("Select all");
+        result.add(new JCheckBoxMenuItem(am.get(UNSELECT_ALL_ACTION))).setText("Unselect all");
+        result.add(new JCheckBoxMenuItem(am.get(INVERT_ACTION))).setText("Invert");
+        result.addSeparator();
+        result.add(new JCheckBoxMenuItem(am.get(APPLY_HORIZONTAL_ACTION))).setText("Horizontal");
+        return result.getPopupMenu();
+    }
+
+    private JButton newButton(String actionKey, ToolBarIcon icon) {
         JButton result = new JButton(getActionMap().get(actionKey));
-        result.setIcon(FontIcon.of(icon, resizeByFactor(result.getFont(), 2), result.getForeground(), 0));
+        result.setIcon(icon.get());
         return result;
     }
 

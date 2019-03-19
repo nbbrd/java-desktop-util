@@ -17,6 +17,8 @@
 package internal;
 
 import java.awt.Font;
+import java.lang.ref.SoftReference;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 
 /**
@@ -31,16 +33,27 @@ public class InternalUtil {
         return font.deriveFont(font.getSize2D() * factor);
     }
 
-    public final char RIGHTWARDS_TRIANGLE_HEADED_ARROW = '\u2b62';
-    public final char DOWNWARDS_TRIANGLE_HEADED_ARROW = '\u2b63';
-    public final char LEFTWARDS_TRIANGLE_HEADED_ARROW = '\u2b60';
-    public final char UPWARDS_TRIANGLE_HEADED_ARROW = '\u2b61';
+    @Nonnull
+    public <X> Supplier<X> getLazyResource(@Nonnull Supplier<X> factory) {
+        return new SharedLazyResource<>(factory);
+    }
 
-    public final char RIGHTWARDS_DOUBLE_ARROW = '\u21d2';
-    public final char DOWNWARDS_DOUBLE_ARROW = '\u21d3';
-    public final char LEFTWARDS_DOUBLE_ARROW = '\u21d0';
-    public final char UPWARDS_DOUBLE_ARROW = '\u21d1';
+    @lombok.RequiredArgsConstructor
+    private static final class SharedLazyResource<X> implements Supplier<X> {
 
-    public final char LEFTWARDS_ARROW_OVER_RIGHTWARDS_ARROW = '\u21c4';
-    public final char UPWARDS_ARROW_LEFTWARDS_OF_DOWNWARDS_ARROW = '\u21c5';
+        @lombok.NonNull
+        private final Supplier<X> factory;
+
+        private SoftReference<X> lazyResource;
+
+        @Override
+        public X get() {
+            X result = lazyResource != null ? lazyResource.get() : null;
+            if (result == null) {
+                result = factory.get();
+                lazyResource = new SoftReference<>(result);
+            }
+            return result;
+        }
+    }
 }
