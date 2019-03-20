@@ -16,11 +16,11 @@
  */
 package ec.util.various.swing;
 
+import internal.InternalUtil;
 import java.awt.Color;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -32,7 +32,8 @@ import javax.swing.UIManager;
  *
  * @author Philippe Charles
  */
-public enum StandardSwingColor {
+@lombok.RequiredArgsConstructor
+public enum StandardSwingColor implements UIItem<Color> {
 
     TABLE_HEADER_BACKGROUND("TableHeader.background"),
     TABLE_HEADER_FOREGROUND("TableHeader.foreground"),
@@ -46,52 +47,43 @@ public enum StandardSwingColor {
 
     private final String key;
 
-    private StandardSwingColor(String key) {
-        this.key = key;
-    }
-
-    @Nonnull
+    @Override
     public String key() {
         return key;
     }
 
-    @Nullable
+    @Override
     public Color value() {
         Color result = null;
         switch (this) {
             case TABLE_HEADER_BACKGROUND:
-                result = TABLE.getTableHeader().getBackground();
+                result = TABLE.get().getTableHeader().getBackground();
                 break;
             case TABLE_HEADER_FOREGROUND:
-                result = TABLE.getTableHeader().getForeground();
+                result = TABLE.get().getTableHeader().getForeground();
                 break;
             case TABLE_BACKGROUND:
-                result = TABLE.getBackground();
+                result = TABLE.get().getBackground();
                 break;
             case TABLE_FOREGROUND:
-                result = TABLE.getForeground();
+                result = TABLE.get().getForeground();
                 break;
             case TABLE_SELECTION_BACKGROUND:
-                result = TABLE.getSelectionBackground();
+                result = TABLE.get().getSelectionBackground();
                 break;
             case TABLE_SELECTION_FOREGROUND:
-                result = TABLE.getSelectionForeground();
+                result = TABLE.get().getSelectionForeground();
                 break;
             case TEXT_FIELD_INACTIVE_BACKGROUND:
                 break;
             case TEXT_FIELD_INACTIVE_FOREGROUND:
-                result = TEXT_FIELD.getDisabledTextColor();
+                result = TEXT_FIELD.get().getDisabledTextColor();
                 break;
             case CONTROL:
-                result = PANEL.getBackground();
+                result = PANEL.get().getBackground();
                 break;
         }
         return result != null ? result : UIManager.getColor(key);
-    }
-
-    @Nonnull
-    public Optional<Color> lookup() {
-        return Optional.ofNullable(value());
     }
 
     @Deprecated
@@ -102,7 +94,7 @@ public enum StandardSwingColor {
         return result != null ? result : fallback;
     }
 
-    private static final JTable TABLE = new JTable();
-    private static final JTextField TEXT_FIELD = new JTextField();
-    private static final JPanel PANEL = new JPanel();
+    private static final Supplier<JTable> TABLE = InternalUtil.getLazyResource(JTable::new);
+    private static final Supplier<JTextField> TEXT_FIELD = InternalUtil.getLazyResource(JTextField::new);
+    private static final Supplier<JPanel> PANEL = InternalUtil.getLazyResource(JPanel::new);
 }

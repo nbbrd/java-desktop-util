@@ -17,6 +17,7 @@
 package _demo;
 
 import ec.util.list.swing.JListSelection;
+import static ec.util.list.swing.JListSelection.APPLY_HORIZONTAL_ACTION;
 import ec.util.list.swing.JLists;
 import static ec.util.list.swing.JListSelection.SOURCE_HEADER_PROPERTY;
 import ec.util.various.swing.BasicSwingLauncher;
@@ -57,6 +58,8 @@ public final class JListSelectionDemo {
 
     private static JPopupMenu createPopupMenu(JListSelection<MaterialDesign> list) {
         JPopupMenu result = list.createPopupMenu();
+        result.addSeparator();
+        result.add(new JCheckBoxMenuItem(list.getActionMap().get(APPLY_HORIZONTAL_ACTION))).setText("Horizontal");
         result.add(new JCheckBoxMenuItem(ToggleHeadersCommand.INSTANCE.toAction(list))).setText("Headers");
         result.addSeparator();
         result.add(new JCheckBoxMenuItem(EmptyCommand.INSTANCE.toAction(list))).setText("Empty");

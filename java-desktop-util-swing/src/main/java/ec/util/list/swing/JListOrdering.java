@@ -190,8 +190,8 @@ public final class JListOrdering<T> extends JComponent {
     public JToolBar createToolBar() {
         ActionMap am = getActionMap();
         JToolBar result = new JToolBar();
-        result.add(am.get(MOVE_UP_ACTION)).setIcon(ToolBarIcon.MOVE_UP.get());
-        result.add(am.get(MOVE_DOWN_ACTION)).setIcon(ToolBarIcon.MOVE_DOWN.get());
+        result.add(am.get(MOVE_UP_ACTION)).setIcon(ToolBarIcon.MOVE_UP.value());
+        result.add(am.get(MOVE_DOWN_ACTION)).setIcon(ToolBarIcon.MOVE_DOWN.value());
         return result;
     }
 

@@ -18,6 +18,8 @@ package ec.util.list.swing;
 
 import ec.util.datatransfer.LocalDataTransfer;
 import ec.util.various.swing.JCommand;
+import internal.ForwardingIcon;
+import internal.InternalUtil;
 import internal.ToolBarIcon;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -38,8 +40,7 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -82,8 +83,8 @@ public final class JListSelection<E> extends JComponent {
     private final JList<E> sourceList;
     private final JPanel targetPanel;
     private final JList<E> targetList;
-    private final JToolBar toolBar;
 
+    private JToolBar toolBar;
     private DefaultListModel<E> sourceModel;
     private Component sourceFooter;
     private Component sourceHeader;
@@ -98,8 +99,8 @@ public final class JListSelection<E> extends JComponent {
         this.sourceList = new JList<>();
         this.targetPanel = new JPanel();
         this.targetList = new JList<>();
-        this.toolBar = new JToolBar();
 
+        this.toolBar = new JToolBar();
         this.sourceModel = new DefaultListModel<>();
         this.sourceFooter = null;
         this.sourceHeader = null;
@@ -148,6 +149,7 @@ public final class JListSelection<E> extends JComponent {
         targetPanel.add(new JScrollPane(targetList), BorderLayout.CENTER);
         targetPanel.setPreferredSize(new Dimension(10, 10));
 
+        toolBar = createToolBar();
         toolBar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         toolBar.setFloatable(false);
 
@@ -228,14 +230,8 @@ public final class JListSelection<E> extends JComponent {
     private void onOrientationChange() {
         removeAll();
 
-        boolean horizontal = orientation == SwingConstants.HORIZONTAL;
+        boolean horizontal = isHorizontal();
 
-        toolBar.removeAll();
-        toolBar.add(newButton(SELECT_ACTION, horizontal ? ToolBarIcon.MOVE_RIGHT : ToolBarIcon.MOVE_DOWN));
-        toolBar.add(newButton(UNSELECT_ACTION, horizontal ? ToolBarIcon.MOVE_LEFT : ToolBarIcon.MOVE_UP));
-        toolBar.add(newButton(SELECT_ALL_ACTION, horizontal ? ToolBarIcon.MOVE_ALL_RIGHT : ToolBarIcon.MOVE_ALL_DOWN));
-        toolBar.add(newButton(UNSELECT_ALL_ACTION, horizontal ? ToolBarIcon.MOVE_ALL_LEFT : ToolBarIcon.MOVE_ALL_UP));
-        toolBar.add(newButton(INVERT_ACTION, horizontal ? ToolBarIcon.MOVE_HORIZONTALLY : ToolBarIcon.MOVE_VERTICALLY));
         toolBar.setOrientation(horizontal ? SwingConstants.VERTICAL : SwingConstants.HORIZONTAL);
 
         setLayout(new BoxLayout(this, horizontal ? BoxLayout.X_AXIS : BoxLayout.Y_AXIS));
@@ -371,23 +367,38 @@ public final class JListSelection<E> extends JComponent {
         return JLists.stream(targetModel).collect(Collectors.toList());
     }
 
+    public JToolBar createToolBar() {
+        ActionMap am = getActionMap();
+        JToolBar result = new JToolBar();
+        result.add(am.get(SELECT_ACTION)).setIcon(iconOf(ToolBarIcon.MOVE_RIGHT, ToolBarIcon.MOVE_DOWN));
+        result.add(am.get(UNSELECT_ACTION)).setIcon(iconOf(ToolBarIcon.MOVE_LEFT, ToolBarIcon.MOVE_UP));
+        result.add(am.get(SELECT_ALL_ACTION)).setIcon(iconOf(ToolBarIcon.MOVE_ALL_RIGHT, ToolBarIcon.MOVE_ALL_DOWN));
+        result.add(am.get(UNSELECT_ALL_ACTION)).setIcon(iconOf(ToolBarIcon.MOVE_ALL_LEFT, ToolBarIcon.MOVE_ALL_UP));
+        result.add(am.get(INVERT_ACTION)).setIcon(iconOf(ToolBarIcon.MOVE_HORIZONTALLY, ToolBarIcon.MOVE_VERTICALLY));
+        return result;
+    }
+
     public JPopupMenu createPopupMenu() {
         ActionMap am = getActionMap();
         JMenu result = new JMenu();
-        result.add(new JCheckBoxMenuItem(am.get(SELECT_ACTION))).setText("Select");
-        result.add(new JCheckBoxMenuItem(am.get(UNSELECT_ACTION))).setText("Unselect");
-        result.add(new JCheckBoxMenuItem(am.get(SELECT_ALL_ACTION))).setText("Select all");
-        result.add(new JCheckBoxMenuItem(am.get(UNSELECT_ALL_ACTION))).setText("Unselect all");
-        result.add(new JCheckBoxMenuItem(am.get(INVERT_ACTION))).setText("Invert");
-        result.addSeparator();
-        result.add(new JCheckBoxMenuItem(am.get(APPLY_HORIZONTAL_ACTION))).setText("Horizontal");
+        result.add(am.get(SELECT_ACTION)).setText("Select");
+        result.add(am.get(UNSELECT_ACTION)).setText("Unselect");
+        result.add(am.get(SELECT_ALL_ACTION)).setText("Select all");
+        result.add(am.get(UNSELECT_ALL_ACTION)).setText("Unselect all");
+        result.add(am.get(INVERT_ACTION)).setText("Invert");
         return result.getPopupMenu();
     }
 
-    private JButton newButton(String actionKey, ToolBarIcon icon) {
-        JButton result = new JButton(getActionMap().get(actionKey));
-        result.setIcon(icon.get());
-        return result;
+    private Icon iconOf(ToolBarIcon hIcon, ToolBarIcon vIcon) {
+        return ForwardingIcon.of(
+                this::isHorizontal,
+                hIcon.lookup().orElseGet(InternalUtil.MISSING_ICON),
+                vIcon.lookup().orElseGet(InternalUtil.MISSING_ICON)
+        );
+    }
+
+    private boolean isHorizontal() {
+        return orientation == SwingConstants.HORIZONTAL;
     }
 
     //<editor-fold defaultstate="collapsed" desc="DataTransfer">

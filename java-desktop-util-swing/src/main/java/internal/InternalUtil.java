@@ -17,9 +17,11 @@
 package internal;
 
 import java.awt.Font;
-import java.lang.ref.SoftReference;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import javax.swing.Icon;
+import javax.swing.JLabel;
 
 /**
  *
@@ -35,25 +37,31 @@ public class InternalUtil {
 
     @Nonnull
     public <X> Supplier<X> getLazyResource(@Nonnull Supplier<X> factory) {
-        return new SharedLazyResource<>(factory);
+        return new LazyResource<>(factory);
     }
 
     @lombok.RequiredArgsConstructor
-    private static final class SharedLazyResource<X> implements Supplier<X> {
+    private static final class LazyResource<X> implements Supplier<X> {
 
         @lombok.NonNull
         private final Supplier<X> factory;
 
-        private SoftReference<X> lazyResource;
+        private final AtomicReference<X> resource = new AtomicReference<>();
 
         @Override
         public X get() {
-            X result = lazyResource != null ? lazyResource.get() : null;
+            X result = resource.get();
             if (result == null) {
                 result = factory.get();
-                lazyResource = new SoftReference<>(result);
+                resource.set(result);
             }
             return result;
         }
+    }
+
+    public final Supplier<Icon> MISSING_ICON = getLazyResource(InternalUtil::createFallbackIcon);
+
+    private static Icon createFallbackIcon() {
+        return FontIcon.of('?', new JLabel().getFont(), null, 0);
     }
 }

@@ -16,10 +16,9 @@
  */
 package internal;
 
+import ec.util.various.swing.UIItem;
 import java.awt.Font;
-import java.util.EnumMap;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.Icon;
 import javax.swing.JToolBar;
@@ -30,42 +29,56 @@ import javax.swing.UIManager;
  * @author Philippe Charles
  */
 @lombok.RequiredArgsConstructor
-public enum ToolBarIcon {
+public enum ToolBarIcon implements UIItem<Icon> {
 
-    MOVE_UP("ToolBar.moveUpIcon", '\u2b61'),
-    MOVE_DOWN("ToolBar.moveDownIcon", '\u2b63'),
-    MOVE_LEFT("ToolBar.moveLeftIcon", '\u2b60'),
-    MOVE_RIGHT("ToolBar.moveRightIcon", '\u2b62'),
-    MOVE_ALL_UP("ToolBar.moveAllUpIcon", '\u21d1'),
-    MOVE_ALL_DOWN("ToolBar.moveAllDownIcon", '\u21d3'),
-    MOVE_ALL_LEFT("ToolBar.moveAllLeftIcon", '\u21d0'),
-    MOVE_ALL_RIGHT("ToolBar.moveAllRightIcon", '\u21d2'),
-    MOVE_HORIZONTALLY("ToolBar.moveHorizontallyIcon", '\u21c4'),
-    MOVE_VERTICALLY("ToolBar.moveVerticallyIcon", '\u21c5');
+    MOVE_UP("ToolBar.moveUpIcon"),
+    MOVE_DOWN("ToolBar.moveDownIcon"),
+    MOVE_LEFT("ToolBar.moveLeftIcon"),
+    MOVE_RIGHT("ToolBar.moveRightIcon"),
+    MOVE_ALL_UP("ToolBar.moveAllUpIcon"),
+    MOVE_ALL_DOWN("ToolBar.moveAllDownIcon"),
+    MOVE_ALL_LEFT("ToolBar.moveAllLeftIcon"),
+    MOVE_ALL_RIGHT("ToolBar.moveAllRightIcon"),
+    MOVE_HORIZONTALLY("ToolBar.moveHorizontallyIcon"),
+    MOVE_VERTICALLY("ToolBar.moveVerticallyIcon");
 
-    @lombok.Getter
     private final String key;
 
-    private final char fallback;
+    @Override
+    public String key() {
+        return key;
+    }
 
-    @Nonnull
-    public Icon get() {
-        Icon result = UIManager.getIcon(key);
-        return result != null ? result : FALLBACKS.computeIfAbsent(this, o -> o.getFallback());
+    @Override
+    public Icon value() {
+        return UIManager.getIcon(key);
     }
 
     public void put(@Nullable Icon icon) {
         UIManager.put(key, icon);
     }
 
-    private Icon getFallback() {
-        Font font = UIManager.getFont("ToolBar.font");
-        if (font == null) {
-            font = TOOLBAR.get().getFont();
-        }
-        return FontIcon.of(fallback, InternalUtil.resizeByFactor(font, 2), null, 0);
+    static {
+        registerDefaultValues();
     }
 
-    private static final Supplier<JToolBar> TOOLBAR = InternalUtil.getLazyResource(JToolBar::new);
-    private static final EnumMap<ToolBarIcon, Icon> FALLBACKS = new EnumMap<>(ToolBarIcon.class);
+    private static void registerDefaultValues() {
+        Supplier<Font> font = InternalUtil.getLazyResource(() -> new JToolBar().getFont());
+        putIfAbsent("ToolBar.moveUpIcon", '\u2b61', font);
+        putIfAbsent("ToolBar.moveDownIcon", '\u2b63', font);
+        putIfAbsent("ToolBar.moveLeftIcon", '\u2b60', font);
+        putIfAbsent("ToolBar.moveRightIcon", '\u2b62', font);
+        putIfAbsent("ToolBar.moveAllUpIcon", '\u21d1', font);
+        putIfAbsent("ToolBar.moveAllDownIcon", '\u21d3', font);
+        putIfAbsent("ToolBar.moveAllLeftIcon", '\u21d0', font);
+        putIfAbsent("ToolBar.moveAllRightIcon", '\u21d2', font);
+        putIfAbsent("ToolBar.moveHorizontallyIcon", '\u21c4', font);
+        putIfAbsent("ToolBar.moveVerticallyIcon", '\u21c5', font);
+    }
+
+    private static void putIfAbsent(String key, char fallback, Supplier<Font> font) {
+        if (UIManager.get(key) == null) {
+            UIManager.put(key, FontIcon.of(fallback, InternalUtil.resizeByFactor(font.get(), 2), null, 0));
+        }
+    }
 }
