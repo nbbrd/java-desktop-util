@@ -17,6 +17,7 @@
 package ec.util.various.swing;
 
 import internal.FontIcon;
+import internal.InternalUtil;
 import internal.SpinningIcon;
 import java.awt.Color;
 import java.awt.Component;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -539,7 +541,7 @@ public enum FontAwesome {
 
     @Nonnull
     public static Font getFont() {
-        return LazyHolder.INSTANCE;
+        return FONT.get();
     }
 
     @Nonnull
@@ -567,7 +569,7 @@ public enum FontAwesome {
         BufferedImage result = new BufferedImage(getWidth(size), getHeight(size), BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D g = result.createGraphics();
-        getIcon(color, size, angle).paintIcon(DUMMY_COMPONENT, g, 0, 0);
+        getIcon(color, size, angle).paintIcon(DUMMY_COMPONENT.get(), g, 0, 0);
         g.dispose();
 
         return result;
@@ -592,22 +594,16 @@ public enum FontAwesome {
         return (int) size;
     }
 
-    private static final JComponent DUMMY_COMPONENT = new JLabel();
+    private static final Supplier<JComponent> DUMMY_COMPONENT = InternalUtil.getLazyResource(JLabel::new);
+    private static final Supplier<Font> FONT = InternalUtil.getLazyResource(FontAwesome::loadFont);
 
-    private static final class LazyHolder {
-
-        private static final Font INSTANCE = create();
-
-        private static final String PATH = "/ec/util/various/swing/fontawesome-webfont.ttf";
-
-        private static Font create() {
-            try (InputStream stream = LazyHolder.class.getResourceAsStream(PATH)) {
-                Font result = Font.createFont(Font.TRUETYPE_FONT, stream);
-                GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(result);
-                return result;
-            } catch (FontFormatException | IOException ex) {
-                throw new RuntimeException("Cannot load font", ex);
-            }
+    private static Font loadFont() {
+        try (InputStream stream = FontAwesome.class.getResourceAsStream("/ec/util/various/swing/fontawesome-webfont.ttf")) {
+            Font result = Font.createFont(Font.TRUETYPE_FONT, stream);
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(result);
+            return result;
+        } catch (FontFormatException | IOException | NullPointerException ex) {
+            throw new RuntimeException("Cannot load font", ex);
         }
     }
     //</editor-fold>

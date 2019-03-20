@@ -17,22 +17,17 @@
 package _demo;
 
 import ec.util.list.swing.JListSelection;
-import ec.util.list.swing.JLists;
 import static ec.util.list.swing.JListSelection.APPLY_HORIZONTAL_ACTION;
-import static ec.util.list.swing.JListSelection.SELECT_ACTION;
-import static ec.util.list.swing.JListSelection.SELECT_ALL_ACTION;
+import ec.util.list.swing.JLists;
 import static ec.util.list.swing.JListSelection.SOURCE_HEADER_PROPERTY;
-import static ec.util.list.swing.JListSelection.UNSELECT_ACTION;
-import static ec.util.list.swing.JListSelection.UNSELECT_ALL_ACTION;
 import ec.util.various.swing.BasicSwingLauncher;
 import ec.util.various.swing.JCommand;
 import java.awt.Component;
 import java.util.stream.Stream;
-import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 
@@ -50,33 +45,33 @@ public final class JListSelectionDemo {
 
     private static Component create() {
         JListSelection<MaterialDesign> result = new JListSelection<>();
-        Stream.of(MaterialDesign.values()).limit(10).forEach(result.getSourceModel()::addElement);
         result.setCellRenderer(JLists.cellRendererOf(JListSelectionDemo::applyIcon));
         result.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        result.setComponentPopupMenu(createMenu(result).getPopupMenu());
-        ToggleHeadersCommand.INSTANCE.executeSafely(result);
+        result.setComponentPopupMenu(createPopupMenu(result));
+        report(ToggleHeadersCommand.INSTANCE.executeSafely(result));
+        report(EmptyCommand.INSTANCE.executeSafely(result));
         return result;
     }
 
-    private static JMenu createMenu(JListSelection<?> list) {
-        ActionMap am = list.getActionMap();
-        JMenu result = new JMenu();
-        result.add(new JCheckBoxMenuItem(am.get(SELECT_ACTION))).setText("Select");
-        result.add(new JCheckBoxMenuItem(am.get(UNSELECT_ACTION))).setText("Unselect");
-        result.add(new JCheckBoxMenuItem(am.get(SELECT_ALL_ACTION))).setText("Select all");
-        result.add(new JCheckBoxMenuItem(am.get(UNSELECT_ALL_ACTION))).setText("Unselect all");
+    private static void report(Exception ex) {
+    }
+
+    private static JPopupMenu createPopupMenu(JListSelection<MaterialDesign> list) {
+        JPopupMenu result = list.createPopupMenu();
         result.addSeparator();
-        result.add(new JCheckBoxMenuItem(am.get(APPLY_HORIZONTAL_ACTION))).setText("Horizontal");
+        result.add(new JCheckBoxMenuItem(list.getActionMap().get(APPLY_HORIZONTAL_ACTION))).setText("Horizontal");
         result.add(new JCheckBoxMenuItem(ToggleHeadersCommand.INSTANCE.toAction(list))).setText("Headers");
+        result.addSeparator();
+        result.add(new JCheckBoxMenuItem(EmptyCommand.INSTANCE.toAction(list))).setText("Empty");
         return result;
     }
 
-    private static final class ToggleHeadersCommand extends JCommand<JListSelection<?>> {
+    private static final class ToggleHeadersCommand extends JCommand<JListSelection<MaterialDesign>> {
 
         public static final ToggleHeadersCommand INSTANCE = new ToggleHeadersCommand();
 
         @Override
-        public void execute(JListSelection<?> c) throws Exception {
+        public void execute(JListSelection<MaterialDesign> c) throws Exception {
             if (c.getSourceHeader() == null) {
                 c.setSourceHeader(newLabel("Source header:", SwingConstants.LEADING));
                 c.setSourceFooter(newLabel("Source footer", SwingConstants.CENTER));
@@ -91,13 +86,34 @@ public final class JListSelectionDemo {
         }
 
         @Override
-        public boolean isSelected(JListSelection<?> c) {
+        public boolean isSelected(JListSelection<MaterialDesign> c) {
             return c.getSourceHeader() != null;
         }
 
         @Override
-        public ActionAdapter toAction(JListSelection<?> component) {
-            return super.toAction(component).withWeakPropertyChangeListener(component, SOURCE_HEADER_PROPERTY);
+        public ActionAdapter toAction(JListSelection<MaterialDesign> component) {
+            return super.toAction(component)
+                    .withWeakPropertyChangeListener(component, SOURCE_HEADER_PROPERTY);
+        }
+    }
+
+    private static final class EmptyCommand extends JCommand<JListSelection<MaterialDesign>> {
+
+        public static final EmptyCommand INSTANCE = new EmptyCommand();
+
+        @Override
+        public void execute(JListSelection<MaterialDesign> c) throws Exception {
+            if (isSelected(c)) {
+                Stream.of(MaterialDesign.values()).limit(10).forEach(c.getSourceModel()::addElement);
+            } else {
+                c.getSourceModel().clear();
+                c.getTargetModel().clear();
+            }
+        }
+
+        @Override
+        public boolean isSelected(JListSelection<MaterialDesign> c) {
+            return c.getSourceModel().isEmpty() && c.getTargetModel().isEmpty();
         }
     }
 

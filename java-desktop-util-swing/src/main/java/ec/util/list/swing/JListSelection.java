@@ -16,10 +16,11 @@
  */
 package ec.util.list.swing;
 
-import ec.util.datatransfer.LocalObjectDataFlavor;
+import ec.util.datatransfer.LocalDataTransfer;
 import ec.util.various.swing.JCommand;
-import internal.FontIcon;
-import static internal.InternalUtil.*;
+import internal.ForwardingIcon;
+import internal.InternalUtil;
+import internal.ToolBarIcon;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -29,6 +30,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,9 +40,10 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
-import javax.swing.JButton;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -72,6 +75,7 @@ public final class JListSelection<E> extends JComponent {
     public static final String UNSELECT_ACTION = "unselect";
     public static final String SELECT_ALL_ACTION = "selectAll";
     public static final String UNSELECT_ALL_ACTION = "unselectAll";
+    public static final String INVERT_ACTION = "invert";
     public static final String APPLY_HORIZONTAL_ACTION = "applyHorizontal";
     public static final String APPLY_VERTICAL_ACTION = "applyVertical";
 
@@ -79,8 +83,8 @@ public final class JListSelection<E> extends JComponent {
     private final JList<E> sourceList;
     private final JPanel targetPanel;
     private final JList<E> targetList;
-    private final JToolBar toolBar;
 
+    private JToolBar toolBar;
     private DefaultListModel<E> sourceModel;
     private Component sourceFooter;
     private Component sourceHeader;
@@ -95,8 +99,8 @@ public final class JListSelection<E> extends JComponent {
         this.sourceList = new JList<>();
         this.targetPanel = new JPanel();
         this.targetList = new JList<>();
-        this.toolBar = new JToolBar();
 
+        this.toolBar = new JToolBar();
         this.sourceModel = new DefaultListModel<>();
         this.sourceFooter = null;
         this.sourceHeader = null;
@@ -118,6 +122,7 @@ public final class JListSelection<E> extends JComponent {
         am.put(UNSELECT_ACTION, new UnselectCommand().toAction(this));
         am.put(SELECT_ALL_ACTION, new SelectAllCommand().toAction(this));
         am.put(UNSELECT_ALL_ACTION, new UnselectAllCommand().toAction(this));
+        am.put(INVERT_ACTION, new InvertCommand().toAction(this));
         am.put(APPLY_HORIZONTAL_ACTION, new ApplyHorizontalCommand().toAction(this));
         am.put(APPLY_VERTICAL_ACTION, new ApplyVerticalCommand().toAction(this));
 
@@ -144,6 +149,7 @@ public final class JListSelection<E> extends JComponent {
         targetPanel.add(new JScrollPane(targetList), BorderLayout.CENTER);
         targetPanel.setPreferredSize(new Dimension(10, 10));
 
+        toolBar = createToolBar();
         toolBar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         toolBar.setFloatable(false);
 
@@ -224,13 +230,8 @@ public final class JListSelection<E> extends JComponent {
     private void onOrientationChange() {
         removeAll();
 
-        boolean horizontal = orientation == SwingConstants.HORIZONTAL;
+        boolean horizontal = isHorizontal();
 
-        toolBar.removeAll();
-        toolBar.add(newButton(SELECT_ACTION, horizontal ? RIGHTWARDS_TRIANGLE_HEADED_ARROW : DOWNWARDS_TRIANGLE_HEADED_ARROW));
-        toolBar.add(newButton(UNSELECT_ACTION, horizontal ? LEFTWARDS_TRIANGLE_HEADED_ARROW : UPWARDS_TRIANGLE_HEADED_ARROW));
-        toolBar.add(newButton(SELECT_ALL_ACTION, horizontal ? RIGHTWARDS_DOUBLE_ARROW : DOWNWARDS_DOUBLE_ARROW));
-        toolBar.add(newButton(UNSELECT_ALL_ACTION, horizontal ? LEFTWARDS_DOUBLE_ARROW : UPWARDS_DOUBLE_ARROW));
         toolBar.setOrientation(horizontal ? SwingConstants.VERTICAL : SwingConstants.HORIZONTAL);
 
         setLayout(new BoxLayout(this, horizontal ? BoxLayout.X_AXIS : BoxLayout.Y_AXIS));
@@ -366,17 +367,45 @@ public final class JListSelection<E> extends JComponent {
         return JLists.stream(targetModel).collect(Collectors.toList());
     }
 
-    private JButton newButton(String actionKey, char icon) {
-        JButton result = new JButton(getActionMap().get(actionKey));
-        result.setIcon(FontIcon.of(icon, resizeByFactor(result.getFont(), 2), result.getForeground(), 0));
+    public JToolBar createToolBar() {
+        ActionMap am = getActionMap();
+        JToolBar result = new JToolBar();
+        result.add(am.get(SELECT_ACTION)).setIcon(iconOf(ToolBarIcon.MOVE_RIGHT, ToolBarIcon.MOVE_DOWN));
+        result.add(am.get(UNSELECT_ACTION)).setIcon(iconOf(ToolBarIcon.MOVE_LEFT, ToolBarIcon.MOVE_UP));
+        result.add(am.get(SELECT_ALL_ACTION)).setIcon(iconOf(ToolBarIcon.MOVE_ALL_RIGHT, ToolBarIcon.MOVE_ALL_DOWN));
+        result.add(am.get(UNSELECT_ALL_ACTION)).setIcon(iconOf(ToolBarIcon.MOVE_ALL_LEFT, ToolBarIcon.MOVE_ALL_UP));
+        result.add(am.get(INVERT_ACTION)).setIcon(iconOf(ToolBarIcon.MOVE_HORIZONTALLY, ToolBarIcon.MOVE_VERTICALLY));
         return result;
+    }
+
+    public JPopupMenu createPopupMenu() {
+        ActionMap am = getActionMap();
+        JMenu result = new JMenu();
+        result.add(am.get(SELECT_ACTION)).setText("Select");
+        result.add(am.get(UNSELECT_ACTION)).setText("Unselect");
+        result.add(am.get(SELECT_ALL_ACTION)).setText("Select all");
+        result.add(am.get(UNSELECT_ALL_ACTION)).setText("Unselect all");
+        result.add(am.get(INVERT_ACTION)).setText("Invert");
+        return result.getPopupMenu();
+    }
+
+    private Icon iconOf(ToolBarIcon hIcon, ToolBarIcon vIcon) {
+        return ForwardingIcon.of(
+                this::isHorizontal,
+                hIcon.lookup().orElseGet(InternalUtil.MISSING_ICON),
+                vIcon.lookup().orElseGet(InternalUtil.MISSING_ICON)
+        );
+    }
+
+    private boolean isHorizontal() {
+        return orientation == SwingConstants.HORIZONTAL;
     }
 
     //<editor-fold defaultstate="collapsed" desc="DataTransfer">
     @lombok.RequiredArgsConstructor
     private static final class CustomTransferHandler extends TransferHandler {
 
-        private static final LocalObjectDataFlavor<JList> LIST = LocalObjectDataFlavor.of(JList.class);
+        private static final LocalDataTransfer<JList> LIST = LocalDataTransfer.of(JList.class);
 
         @lombok.NonNull
         private final JList<?> sourceList;
@@ -396,9 +425,9 @@ public final class JListSelection<E> extends JComponent {
         @Override
         public boolean canImport(TransferSupport support) {
             return support.isDrop()
-                    && support.isDataFlavorSupported(LIST)
+                    && LIST.canImport(support)
                     && isValidComponent(support.getComponent())
-                    && LIST.getLocalObject(support.getTransferable()).map(this::isValidComponent).orElse(false);
+                    && LIST.getData(support).map(this::isValidComponent).orElse(false);
         }
 
         @Override
@@ -406,7 +435,7 @@ public final class JListSelection<E> extends JComponent {
             if (!canImport(support)) {
                 return false;
             }
-            LIST.getLocalObject(support.getTransferable())
+            LIST.getData(support)
                     .ifPresent(source -> importData(source, (JList<?>) support.getComponent(), (JList.DropLocation) support.getDropLocation()));
             return true;
         }
@@ -533,6 +562,42 @@ public final class JListSelection<E> extends JComponent {
         @Override
         public ActionAdapter toAction(JListSelection<T> c) {
             ActionAdapter result = super.toAction(c);
+            addListDataListener(result, c.targetList);
+            return result;
+        }
+    }
+
+    private static final class InvertCommand<T> extends JCommand<JListSelection<T>> {
+
+        @Override
+        public void execute(JListSelection<T> c) throws Exception {
+            List<T> items = JLists.stream(c.sourceModel).collect(Collectors.toList());
+            int[] sourceSelection = JLists.getSelectionIndexStream(c.sourceList.getSelectionModel()).toArray();
+            int[] targetSelection = JLists.getSelectionIndexStream(c.targetList.getSelectionModel()).toArray();
+
+            c.sourceList.getSelectionModel().clearSelection();
+            c.targetList.getSelectionModel().clearSelection();
+            c.sourceModel.clear();
+            while (!c.targetModel.isEmpty()) {
+                c.sourceModel.addElement(c.targetModel.remove(0));
+            }
+            while (!items.isEmpty()) {
+                c.targetModel.addElement(items.remove(0));
+            }
+
+            JLists.setSelectionIndexStream(c.targetList.getSelectionModel(), IntStream.of(sourceSelection));
+            JLists.setSelectionIndexStream(c.sourceList.getSelectionModel(), IntStream.of(targetSelection));
+        }
+
+        @Override
+        public boolean isEnabled(JListSelection<T> c) {
+            return !c.sourceModel.isEmpty() || !c.targetModel.isEmpty();
+        }
+
+        @Override
+        public ActionAdapter toAction(JListSelection<T> c) {
+            ActionAdapter result = super.toAction(c);
+            addListDataListener(result, c.sourceList);
             addListDataListener(result, c.targetList);
             return result;
         }

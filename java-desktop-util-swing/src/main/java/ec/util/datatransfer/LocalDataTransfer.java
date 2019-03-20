@@ -22,32 +22,36 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.swing.TransferHandler;
 
 /**
- * Flavor that deals with specifics of local objects as described in
+ * Tool that deals with specifics of local objects as described in
  * {@link DataFlavor#javaJVMLocalObjectMimeType}.
  *
  * @author Philippe Charles
  * @param <T>
  * @see https://docs.oracle.com/javase/tutorial/uiswing/dnd/dataflavor.html
  */
-public final class LocalObjectDataFlavor<T> extends DataFlavor {
+public final class LocalDataTransfer<T> {
 
     @Nonnull
-    public static <T> LocalObjectDataFlavor<T> of(@Nonnull Class<T> localObjectType) {
+    public static <T> LocalDataTransfer<T> of(@Nonnull Class<T> localObjectType) {
         try {
-            return new LocalObjectDataFlavor<>(localObjectType);
+            return new LocalDataTransfer<>(localObjectType);
         } catch (ClassNotFoundException ex) {
             throw new RuntimeException(ex);
         }
     }
 
     @lombok.Getter
-    private final Class<T> localObjectType;
+    private final DataFlavor dataFlavor;
 
-    private LocalObjectDataFlavor(Class<T> localObjectType) throws ClassNotFoundException {
-        super(localObjectMimeTypeOf(localObjectType));
-        this.localObjectType = localObjectType;
+    @lombok.Getter
+    private final Class<T> dataType;
+
+    private LocalDataTransfer(Class<T> localObjectType) throws ClassNotFoundException {
+        this.dataFlavor = new DataFlavor(localObjectMimeTypeOf(localObjectType));
+        this.dataType = localObjectType;
     }
 
     @Nonnull
@@ -56,8 +60,17 @@ public final class LocalObjectDataFlavor<T> extends DataFlavor {
     }
 
     @Nonnull
-    public Optional<T> getLocalObject(@Nonnull Transferable t) {
-        return DataTransfers.getTransferData(t, this);
+    public Optional<T> getData(@Nonnull Transferable t) {
+        return DataTransfers.getTransferData(t, dataFlavor);
+    }
+
+    @Nonnull
+    public Optional<T> getData(@Nonnull TransferHandler.TransferSupport support) {
+        return getData(support.getTransferable());
+    }
+
+    public boolean canImport(@Nonnull TransferHandler.TransferSupport support) {
+        return support.isDataFlavorSupported(dataFlavor);
     }
 
     private static String localObjectMimeTypeOf(Class<?> type) {
@@ -72,12 +85,12 @@ public final class LocalObjectDataFlavor<T> extends DataFlavor {
 
         @Override
         public DataFlavor[] getTransferDataFlavors() {
-            return new DataFlavor[]{LocalObjectDataFlavor.this};
+            return new DataFlavor[]{dataFlavor};
         }
 
         @Override
         public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return LocalObjectDataFlavor.this.equals(flavor);
+            return dataFlavor.equals(flavor);
         }
 
         @Override

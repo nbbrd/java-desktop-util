@@ -17,7 +17,11 @@
 package internal;
 
 import java.awt.Font;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import javax.swing.Icon;
+import javax.swing.JLabel;
 
 /**
  *
@@ -31,13 +35,33 @@ public class InternalUtil {
         return font.deriveFont(font.getSize2D() * factor);
     }
 
-    public final char RIGHTWARDS_TRIANGLE_HEADED_ARROW = '\u2b62';
-    public final char DOWNWARDS_TRIANGLE_HEADED_ARROW = '\u2b63';
-    public final char LEFTWARDS_TRIANGLE_HEADED_ARROW = '\u2b60';
-    public final char UPWARDS_TRIANGLE_HEADED_ARROW = '\u2b61';
+    @Nonnull
+    public <X> Supplier<X> getLazyResource(@Nonnull Supplier<X> factory) {
+        return new LazyResource<>(factory);
+    }
 
-    public final char RIGHTWARDS_DOUBLE_ARROW = '\u21d2';
-    public final char DOWNWARDS_DOUBLE_ARROW = '\u21d3';
-    public final char LEFTWARDS_DOUBLE_ARROW = '\u21d0';
-    public final char UPWARDS_DOUBLE_ARROW = '\u21d1';
+    @lombok.RequiredArgsConstructor
+    private static final class LazyResource<X> implements Supplier<X> {
+
+        @lombok.NonNull
+        private final Supplier<X> factory;
+
+        private final AtomicReference<X> resource = new AtomicReference<>();
+
+        @Override
+        public X get() {
+            X result = resource.get();
+            if (result == null) {
+                result = factory.get();
+                resource.set(result);
+            }
+            return result;
+        }
+    }
+
+    public final Supplier<Icon> MISSING_ICON = getLazyResource(InternalUtil::createFallbackIcon);
+
+    private static Icon createFallbackIcon() {
+        return FontIcon.of('?', new JLabel().getFont(), null, 0);
+    }
 }

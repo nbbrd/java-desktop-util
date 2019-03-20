@@ -16,14 +16,11 @@
  */
 package _demo;
 
-import internal.ColorIcon;
 import ec.util.list.swing.JLists;
 import ec.util.various.swing.BasicSwingLauncher;
 import ec.util.various.swing.ModernUI;
-import ec.util.various.swing.StandardSwingColor;
 import ec.util.various.swing.UIItem;
-import internal.Colors;
-import java.awt.Color;
+import internal.ToolBarIcon;
 import java.awt.Component;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -35,34 +32,27 @@ import javax.swing.JScrollPane;
  *
  * @author Philippe Charles
  */
-public final class StandardSwingColorDemo {
+public final class ToolBarIconDemo {
 
     public static void main(String[] args) {
         new BasicSwingLauncher()
-                .content(StandardSwingColorDemo::create)
-                .title("Standard Swing Colors")
+                .content(ToolBarIconDemo::create)
                 .size(300, 200)
                 .launch();
     }
 
     private static Component create() {
-        StandardSwingColor[] values = StandardSwingColor.values();
+        ToolBarIcon[] values = ToolBarIcon.values();
         Arrays.sort(values, Comparator.comparing(UIItem::key));
 
-        JList<StandardSwingColor> list = new JList<>(values);
-        list.setCellRenderer(JLists.cellRendererOf(StandardSwingColorDemo::applyColor));
+        JList<ToolBarIcon> list = new JList<>(values);
+        list.setCellRenderer(JLists.cellRendererOf(ToolBarIconDemo::render));
 
         return ModernUI.withEmptyBorders(new JScrollPane(list));
     }
 
-    private static void applyColor(JLabel label, StandardSwingColor value) {
-        Color color = value.value();
-        if (color != null) {
-            label.setText(value.key() + " (" + Colors.toHex(color).toUpperCase() + ")");
-            label.setIcon(ColorIcon.of(color, label.getFont().getSize()));
-        } else {
-            label.setText(value.key() + " (null)");
-            label.setIcon(null);
-        }
+    private static void render(JLabel label, ToolBarIcon value) {
+        label.setText("<html><b>" + value.name() + "</b><br>" + value.key());
+        label.setIcon(value.value());
     }
 }
