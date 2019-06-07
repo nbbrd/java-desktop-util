@@ -33,7 +33,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import javax.annotation.Nonnull;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
@@ -54,6 +53,7 @@ import javax.swing.event.AncestorListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 @SuppressWarnings("serial")
 public class JAutoCompletion extends AbstractAutoCompletion<JComponent> {
@@ -68,11 +68,11 @@ public class JAutoCompletion extends AbstractAutoCompletion<JComponent> {
     protected final Timer timer;
     protected long latestId;
 
-    public JAutoCompletion(@Nonnull JTextComponent input) {
+    public JAutoCompletion(@NonNull JTextComponent input) {
         this(input, new JList());
     }
 
-    public JAutoCompletion(@Nonnull JTextComponent input, @Nonnull JList list) {
+    public JAutoCompletion(@NonNull JTextComponent input, @NonNull JList list) {
         this.inputView = new JTextComponentInputView(input);
         this.searchView = new JListSearchView(list);
         this.timer = new Timer(delay, new AbstractAction() {
@@ -126,7 +126,7 @@ public class JAutoCompletion extends AbstractAutoCompletion<JComponent> {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters/Setters">
-    @Nonnull
+    @NonNull
     public JList getList() {
         return searchView.getComponent();
     }

@@ -34,8 +34,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
-import javax.annotation.Nonnull;
 import javax.swing.JComponent;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jfree.data.xy.IntervalXYDataset;
 
 /**
@@ -440,17 +440,17 @@ abstract class ATimeSeriesChart extends JComponent implements TimeSeriesChart<In
         return EnumSet.copyOf(supportedRendererTypes);
     }
 
-    @Nonnull
+    @NonNull
     public ObsPredicate getObsExistPredicate() {
         return existPredicate;
     }
 
-    @Nonnull
+    @NonNull
     public ObsFunction<String> getValueFormatter() {
         return valueFormatter;
     }
 
-    @Nonnull
+    @NonNull
     public ObsFunction<String> getPeriodFormatter() {
         return periodFormatter;
     }

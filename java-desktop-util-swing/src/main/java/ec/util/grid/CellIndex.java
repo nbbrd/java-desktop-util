@@ -17,9 +17,9 @@
 package ec.util.grid;
 
 import java.util.Objects;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
+import net.jcip.annotations.Immutable;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -28,10 +28,10 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public final class CellIndex {
 
-    @Nonnull
+    @NonNull
     public static final CellIndex NULL = new CellIndex(-1, -1);
 
-    @Nonnull
+    @NonNull
     public static CellIndex valueOf(int row, int column) {
         return row < 0 || column < 0 ? NULL : new CellIndex(row, column);
     }
@@ -44,12 +44,12 @@ public final class CellIndex {
         this.column = column;
     }
 
-    @Nonnegative
+    @NonNegative
     public int getRow() {
         return row;
     }
 
-    @Nonnegative
+    @NonNegative
     public int getColumn() {
         return column;
     }

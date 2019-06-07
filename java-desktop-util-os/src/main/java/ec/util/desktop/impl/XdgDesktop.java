@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -51,9 +51,9 @@ public class XdgDesktop extends AwtDesktop {
     static final String VIDEOS_DIR = "XDG_VIDEOS_DIR";
     //</editor-fold>
 
-    @Nonnull
+    @NonNull
     private final ZSystem system;
-    @Nonnull
+    @NonNull
     private final XdgConfig config;
 
     /**
@@ -103,7 +103,7 @@ public class XdgDesktop extends AwtDesktop {
     }
 
     @Nullable
-    private File getKnownFolderByName(@Nonnull String xdgFolderName) {
+    private File getKnownFolderByName(@NonNull String xdgFolderName) {
         File result = Util.fileFromPathname(system.getEnv(xdgFolderName));
         return result != null ? result : Util.fileFromPathname(config.get(xdgFolderName));
     }
@@ -134,7 +134,7 @@ public class XdgDesktop extends AwtDesktop {
         }
     }
 
-    @Nonnull
+    @NonNull
     private static XdgConfig parseConfigFile(ZSystem system) {
         try {
             return XdgConfig.getInstance(system);

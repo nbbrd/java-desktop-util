@@ -26,11 +26,11 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import lombok.AccessLevel;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -40,13 +40,13 @@ import lombok.AccessLevel;
 @lombok.RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FontIcon implements Icon {
 
-    @Nonnull
-    public static FontIcon of(char code, @Nonnull Font font, int width, int height, @Nullable Color color, double angle) {
+    @NonNull
+    public static FontIcon of(char code, @NonNull Font font, int width, int height, @Nullable Color color, double angle) {
         return new FontIcon(code, font, width, height, color, angle);
     }
 
-    @Nonnull
-    public static FontIcon of(char code, @Nonnull Font font, @Nullable Color color, double angle) {
+    @NonNull
+    public static FontIcon of(char code, @NonNull Font font, @Nullable Color color, double angle) {
         Dimension iconSize = getIconSize(code, font);
         return new FontIcon(code, font, iconSize.width, iconSize.height, color, angle);
     }

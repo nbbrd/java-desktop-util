@@ -24,12 +24,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.Timer;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -42,11 +42,11 @@ public class FileListCellRenderer extends CustomListCellRenderer<File> {
     private final FailSafeFactory iconFactory;
     private final File[] paths;
 
-    public FileListCellRenderer(@Nonnull ExecutorService executor) {
+    public FileListCellRenderer(@NonNull ExecutorService executor) {
         this(null, executor, new File[0]);
     }
 
-    public FileListCellRenderer(@Nullable Icon defaultIcon, @Nonnull ExecutorService executor, @Nonnull File[] paths) {
+    public FileListCellRenderer(@Nullable Icon defaultIcon, @NonNull ExecutorService executor, @NonNull File[] paths) {
         super(false);
         this.defaultIcon = defaultIcon;
         FailSafeFactory wellTimed = new WellTimedFactory(executor, 20, TimeUnit.MILLISECONDS);

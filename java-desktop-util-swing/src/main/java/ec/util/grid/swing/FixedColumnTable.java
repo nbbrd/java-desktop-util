@@ -20,7 +20,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import javax.annotation.Nonnull;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JViewport;
@@ -30,6 +29,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /*
  * Prevent the specified number of columns from scrolling horizontally in the
@@ -117,7 +117,7 @@ final class FixedColumnTable implements PropertyChangeListener, ChangeListener, 
     /*
      * Return the table being used in the row header
      */
-    @Nonnull
+    @NonNull
     public JTable getFixedTable() {
         return fixed;
     }

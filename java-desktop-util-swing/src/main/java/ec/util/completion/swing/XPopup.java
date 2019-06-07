@@ -23,10 +23,10 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -55,7 +55,7 @@ public final class XPopup {
         }
     }
 
-    public void show(@Nullable Component owner, @Nonnull Component content, @Nonnull Anchor anchor, @Nonnull Dimension gap) {
+    public void show(@Nullable Component owner, @NonNull Component content, @NonNull Anchor anchor, @NonNull Dimension gap) {
         if (owner == null || !owner.isShowing()) {
             return;
         }

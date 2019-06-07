@@ -33,8 +33,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Defines a command pattern on a time series chart.
@@ -48,7 +48,7 @@ public abstract class TimeSeriesChartCommand {
      *
      * @param chart the input chart
      */
-    abstract public void execute(@Nonnull TimeSeriesChart chart);
+    abstract public void execute(@NonNull TimeSeriesChart chart);
 
     /**
      * Checks if this command should be enabled with the specified time series
@@ -57,7 +57,7 @@ public abstract class TimeSeriesChartCommand {
      * @param chart the input chart
      * @return true if enabled; false otherwise
      */
-    public boolean isEnabled(@Nonnull TimeSeriesChart chart) {
+    public boolean isEnabled(@NonNull TimeSeriesChart chart) {
         return true;
     }
 
@@ -68,7 +68,7 @@ public abstract class TimeSeriesChartCommand {
      * @param chart the input chart
      * @return true if selected; false otherwise
      */
-    public boolean isSelected(@Nonnull TimeSeriesChart chart) {
+    public boolean isSelected(@NonNull TimeSeriesChart chart) {
         return false;
     }
 
@@ -77,7 +77,7 @@ public abstract class TimeSeriesChartCommand {
      *
      * @return a non-null command
      */
-    @Nonnull
+    @NonNull
     public static TimeSeriesChartCommand reset() {
         return new TimeSeriesChartCommand() {
             @Override
@@ -111,7 +111,7 @@ public abstract class TimeSeriesChartCommand {
      *
      * @return a non-null command
      */
-    @Nonnull
+    @NonNull
     public static TimeSeriesChartCommand clearDataset() {
         return CLEAR;
     }
@@ -123,8 +123,8 @@ public abstract class TimeSeriesChartCommand {
      * @param element the element to modify
      * @return a non-null command
      */
-    @Nonnull
-    public static TimeSeriesChartCommand toggleElementVisibility(@Nonnull Element element) {
+    @NonNull
+    public static TimeSeriesChartCommand toggleElementVisibility(@NonNull Element element) {
         return EVS.get(element);
     }
 
@@ -135,7 +135,7 @@ public abstract class TimeSeriesChartCommand {
      * @param thickness the line thickness to apply
      * @return a non-null command
      */
-    @Nonnull
+    @NonNull
     public static TimeSeriesChartCommand applyLineThickness(float thickness) {
         return new QuickCommand("lineThickness", thickness);
     }
@@ -147,7 +147,7 @@ public abstract class TimeSeriesChartCommand {
      * @param predicate the specified predicate
      * @return a non-null command
      */
-    @Nonnull
+    @NonNull
     public static TimeSeriesChartCommand applyDash(@Nullable ObsPredicate predicate) {
         return new QuickCommand("dashPredicate", predicate);
     }
@@ -159,53 +159,53 @@ public abstract class TimeSeriesChartCommand {
      * @param predicate the specified predicate
      * @return a non-null command
      */
-    @Nonnull
+    @NonNull
     public static TimeSeriesChartCommand applyLegendVisibility(@Nullable SeriesPredicate predicate) {
         return new QuickCommand("legendVisibilityPredicate", predicate);
     }
 
-    @Nonnull
+    @NonNull
     public static TimeSeriesChartCommand applyRenderer(@Nullable SeriesFunction<RendererType> renderer) {
         return new QuickCommand("seriesRenderer", renderer);
     }
 
-    @Nonnull
-    public static TimeSeriesChartCommand applyRenderer(@Nonnull RendererType... typeIndex) {
+    @NonNull
+    public static TimeSeriesChartCommand applyRenderer(@NonNull RendererType... typeIndex) {
         return applyRenderer(SeriesFunction.array(typeIndex));
     }
 
-    @Nonnull
+    @NonNull
     public static TimeSeriesChartCommand applyPlotDispatcher(@Nullable SeriesFunction<Integer> plotDispatcher) {
         return new QuickCommand("plotDispatcher", plotDispatcher);
     }
 
-    @Nonnull
-    public static TimeSeriesChartCommand applyPlotDispatcher(@Nonnull Integer... plotIndex) {
+    @NonNull
+    public static TimeSeriesChartCommand applyPlotDispatcher(@NonNull Integer... plotIndex) {
         return applyPlotDispatcher(SeriesFunction.array(plotIndex));
     }
 
-    @Nonnull
+    @NonNull
     public static TimeSeriesChartCommand applySeriesFormatter(@Nullable SeriesFunction<String> formatter) {
         return new QuickCommand("seriesFormatter", formatter);
     }
 
-    @Nonnull
-    public static TimeSeriesChartCommand applySeriesFormatter(@Nonnull String... values) {
+    @NonNull
+    public static TimeSeriesChartCommand applySeriesFormatter(@NonNull String... values) {
         return applySeriesFormatter(SeriesFunction.array(values));
     }
 
-    @Nonnull
+    @NonNull
     public static TimeSeriesChartCommand applyPeriod(@Nullable DateFormat periodFormat) {
         return new QuickCommand("periodFormat", periodFormat);
     }
 
-    @Nonnull
+    @NonNull
     public static TimeSeriesChartCommand applyPeriod(String format) {
         return applyPeriod(new SimpleDateFormat(format));
     }
 
-    @Nonnull
-    public static TimeSeriesChartCommand applyWeights(@Nonnull final int... weights) {
+    @NonNull
+    public static TimeSeriesChartCommand applyWeights(@NonNull final int... weights) {
         return new TimeSeriesChartCommand() {
             @Override
             public void execute(TimeSeriesChart chart) {
@@ -219,42 +219,42 @@ public abstract class TimeSeriesChartCommand {
         };
     }
 
-    @Nonnull
+    @NonNull
     public static TimeSeriesChartCommand applyTitle(@Nullable String title) {
         return new QuickCommand("title", title);
     }
 
-    @Nonnull
-    public static TimeSeriesChartCommand applyCrosshairOrientation(@Nonnull CrosshairOrientation crosshairOrientation) {
+    @NonNull
+    public static TimeSeriesChartCommand applyCrosshairOrientation(@NonNull CrosshairOrientation crosshairOrientation) {
         return CTS.get(crosshairOrientation);
     }
 
-    @Nonnull
+    @NonNull
     public static TimeSeriesChartCommand applyObsHighlighter(@Nullable ObsPredicate obsHighlighter) {
         return new QuickCommand("obsHighlighter", obsHighlighter);
     }
 
-    @Nonnull
-    public static TimeSeriesChartCommand applyTooltipTrigger(@Nonnull DisplayTrigger tooltipTrigger) {
+    @NonNull
+    public static TimeSeriesChartCommand applyTooltipTrigger(@NonNull DisplayTrigger tooltipTrigger) {
         return TTS.get(tooltipTrigger);
     }
 
-    @Nonnull
-    public static TimeSeriesChartCommand applyCrosshairTrigger(@Nonnull DisplayTrigger crosshairTrigger) {
+    @NonNull
+    public static TimeSeriesChartCommand applyCrosshairTrigger(@NonNull DisplayTrigger crosshairTrigger) {
         return XTS.get(crosshairTrigger);
     }
 
-    @Nonnull
+    @NonNull
     public static TimeSeriesChartCommand copyImage() {
         return COPY_IMAGE;
     }
 
-    @Nonnull
+    @NonNull
     public static TimeSeriesChartCommand saveImage() {
         return SAVE_IMAGE;
     }
 
-    @Nonnull
+    @NonNull
     public static TimeSeriesChartCommand printImage() {
         return PRINT_IMAGE;
     }

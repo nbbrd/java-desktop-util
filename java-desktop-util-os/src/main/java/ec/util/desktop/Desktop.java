@@ -19,8 +19,8 @@ package ec.util.desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * This interface is the main user entry point of the Desktop API. The real work
@@ -131,7 +131,7 @@ public interface Desktop {
      * current platform; <code>false</code> otherwise
      * @see Desktop.Action
      */
-    boolean isSupported(@Nonnull Action action);
+    boolean isSupported(@NonNull Action action);
 
     /**
      * Launches the associated application to open the file.
@@ -153,7 +153,7 @@ public interface Desktop {
      * or the calling thread is not allowed to create a subprocess
      * @see java.awt.AWTPermission
      */
-    void open(@Nonnull File file) throws IOException;
+    void open(@NonNull File file) throws IOException;
 
     /**
      * Launches the associated editor application and opens a file for editing.
@@ -174,7 +174,7 @@ public interface Desktop {
      * or the calling thread is not allowed to create a subprocess
      * @see java.awt.AWTPermission
      */
-    void edit(@Nonnull File file) throws IOException;
+    void edit(@NonNull File file) throws IOException;
 
     /**
      * Prints a file with the native desktop printing facility, using the
@@ -195,7 +195,7 @@ public interface Desktop {
      * permission to print the file, or the calling thread is not allowed to
      * create a subprocess
      */
-    void print(@Nonnull File file) throws IOException;
+    void print(@NonNull File file) throws IOException;
 
     /**
      * Launches the default browser to display a {@code URI}. If the default
@@ -225,7 +225,7 @@ public interface Desktop {
      * @see java.awt.AWTPermission
      * @see java.applet.AppletContext
      */
-    void browse(@Nonnull URI uri) throws IOException;
+    void browse(@NonNull URI uri) throws IOException;
 
     /**
      * Launches the mail composing window of the user default mail client.
@@ -267,7 +267,7 @@ public interface Desktop {
      * @see java.net.URI
      * @see java.awt.AWTPermission
      */
-    void mail(@Nonnull URI mailtoURI) throws IOException;
+    void mail(@NonNull URI mailtoURI) throws IOException;
 
     /**
      * Launches the default file manager and select the specified folder, file
@@ -279,7 +279,7 @@ public interface Desktop {
      * @throws IOException if the user default file manager is not found or
      * fails to be launched
      */
-    void showInFolder(@Nonnull File file) throws IOException;
+    void showInFolder(@NonNull File file) throws IOException;
 
     /**
      * Moves the given files to the system trash, if one is available.
@@ -289,7 +289,7 @@ public interface Desktop {
      * support the {@link Desktop.Action#MOVE_TO_TRASH} action
      * @throws IOException if the operation failed
      */
-    void moveToTrash(@Nonnull File... files) throws IOException;
+    void moveToTrash(@NonNull File... files) throws IOException;
 
     /**
      * Returns the path of a known folder as a {@link File}.
@@ -302,11 +302,11 @@ public interface Desktop {
      * support the {@link Desktop.Action#KNOWN_FOLDER_LOOKUP} action
      */
     @Nullable
-    File getKnownFolderPath(@Nonnull KnownFolder knownFolder) throws IOException;
+    File getKnownFolderPath(@NonNull KnownFolder knownFolder) throws IOException;
 
     @Deprecated
     @Nullable
-    File getKnownFolder(@Nonnull KnownFolder knownFolder);
+    File getKnownFolder(@NonNull KnownFolder knownFolder);
 
     /**
      * Performs a file search using the default desktop search engine.
@@ -318,8 +318,8 @@ public interface Desktop {
      * @throws IOException if the user default desktop search engine fails to be
      * launched
      */
-    @Nonnull
-    File[] search(@Nonnull String query) throws IOException;
+    @NonNull
+    File[] search(@NonNull String query) throws IOException;
 
     /**
      * A factory used to create a Desktop implementation.<p>A Desktop
@@ -348,7 +348,7 @@ public interface Desktop {
          * @param osVersion
          * @return the type of support
          */
-        @Nonnull
+        @NonNull
         SupportType getSupportType(String osArch, String osName, String osVersion);
 
         /**
@@ -359,7 +359,7 @@ public interface Desktop {
          * @param osVersion
          * @return a non-null desktop implementation
          */
-        @Nonnull
+        @NonNull
         Desktop create(String osArch, String osName, String osVersion);
     }
 }

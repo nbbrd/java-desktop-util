@@ -21,7 +21,7 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.util.EnumMap;
 import java.util.Map.Entry;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A utility class that eases the creation of a mailto URI.
@@ -46,44 +46,44 @@ public class MailtoBuilder {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Options">
-    @Nonnull
-    public MailtoBuilder to(@Nonnull String... emails) {
+    @NonNull
+    public MailtoBuilder to(@NonNull String... emails) {
         map.put(HName.TO, join(emails));
         return this;
     }
 
-    @Nonnull
-    public MailtoBuilder cc(@Nonnull String... emails) {
+    @NonNull
+    public MailtoBuilder cc(@NonNull String... emails) {
         map.put(HName.CC, join(emails));
         return this;
     }
 
-    @Nonnull
-    public MailtoBuilder bcc(@Nonnull String... emails) {
+    @NonNull
+    public MailtoBuilder bcc(@NonNull String... emails) {
         map.put(HName.BCC, join(emails));
         return this;
     }
 
-    @Nonnull
-    public MailtoBuilder subject(@Nonnull String subject) {
+    @NonNull
+    public MailtoBuilder subject(@NonNull String subject) {
         map.put(HName.SUBJECT, subject);
         return this;
     }
 
-    @Nonnull
-    public MailtoBuilder body(@Nonnull String body) {
+    @NonNull
+    public MailtoBuilder body(@NonNull String body) {
         map.put(HName.BODY, body);
         return this;
     }
 
-    @Nonnull
+    @NonNull
     public MailtoBuilder clear() {
         map.clear();
         return this;
     }
     //</editor-fold>
 
-    @Nonnull
+    @NonNull
     public URI build() {
         StringBuilder sb = new StringBuilder("mailto:?");
         boolean first = true;
@@ -98,8 +98,8 @@ public class MailtoBuilder {
         return URI.create(sb.toString());
     }
 
-    @Nonnull
-    static String join(@Nonnull String... list) {
+    @NonNull
+    static String join(@NonNull String... list) {
         if (list.length == 0) {
             return "";
         }

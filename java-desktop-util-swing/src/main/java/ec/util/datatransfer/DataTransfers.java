@@ -24,7 +24,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.Level;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -33,8 +33,8 @@ import javax.annotation.Nonnull;
 @lombok.experimental.UtilityClass
 public final class DataTransfers {
 
-    @Nonnull
-    public <T> Optional<T> getTransferData(@Nonnull Transferable t, @Nonnull DataFlavor flavor) {
+    @NonNull
+    public <T> Optional<T> getTransferData(@NonNull Transferable t, @NonNull DataFlavor flavor) {
         if (t.isDataFlavorSupported(flavor)) {
             try {
                 return Optional.ofNullable((T) t.getTransferData(flavor));
@@ -48,7 +48,7 @@ public final class DataTransfers {
         return Optional.empty();
     }
 
-    @Nonnull
+    @NonNull
     public Transferable systemClipboardAsTransferable() {
         return new ClipboardAsTransferable(Toolkit.getDefaultToolkit().getSystemClipboard());
     }

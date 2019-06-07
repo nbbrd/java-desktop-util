@@ -24,7 +24,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -39,18 +39,18 @@ public abstract class ExtAutoCompletionSource implements AutoCompletionSource {
      * @return
      * @since 2.1.0
      */
-    @Nonnull
-    abstract public Request getRequest(@Nonnull String term);
+    @NonNull
+    abstract public Request getRequest(@NonNull String term);
 
     /**
      * @since 2.1.0
      */
     public static abstract class Request implements Callable<List<?>> {
 
-        @Nonnull
+        @NonNull
         abstract public String getTerm();
 
-        @Nonnull
+        @NonNull
         abstract public Behavior getBehavior();
     }
 
@@ -61,8 +61,8 @@ public abstract class ExtAutoCompletionSource implements AutoCompletionSource {
      * @return
      * @since 2.1.0
      */
-    @Nonnull
-    public static Request wrap(@Nonnull AutoCompletionSource source, @Nonnull String term) {
+    @NonNull
+    public static Request wrap(@NonNull AutoCompletionSource source, @NonNull String term) {
         Objects.requireNonNull(source);
         return new BasicRequest(term, () -> source.getBehavior(term), () -> source.getValues(term));
     }
@@ -74,8 +74,8 @@ public abstract class ExtAutoCompletionSource implements AutoCompletionSource {
      * @return
      * @since 2.2.0
      */
-    @Nonnull
-    public static <T> Builder<T> builder(@Nonnull Callable<List<T>> supplier) {
+    @NonNull
+    public static <T> Builder<T> builder(@NonNull Callable<List<T>> supplier) {
         return builder(o -> supplier.call());
     }
 
@@ -86,8 +86,8 @@ public abstract class ExtAutoCompletionSource implements AutoCompletionSource {
      * @return
      * @since 2.2.0
      */
-    @Nonnull
-    public static <T> Builder<T> builder(@Nonnull Loader<T> loader) {
+    @NonNull
+    public static <T> Builder<T> builder(@NonNull Loader<T> loader) {
         return new BuilderImpl<>(loader);
     }
 
@@ -97,37 +97,37 @@ public abstract class ExtAutoCompletionSource implements AutoCompletionSource {
      */
     public interface Builder<T> {
 
-        @Nonnull
-        Builder<T> postProcessor(@Nonnull BiFunction<List<T>, String, List<T>> processor);
+        @NonNull
+        Builder<T> postProcessor(@NonNull BiFunction<List<T>, String, List<T>> processor);
 
-        @Nonnull
-        Builder<T> behavior(@Nonnull Function<? super String, Behavior> behavior);
+        @NonNull
+        Builder<T> behavior(@NonNull Function<? super String, Behavior> behavior);
 
-        @Nonnull
-        default Builder<T> behavior(@Nonnull Behavior behavior) {
+        @NonNull
+        default Builder<T> behavior(@NonNull Behavior behavior) {
             Objects.requireNonNull(behavior);
             return behavior(o -> behavior);
         }
 
-        @Nonnull
-        Builder<T> valueToString(@Nonnull Function<T, String> toString);
+        @NonNull
+        Builder<T> valueToString(@NonNull Function<T, String> toString);
 
-        @Nonnull
+        @NonNull
         Builder<T> cache(
-                @Nonnull ConcurrentMap cache,
-                @Nonnull Function<? super String, Object> toKey,
-                @Nonnull Function<? super String, Behavior> behavior);
+                @NonNull ConcurrentMap cache,
+                @NonNull Function<? super String, Object> toKey,
+                @NonNull Function<? super String, Behavior> behavior);
 
-        @Nonnull
+        @NonNull
         default Builder<T> cache(
-                @Nonnull ConcurrentMap cache,
-                @Nonnull Function<? super String, Object> toKey,
-                @Nonnull Behavior behavior) {
+                @NonNull ConcurrentMap cache,
+                @NonNull Function<? super String, Object> toKey,
+                @NonNull Behavior behavior) {
             Objects.requireNonNull(behavior);
             return cache(cache, toKey, o -> behavior);
         }
 
-        @Nonnull
+        @NonNull
         ExtAutoCompletionSource build();
     }
 
@@ -137,8 +137,8 @@ public abstract class ExtAutoCompletionSource implements AutoCompletionSource {
      */
     public interface Loader<T> {
 
-        @Nonnull
-        List<T> load(@Nonnull String term) throws Exception;
+        @NonNull
+        List<T> load(@NonNull String term) throws Exception;
     }
 
     /**
@@ -146,8 +146,8 @@ public abstract class ExtAutoCompletionSource implements AutoCompletionSource {
      * @return
      * @since 2.2.0
      */
-    @Nonnull
-    public static Predicate<String> basicFilter(@Nonnull String term) {
+    @NonNull
+    public static Predicate<String> basicFilter(@NonNull String term) {
         String normalizedTerm = AutoCompletionSources.normalize(term);
         return value -> value != null && !value.isEmpty() && AutoCompletionSources.normalize(value).contains(normalizedTerm);
     }
@@ -159,7 +159,7 @@ public abstract class ExtAutoCompletionSource implements AutoCompletionSource {
         private final Supplier<Behavior> behavior;
         private final Callable<List<?>> callable;
 
-        public BasicRequest(@Nonnull String term, @Nonnull Supplier<Behavior> behavior, @Nonnull Callable<List<?>> callable) {
+        public BasicRequest(@NonNull String term, @NonNull Supplier<Behavior> behavior, @NonNull Callable<List<?>> callable) {
             this.term = Objects.requireNonNull(term);
             this.behavior = Objects.requireNonNull(behavior);
             this.callable = Objects.requireNonNull(callable);

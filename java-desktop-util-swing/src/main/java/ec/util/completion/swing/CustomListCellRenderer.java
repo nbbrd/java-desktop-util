@@ -19,12 +19,12 @@ package ec.util.completion.swing;
 import ec.util.completion.AutoCompletionSources;
 import java.awt.Component;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A specialized renderer used by JAutoCompletion that highlights terms.
@@ -34,8 +34,8 @@ import javax.swing.JList;
  */
 public class CustomListCellRenderer<T> extends DefaultListCellRenderer {
 
-    @Nonnull
-    public static <T> DefaultListCellRenderer of(@Nonnull Function<T, String> toValueAsString, @Nonnull Function<T, String> toToolTipText) {
+    @NonNull
+    public static <T> DefaultListCellRenderer of(@NonNull Function<T, String> toValueAsString, @NonNull Function<T, String> toToolTipText) {
         return new CustomListCellRenderer<T>() {
             @Override
             protected String getValueAsString(T value) {
@@ -133,8 +133,8 @@ public class CustomListCellRenderer<T> extends DefaultListCellRenderer {
      * @param value the value to be formatted
      * @return
      */
-    @Nonnull
-    protected String getValueAsString(@Nonnull T value) {
+    @NonNull
+    protected String getValueAsString(@NonNull T value) {
         return value.toString();
     }
 
@@ -145,8 +145,8 @@ public class CustomListCellRenderer<T> extends DefaultListCellRenderer {
      * @param input the string to be normalized
      * @return a normalized string
      */
-    @Nonnull
-    protected String getNormalizedString(@Nonnull String input) {
+    @NonNull
+    protected String getNormalizedString(@NonNull String input) {
         return AutoCompletionSources.normalize(input);
     }
 }

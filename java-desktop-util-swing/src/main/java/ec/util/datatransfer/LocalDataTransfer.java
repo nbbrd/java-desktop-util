@@ -21,8 +21,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.Optional;
-import javax.annotation.Nonnull;
 import javax.swing.TransferHandler;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Tool that deals with specifics of local objects as described in
@@ -34,8 +34,8 @@ import javax.swing.TransferHandler;
  */
 public final class LocalDataTransfer<T> {
 
-    @Nonnull
-    public static <T> LocalDataTransfer<T> of(@Nonnull Class<T> localObjectType) {
+    @NonNull
+    public static <T> LocalDataTransfer<T> of(@NonNull Class<T> localObjectType) {
         try {
             return new LocalDataTransfer<>(localObjectType);
         } catch (ClassNotFoundException ex) {
@@ -54,22 +54,22 @@ public final class LocalDataTransfer<T> {
         this.dataType = localObjectType;
     }
 
-    @Nonnull
-    public Transferable createTransferable(@Nonnull T localObject) {
+    @NonNull
+    public Transferable createTransferable(@NonNull T localObject) {
         return new LocalObjectTransferable(localObject);
     }
 
-    @Nonnull
-    public Optional<T> getData(@Nonnull Transferable t) {
+    @NonNull
+    public Optional<T> getData(@NonNull Transferable t) {
         return DataTransfers.getTransferData(t, dataFlavor);
     }
 
-    @Nonnull
-    public Optional<T> getData(@Nonnull TransferHandler.TransferSupport support) {
+    @NonNull
+    public Optional<T> getData(TransferHandler.@NonNull TransferSupport support) {
         return getData(support.getTransferable());
     }
 
-    public boolean canImport(@Nonnull TransferHandler.TransferSupport support) {
+    public boolean canImport(TransferHandler.@NonNull TransferSupport support) {
         return support.isDataFlavorSupported(dataFlavor);
     }
 

@@ -38,7 +38,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 import java.util.EnumSet;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.block.LabelBlock;
 import org.jfree.chart.labels.XYItemLabelGenerator;
@@ -112,13 +112,13 @@ abstract class JTimeSeriesRendererSupport implements XYItemLabelGenerator, XYSer
         drawToolTip(g2, x, y, 3d, label, font, paint, fillColor, outlinePaint, outlineStroke);
     }
 
-    @Nonnull
+    @NonNull
     public EnumSet<RendererType> getSupportedRendererTypes() {
         return EnumSet.of(LINE, COLUMN, SPLINE, STACKED_COLUMN, MARKER, AREA, STACKED_AREA);
     }
 
-    @Nonnull
-    public XYItemRenderer createRenderer(@Nonnull RendererType type) {
+    @NonNull
+    public XYItemRenderer createRenderer(@NonNull RendererType type) {
         switch (type) {
             case LINE:
                 return new LineRenderer(this);

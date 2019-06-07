@@ -23,11 +23,11 @@ import internal.Colors;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import static java.util.Optional.ofNullable;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.table.TableCellRenderer;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Improved JTable that adds these functionalities: <li>alternate background for
@@ -129,7 +129,7 @@ public class XTable extends JTable {
         firePropertyChange(ODD_BACKGROUND_PROPERTY, old, this.oddBackground);
     }
 
-    @Nonnull
+    @NonNull
     public NoDataRenderer getNoDataRenderer() {
         return noDataRenderer;
     }
@@ -247,11 +247,11 @@ public class XTable extends JTable {
             this("No data", "Drop data");
         }
 
-        public DefaultNoDataRenderer(@Nonnull String message) {
+        public DefaultNoDataRenderer(@NonNull String message) {
             this(message, message);
         }
 
-        public DefaultNoDataRenderer(@Nonnull String message, @Nonnull String onDropMessage) {
+        public DefaultNoDataRenderer(@NonNull String message, @NonNull String onDropMessage) {
             this.label = new JLabel();
             this.message = message;
             this.onDropMessage = onDropMessage;

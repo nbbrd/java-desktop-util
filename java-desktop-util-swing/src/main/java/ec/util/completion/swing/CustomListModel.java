@@ -18,8 +18,8 @@ package ec.util.completion.swing;
 
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
 import javax.swing.AbstractListModel;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 @SuppressWarnings("serial")
 public class CustomListModel extends AbstractListModel {
@@ -27,13 +27,13 @@ public class CustomListModel extends AbstractListModel {
     private String term = "";
     private List<?> data = Collections.emptyList();
 
-    public void setData(@Nonnull String term, @Nonnull List<?> data) {
+    public void setData(@NonNull String term, @NonNull List<?> data) {
         this.term = term;
         this.data = data;
         fireContentsChanged(this, 0, data.size());
     }
 
-    @Nonnull
+    @NonNull
     public String getTerm() {
         return term;
     }

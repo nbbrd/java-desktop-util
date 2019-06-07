@@ -20,9 +20,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An implementation of AutoCompletionSource that allows to quickly construct a
@@ -64,7 +64,7 @@ public abstract class AbstractAutoCompletionSource<T> extends ExtAutoCompletionS
      * @return
      * @throws Exception
      */
-    @Nonnull
+    @NonNull
     abstract protected Iterable<T> getAllValues() throws Exception;
 
     /**
@@ -74,8 +74,8 @@ public abstract class AbstractAutoCompletionSource<T> extends ExtAutoCompletionS
      * @param value the value to be formatted
      * @return
      */
-    @Nonnull
-    protected String getValueAsString(@Nonnull T value) {
+    @NonNull
+    protected String getValueAsString(@NonNull T value) {
         return value.toString();
     }
 
@@ -86,8 +86,8 @@ public abstract class AbstractAutoCompletionSource<T> extends ExtAutoCompletionS
      * @param input the string to be normalized
      * @return a normalized string
      */
-    @Nonnull
-    protected String getNormalizedString(@Nonnull String input) {
+    @NonNull
+    protected String getNormalizedString(@NonNull String input) {
         return AutoCompletionSources.normalize(input);
     }
 
@@ -99,7 +99,7 @@ public abstract class AbstractAutoCompletionSource<T> extends ExtAutoCompletionS
      * @param normalizedInput
      * @return true if the input matches the term
      */
-    protected boolean matches(@Nonnull String normalizedTerm, @Nonnull String normalizedInput) {
+    protected boolean matches(@NonNull String normalizedTerm, @NonNull String normalizedInput) {
         return normalizedInput.contains(normalizedTerm);
     }
 
@@ -111,7 +111,7 @@ public abstract class AbstractAutoCompletionSource<T> extends ExtAutoCompletionS
      * @param input
      * @return true if the input matches the term matcher
      */
-    protected boolean matches(@Nonnull TermMatcher termMatcher, @Nonnull T input) {
+    protected boolean matches(@NonNull TermMatcher termMatcher, @NonNull T input) {
         return termMatcher.matches(getValueAsString(input));
     }
 
@@ -121,7 +121,7 @@ public abstract class AbstractAutoCompletionSource<T> extends ExtAutoCompletionS
      *
      * @return
      */
-    @Nonnegative
+    @NonNegative
     protected int getLimitSize() {
         return Integer.MAX_VALUE;
     }
@@ -139,8 +139,8 @@ public abstract class AbstractAutoCompletionSource<T> extends ExtAutoCompletionS
         return getValueAsString(left).compareTo(getValueAsString(right));
     }
 
-    @Nonnull
-    protected List<?> getValues(@Nonnull String term, @Nonnull Iterable<T> allValues) {
+    @NonNull
+    protected List<?> getValues(@NonNull String term, @NonNull Iterable<T> allValues) {
         TermMatcher termFilter = createTermMatcher(term);
         return StreamSupport.stream(allValues.spliterator(), false)
                 .filter(o -> matches(termFilter, o))
@@ -149,8 +149,8 @@ public abstract class AbstractAutoCompletionSource<T> extends ExtAutoCompletionS
                 .collect(Collectors.toList());
     }
 
-    @Nonnull
-    protected Request createCachedRequest(@Nonnull final String term, @Nonnull final Iterable<T> allValues) {
+    @NonNull
+    protected Request createCachedRequest(@NonNull final String term, @NonNull final Iterable<T> allValues) {
         return new Request() {
             @Override
             public String getTerm() {
@@ -169,8 +169,8 @@ public abstract class AbstractAutoCompletionSource<T> extends ExtAutoCompletionS
         };
     }
 
-    @Nonnull
-    protected TermMatcher createTermMatcher(@Nonnull final String term) {
+    @NonNull
+    protected TermMatcher createTermMatcher(@NonNull final String term) {
         final String normalizedTerm = getNormalizedString(term);
         return o -> o != null && matches(normalizedTerm, getNormalizedString(o));
     }

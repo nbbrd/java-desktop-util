@@ -27,8 +27,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -40,7 +40,7 @@ final class Util {
         // static class
     }
 
-    public static boolean isClassAvailable(@Nonnull String className) {
+    public static boolean isClassAvailable(@NonNull String className) {
         try {
             Class.forName(className);
             return true;
@@ -69,8 +69,8 @@ final class Util {
      * {@link SecurityManager#checkRead(java.lang.String)} method denies read
      * access to the file
      */
-    @Nonnull
-    public static File checkFileValidation(@Nonnull File file) throws NullPointerException, IllegalArgumentException, SecurityException {
+    @NonNull
+    public static File checkFileValidation(@NonNull File file) throws NullPointerException, IllegalArgumentException, SecurityException {
         Objects.requireNonNull(file, "File must not be null");
         if (!file.exists()) {
             throw new IllegalArgumentException("The file: " + file.getPath() + " doesn't exist.");
@@ -79,8 +79,8 @@ final class Util {
         return file;
     }
 
-    @Nonnull
-    public static File extractResource(@Nonnull String resourceName, @Nonnull String filePrefix, @Nonnull String fileSuffix) throws IOException {
+    @NonNull
+    public static File extractResource(@NonNull String resourceName, @NonNull String filePrefix, @NonNull String fileSuffix) throws IOException {
         File result = File.createTempFile(filePrefix, fileSuffix);
         result.deleteOnExit();
         try (InputStream in = AwtDesktop.class.getResourceAsStream(resourceName)) {
@@ -89,8 +89,8 @@ final class Util {
         return result;
     }
 
-    @Nonnull
-    public static File[] toFiles(@Nonnull Process p, @Nonnull Charset charset) throws IOException {
+    @NonNull
+    public static File[] toFiles(@NonNull Process p, @NonNull Charset charset) throws IOException {
         List<File> result = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), charset))) {

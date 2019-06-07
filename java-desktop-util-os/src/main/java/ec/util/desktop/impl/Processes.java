@@ -19,7 +19,7 @@ package ec.util.desktop.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -31,7 +31,7 @@ final class Processes {
         // static class
     }
 
-    @Nonnull
+    @NonNull
     public static Process noOp() {
         return NoOpProcess.INSTANCE;
     }

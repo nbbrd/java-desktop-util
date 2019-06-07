@@ -48,8 +48,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import static javax.swing.BorderFactory.createCompoundBorder;
 import static javax.swing.BorderFactory.createEmptyBorder;
@@ -63,6 +61,8 @@ import javax.swing.JSeparator;
 import javax.swing.ListSelectionModel;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
+import jdk.internal.jline.internal.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.kordamp.ikonli.swing.FontIcon;
 
@@ -457,7 +457,7 @@ public final class JTimeSeriesChartDemo extends JPanel {
             return this;
         }
 
-        private <X> void putValue(int series, @Nonnull Class<X> clazz, @Nullable X value) {
+        private <X> void putValue(int series, @NonNull Class<X> clazz, @Nullable X value) {
             Map<Class<?>, Object> tmp = data.get(series);
             if (tmp == null) {
                 tmp = new HashMap<>();
@@ -467,7 +467,7 @@ public final class JTimeSeriesChartDemo extends JPanel {
         }
 
         @Nullable
-        private <X> X getValue(int series, @Nonnull Class<X> clazz) {
+        private <X> X getValue(int series, @NonNull Class<X> clazz) {
             Map<Class<?>, Object> tmp = data.get(series);
             return tmp != null ? clazz.cast(tmp.get(clazz)) : null;
         }

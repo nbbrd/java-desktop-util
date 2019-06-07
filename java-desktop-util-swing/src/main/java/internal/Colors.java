@@ -17,7 +17,7 @@
 package internal;
 
 import java.awt.Color;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -33,8 +33,8 @@ public class Colors {
      * @param alpha the alpha component
      * @return a non-null color
      */
-    @Nonnull
-    public static Color withAlpha(@Nonnull Color c, int alpha) {
+    @NonNull
+    public static Color withAlpha(@NonNull Color c, int alpha) {
         return new Color(c.getRed(), c.getGreen(), c.getBlue(), alpha);
     }
 
@@ -46,8 +46,8 @@ public class Colors {
      * @param ratio the ratio used to blend
      * @return the non-null blended color
      */
-    @Nonnull
-    public static Color blend(@Nonnull Color from, @Nonnull Color to, double ratio) {
+    @NonNull
+    public static Color blend(@NonNull Color from, @NonNull Color to, double ratio) {
         return rgbToColor(RGB.blend(from.getRGB(), to.getRGB(), ratio));
     }
 
@@ -84,7 +84,7 @@ public class Colors {
      * @param value the original RGB value
      * @return a non-null corresponding color
      */
-    @Nonnull
+    @NonNull
     public static Color rgbToColor(int value) {
         return new Color(value, false);
     }
@@ -95,17 +95,17 @@ public class Colors {
      * @param color the original color
      * @return the corresponding RGB value
      */
-    public static int colorToRgb(@Nonnull Color color) {
+    public static int colorToRgb(@NonNull Color color) {
         return RGB.rgb(color.getRed(), color.getGreen(), color.getBlue());
     }
 
-    @Nonnull
-    public static String toHex(@Nonnull Color color) {
+    @NonNull
+    public static String toHex(@NonNull Color color) {
         return RGB.toHex(color.getRed(), color.getGreen(), color.getBlue());
     }
 
-    @Nonnull
-    public static Color toGray(@Nonnull Color color) {
+    @NonNull
+    public static Color toGray(@NonNull Color color) {
         return rgbToColor(RGB.toGray(colorToRgb(color)));
     }
 }

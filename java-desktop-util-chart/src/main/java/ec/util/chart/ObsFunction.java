@@ -17,8 +17,8 @@
 package ec.util.chart;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Defines a function to apply on an observation. An observation is identified
@@ -40,7 +40,7 @@ public abstract class ObsFunction<T> {
     public abstract T apply(int series, int obs);
 
     @Nullable
-    final public T apply(@Nonnull ObsIndex index) throws NullPointerException {
+    final public T apply(@NonNull ObsIndex index) throws NullPointerException {
         return apply(index.getSeries(), index.getObs());
     }
 
@@ -51,15 +51,15 @@ public abstract class ObsFunction<T> {
      * @return a non-null function
      * @throws NullPointerException if the format is null
      */
-    @Nonnull
-    public static ObsFunction<String> format(@Nonnull String format) throws NullPointerException {
+    @NonNull
+    public static ObsFunction<String> format(@NonNull String format) throws NullPointerException {
         return new FormatFunc(format);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation">
     private static final class FormatFunc extends Constant<String> {
 
-        public FormatFunc(@Nonnull String format) throws NullPointerException {
+        public FormatFunc(@NonNull String format) throws NullPointerException {
             super(Objects.requireNonNull(format));
         }
 

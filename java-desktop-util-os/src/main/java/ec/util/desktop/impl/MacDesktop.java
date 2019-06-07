@@ -21,8 +21,8 @@ import ec.util.desktop.Desktop.Action;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -45,7 +45,7 @@ public class MacDesktop extends AwtDesktop {
     static final String VIDEOS_DIR = "Movies";
     //</editor-fold>
 
-    @Nonnull
+    @NonNull
     private final ZSystem system;
 
     // VisibleForTesting
@@ -118,7 +118,7 @@ public class MacDesktop extends AwtDesktop {
     }
 
     @Nullable
-    private static File getKnownFolderByName(@Nonnull ZSystem system, @Nonnull String osxFolderName) {
+    private static File getKnownFolderByName(@NonNull ZSystem system, @NonNull String osxFolderName) {
         File result = new File(system.getProperty("user.home"), osxFolderName);
         return result.exists() ? result : null;
     }

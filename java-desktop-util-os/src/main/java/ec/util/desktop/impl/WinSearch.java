@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * http://en.wikipedia.org/wiki/Windows_Search
@@ -39,20 +39,20 @@ import javax.annotation.Nullable;
  */
 abstract class WinSearch {
 
-    @Nonnull
-    abstract public File[] search(@Nonnull String query) throws IOException;
+    @NonNull
+    abstract public File[] search(@NonNull String query) throws IOException;
 
-    @Nonnull
+    @NonNull
     public static WinSearch noOp() {
         return NoOpSearch.INSTANCE;
     }
 
-    @Nonnull
+    @NonNull
     public static WinSearch getDefault() {
         return LazyHolder.INSTANCE;
     }
 
-    @Nonnull
+    @NonNull
     static WinSearch failing() {
         return FailingSearch.INSTANCE;
     }
@@ -206,7 +206,7 @@ abstract class WinSearch {
         private final WinScriptHost wsh;
         private final File searchScript;
 
-        public VbsSearch(@Nonnull WinScriptHost wsh, @Nonnull File searchScript) {
+        public VbsSearch(@NonNull WinScriptHost wsh, @NonNull File searchScript) {
             this.wsh = wsh;
             this.searchScript = searchScript;
         }
@@ -218,8 +218,8 @@ abstract class WinSearch {
             return Util.toFiles(p, Charset.defaultCharset());
         }
 
-        @Nonnull
-        private static String quote(@Nonnull String input) {
+        @NonNull
+        private static String quote(@NonNull String input) {
             return QUOTE + input + QUOTE;
         }
     }

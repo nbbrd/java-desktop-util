@@ -18,8 +18,8 @@ package ec.util.desktop.impl;
 
 import java.io.IOException;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * @author Philippe Charles
@@ -27,10 +27,10 @@ import javax.annotation.Nullable;
 abstract class ZSystem {
 
     @Nullable
-    abstract public String getProperty(@Nonnull String key);
+    abstract public String getProperty(@NonNull String key);
 
-    @Nonnull
-    abstract public Process exec(@Nonnull String... cmdarray) throws IOException;
+    @NonNull
+    abstract public Process exec(@NonNull String... cmdarray) throws IOException;
 
     // quick&dirty
     public Map<String, String> getEnv() {
@@ -42,17 +42,17 @@ abstract class ZSystem {
         return System.getenv(name);
     }
 
-    @Nonnull
+    @NonNull
     public static ZSystem getDefault() {
         return DefaultSystem.INSTANCE;
     }
 
-    @Nonnull
+    @NonNull
     public static ZSystem noOp() {
         return NoOpSystem.INSTANCE;
     }
 
-    @Nonnull
+    @NonNull
     public static ZSystem failing() {
         return FailingSystem.INSTANCE;
     }

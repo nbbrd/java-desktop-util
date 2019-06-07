@@ -32,10 +32,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Convenient enum that provides access to the "Font Awesome" font set (v4.2).
@@ -539,33 +539,33 @@ public enum FontAwesome {
         return iconAsChar;
     }
 
-    @Nonnull
+    @NonNull
     public static Font getFont() {
         return FONT.get();
     }
 
-    @Nonnull
-    public Icon getIcon(@Nonnull Color color, float size) {
+    @NonNull
+    public Icon getIcon(@NonNull Color color, float size) {
         return getIcon(color, size, 0);
     }
 
-    @Nonnull
-    public Icon getIcon(@Nonnull Color color, float size, double angle) {
+    @NonNull
+    public Icon getIcon(@NonNull Color color, float size, double angle) {
         return FontIcon.of(getIconAsChar(), getFont().deriveFont(size), getWidth(size), getHeight(size), color, angle);
     }
 
-    @Nonnull
-    public Icon getSpinningIcon(@Nonnull Component component, @Nonnull Color color, float size) {
+    @NonNull
+    public Icon getSpinningIcon(@NonNull Component component, @NonNull Color color, float size) {
         return SpinningIcon.of(getIcon(color, size), component);
     }
 
-    @Nonnull
-    public Image getImage(@Nonnull Color color, float size) {
+    @NonNull
+    public Image getImage(@NonNull Color color, float size) {
         return getImage(color, size, 0);
     }
 
-    @Nonnull
-    public Image getImage(@Nonnull Color color, float size, double angle) {
+    @NonNull
+    public Image getImage(@NonNull Color color, float size, double angle) {
         BufferedImage result = new BufferedImage(getWidth(size), getHeight(size), BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D g = result.createGraphics();
@@ -575,8 +575,8 @@ public enum FontAwesome {
         return result;
     }
 
-    @Nonnull
-    public List<Image> getImages(@Nonnull Color color, @Nonnull float... sizes) {
+    @NonNull
+    public List<Image> getImages(@NonNull Color color, @NonNull float... sizes) {
         List<Image> result = new ArrayList<>();
         for (float size : sizes) {
             result.add(getImage(color, size));

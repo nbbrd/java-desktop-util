@@ -17,8 +17,8 @@
 package ec.util.chart;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
+import net.jcip.annotations.Immutable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -27,10 +27,10 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public final class ObsIndex {
 
-    @Nonnull
+    @NonNull
     public static final ObsIndex NULL = new ObsIndex(-1, -1);
 
-    @Nonnull
+    @NonNull
     public static ObsIndex valueOf(int series, int obs) {
         return NULL.equals(series, obs) ? NULL : new ObsIndex(series, obs);
     }

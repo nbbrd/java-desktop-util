@@ -18,8 +18,8 @@ package ec.util.chart;
 
 import java.util.Arrays;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Defines a function to apply on a series. A series is identified by its own
@@ -39,13 +39,13 @@ public abstract class SeriesFunction<T> {
     @Nullable
     public abstract T apply(int series);
 
-    @Nonnull
+    @NonNull
     public static <X> SeriesFunction<X> always(@Nullable X value) {
         return new Constant<>(value);
     }
 
-    @Nonnull
-    public static <X> SeriesFunction<X> array(@Nonnull X... values) throws NullPointerException {
+    @NonNull
+    public static <X> SeriesFunction<X> array(@NonNull X... values) throws NullPointerException {
         return new FromArray(values);
     }
 
@@ -56,15 +56,15 @@ public abstract class SeriesFunction<T> {
      * @return a non-null function
      * @throws NullPointerException if the format is null
      */
-    @Nonnull
-    public static SeriesFunction<String> format(@Nonnull String format) throws NullPointerException {
+    @NonNull
+    public static SeriesFunction<String> format(@NonNull String format) throws NullPointerException {
         return new FormatFunc(format);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation">
     private static final class FormatFunc extends Constant<String> {
 
-        public FormatFunc(@Nonnull String format) throws NullPointerException {
+        public FormatFunc(@NonNull String format) throws NullPointerException {
             super(Objects.requireNonNull(format));
         }
 

@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -35,12 +35,12 @@ import javax.annotation.Nullable;
 abstract class XdgConfig {
 
     @Nullable
-    abstract public String get(@Nonnull String name);
+    abstract public String get(@NonNull String name);
 
-    @Nonnull
+    @NonNull
     abstract public Set<String> keySet();
 
-    @Nonnull
+    @NonNull
     public static XdgConfig getInstance(ZSystem system) throws IOException {
         File configFile = getConfigFile(system);
         if (configFile != null) {
@@ -51,13 +51,13 @@ abstract class XdgConfig {
         throw new IOException("Config file not found");
     }
 
-    @Nonnull
+    @NonNull
     public static XdgConfig noOp() {
         return NoOpConfig.INSTANCE;
     }
 
     @Nullable
-    private static File getConfigFile(@Nonnull ZSystem system) {
+    private static File getConfigFile(@NonNull ZSystem system) {
         // http://www.freedesktop.org/wiki/Software/xdg-user-dirs/
         File result;
         if (isFile(result = newFile(system.getEnv("XDG_CONFIG_HOME"), "user-dirs.dirs"))) {
@@ -69,8 +69,8 @@ abstract class XdgConfig {
         return null;
     }
 
-    @Nonnull
-    static XdgConfig parseConfig(@Nonnull InputStream stream, @Nonnull Map<String, String> env) throws IOException {
+    @NonNull
+    static XdgConfig parseConfig(@NonNull InputStream stream, @NonNull Map<String, String> env) throws IOException {
         Map<String, String> result = new HashMap<>();
 
         Map<String, String> tmp = new HashMap<>();
@@ -100,7 +100,7 @@ abstract class XdgConfig {
     }
 
     @Nullable
-    private static File newFile(@Nullable String parent, @Nonnull String... children) {
+    private static File newFile(@Nullable String parent, @NonNull String... children) {
         if (parent == null || parent.isEmpty()) {
             return null;
         }

@@ -16,7 +16,8 @@
  */
 package internal;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 
 /**
  *
@@ -122,12 +123,12 @@ public class RGB {
         return dBlack < dWhite;
     }
 
-    @Nonnull
+    @NonNull
     public static String toHex(int rgb) {
         return toHex((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
     }
 
-    @Nonnull
+    @NonNull
     public static String toHex(int r, int g, int b) {
         return String.format("#%02x%02x%02x", r, g, b);
     }

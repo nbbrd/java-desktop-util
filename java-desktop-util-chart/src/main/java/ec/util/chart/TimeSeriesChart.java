@@ -21,8 +21,8 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.EnumSet;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Defines the features of a time series chart.
@@ -33,71 +33,71 @@ import javax.annotation.Nullable;
  */
 public interface TimeSeriesChart<DS, COLOR> {
 
-    @Nonnull
+    @NonNull
     DS getDataset();
 
-    @Nonnull
+    @NonNull
     ColorSchemeSupport<? extends COLOR> getColorSchemeSupport();
 
-    @Nonnull
+    @NonNull
     String getTitle();
 
-    @Nonnull
+    @NonNull
     String getNoDataMessage();
 
-    boolean isElementVisible(@Nonnull Element element);
+    boolean isElementVisible(@NonNull Element element);
 
-    @Nonnull
+    @NonNull
     int[] getPlotWeights();
 
-    @Nonnull
+    @NonNull
     SeriesFunction<Integer> getPlotDispatcher();
 
     float getLineThickness();
 
-    @Nonnull
+    @NonNull
     DateFormat getPeriodFormat();
 
-    @Nonnull
+    @NonNull
     NumberFormat getValueFormat();
 
-    @Nonnull
+    @NonNull
     SeriesFunction<RendererType> getSeriesRenderer();
 
-    @Nonnull
+    @NonNull
     SeriesFunction<String> getSeriesFormatter();
 
-    @Nonnull
+    @NonNull
     SeriesFunction<COLOR> getSeriesColorist();
 
-    @Nonnull
+    @NonNull
     ObsFunction<String> getObsFormatter();
 
-    @Nonnull
+    @NonNull
     ObsFunction<COLOR> getObsColorist();
 
-    @Nonnull
+    @NonNull
     ObsPredicate getDashPredicate();
 
-    @Nonnull
+    @NonNull
     SeriesPredicate getLegendVisibilityPredicate();
 
-    @Nonnull
+    @NonNull
     CrosshairOrientation getCrosshairOrientation();
 
-    @Nonnull
+    @NonNull
     ObsIndex getHoveredObs();
 
-    @Nonnull
+    @NonNull
     ObsIndex getSelectedObs();
 
-    @Nonnull
+    @NonNull
     ObsPredicate getObsHighlighter();
 
-    @Nonnull
+    @NonNull
     DisplayTrigger getTooltipTrigger();
 
-    @Nonnull
+    @NonNull
     DisplayTrigger getCrosshairTrigger();
 
     void setDataset(@Nullable DS dataset);
@@ -108,7 +108,7 @@ public interface TimeSeriesChart<DS, COLOR> {
 
     void setNoDataMessage(@Nullable String noDataMessage);
 
-    void setElementVisible(@Nonnull Element element, boolean visible);
+    void setElementVisible(@NonNull Element element, boolean visible);
 
     void setPlotWeights(@Nullable int[] weights);
 
@@ -152,9 +152,9 @@ public interface TimeSeriesChart<DS, COLOR> {
 
     void printImage() throws IOException;
 
-    void writeImage(@Nonnull String mediaType, @Nonnull OutputStream stream) throws IOException;
+    void writeImage(@NonNull String mediaType, @NonNull OutputStream stream) throws IOException;
 
-    @Nonnull
+    @NonNull
     EnumSet<RendererType> getSupportedRendererTypes();
 
     enum Element {

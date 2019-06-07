@@ -22,7 +22,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * An helper class that simplifies the use of a color scheme in a specific
@@ -115,12 +115,12 @@ public abstract class ColorSchemeSupport<T> {
         return RGB.isDark(r, g, b);
     }
 
-    @Nonnull
+    @NonNull
     public static String toHex(int rgb) {
         return RGB.toHex(rgb);
     }
 
-    @Nonnull
+    @NonNull
     public static String toHex(int r, int g, int b) {
         return RGB.toHex(r, g, b);
     }
@@ -132,7 +132,7 @@ public abstract class ColorSchemeSupport<T> {
      * @param rgb a RGB value
      * @return a non-null color object
      */
-    @Nonnull
+    @NonNull
     abstract public T toColor(int rgb);
 
     /**
@@ -140,52 +140,52 @@ public abstract class ColorSchemeSupport<T> {
      *
      * @return a non-null color scheme
      */
-    @Nonnull
+    @NonNull
     abstract public ColorScheme getColorScheme();
 
-    @Nonnull
+    @NonNull
     public T getAreaColor(int series) {
         List<T> tmp = getColors().areaColors;
         return tmp.get(series % tmp.size());
     }
 
-    @Nonnull
+    @NonNull
     public T getLineColor(int series) {
         List<T> tmp = getColors().lineColors;
         return tmp.get(series % tmp.size());
     }
 
-    @Nonnull
-    public T getAreaColor(@Nonnull KnownColor color) {
+    @NonNull
+    public T getAreaColor(@NonNull KnownColor color) {
         return getColors().areaKnownColors.get(color);
     }
 
-    @Nonnull
-    public T getLineColor(@Nonnull KnownColor color) {
+    @NonNull
+    public T getLineColor(@NonNull KnownColor color) {
         return getColors().lineKnownColors.get(color);
     }
 
-    @Nonnull
+    @NonNull
     public T getBackColor() {
         return getColors().backColor;
     }
 
-    @Nonnull
+    @NonNull
     public T getPlotColor() {
         return getColors().plotColor;
     }
 
-    @Nonnull
+    @NonNull
     public T getGridColor() {
         return getColors().gridColor;
     }
 
-    @Nonnull
+    @NonNull
     public T getTextColor() {
         return getColors().textColor;
     }
 
-    @Nonnull
+    @NonNull
     public T getAxisColor() {
         return getColors().axisColor;
     }

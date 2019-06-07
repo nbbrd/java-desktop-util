@@ -18,7 +18,7 @@ package ec.util.chart;
 
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Defines a color scheme for charts.
@@ -51,7 +51,7 @@ public interface ColorScheme {
      *
      * @return a non-null identifier
      */
-    @Nonnull
+    @NonNull
     String getName();
 
     /**
@@ -59,19 +59,19 @@ public interface ColorScheme {
      *
      * @return a non-null label
      */
-    @Nonnull
+    @NonNull
     String getDisplayName();
 
-    @Nonnull
+    @NonNull
     List<Integer> getAreaColors();
 
-    @Nonnull
+    @NonNull
     List<Integer> getLineColors();
 
-    @Nonnull
+    @NonNull
     Map<KnownColor, Integer> getAreaKnownColors();
 
-    @Nonnull
+    @NonNull
     Map<KnownColor, Integer> getLineKnownColors();
 
     /**

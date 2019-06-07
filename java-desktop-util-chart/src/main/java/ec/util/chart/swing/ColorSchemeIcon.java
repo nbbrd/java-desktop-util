@@ -22,8 +22,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.swing.Icon;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Displays a color scheme as an icon.
@@ -44,11 +44,11 @@ public final class ColorSchemeIcon implements Icon {
     private final int colorWidth;
     private final int colorHeight;
 
-    public ColorSchemeIcon(@Nonnull ColorScheme colorScheme) {
+    public ColorSchemeIcon(@NonNull ColorScheme colorScheme) {
         this(DEFAULT_SIZE, DEFAULT_BORDER_THICKNESS, SwingColorSchemeSupport.from(colorScheme), DEFAULT_COLOR_COUNT);
     }
 
-    private ColorSchemeIcon(@Nonnull Dimension size, int borderThickness, @Nonnull SwingColorSchemeSupport support, int colorCount) {
+    private ColorSchemeIcon(@NonNull Dimension size, int borderThickness, @NonNull SwingColorSchemeSupport support, int colorCount) {
         this.size = Objects.requireNonNull(size, "size");
         if (borderThickness < 0) {
             throw new IllegalArgumentException("Border thickness must be >= 0");

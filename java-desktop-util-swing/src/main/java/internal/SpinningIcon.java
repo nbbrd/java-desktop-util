@@ -21,8 +21,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
-import javax.annotation.Nonnull;
 import javax.swing.Icon;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -30,13 +30,13 @@ import javax.swing.Icon;
  */
 public final class SpinningIcon implements Icon {
 
-    @Nonnull
-    public static SpinningIcon of(@Nonnull Icon icon) {
+    @NonNull
+    public static SpinningIcon of(@NonNull Icon icon) {
         return new SpinningIcon(icon);
     }
 
-    @Nonnull
-    public static SpinningIcon of(@Nonnull Icon icon, @Nonnull Component animated) {
+    @NonNull
+    public static SpinningIcon of(@NonNull Icon icon, @NonNull Component animated) {
         SpinningIcon result = new SpinningIcon(icon);
         result.init(animated);
         return result;

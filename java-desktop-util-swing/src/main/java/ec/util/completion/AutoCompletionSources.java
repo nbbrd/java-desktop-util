@@ -24,7 +24,7 @@ import java.util.Comparator;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class AutoCompletionSources {
 
@@ -34,18 +34,18 @@ public final class AutoCompletionSources {
 
     private static final AutoCompletionSource NONE = ExtAutoCompletionSource.builder(() -> Collections.emptyList()).behavior(Behavior.NONE).build();
 
-    @Nonnull
+    @NonNull
     public static AutoCompletionSource empty() {
         return NONE;
     }
 
-    @Nonnull
-    public static <T> AutoCompletionSource of(boolean strict, @Nonnull T... list) {
+    @NonNull
+    public static <T> AutoCompletionSource of(boolean strict, @NonNull T... list) {
         return of(strict, Arrays.asList(list));
     }
 
-    @Nonnull
-    public static <T> AutoCompletionSource of(boolean strict, @Nonnull Iterable<T> list) {
+    @NonNull
+    public static <T> AutoCompletionSource of(boolean strict, @NonNull Iterable<T> list) {
         UnaryOperator<String> normalizer = strict ? UnaryOperator.identity() : AutoCompletionSources::normalize;
         return ExtAutoCompletionSource
                 .builder(term -> {
@@ -66,8 +66,8 @@ public final class AutoCompletionSources {
      * @param input
      * @return
      */
-    @Nonnull
-    public static String removeDiacritics(@Nonnull String input) {
+    @NonNull
+    public static String removeDiacritics(@NonNull String input) {
         return Normalizer.normalize(input, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     }
 
@@ -78,8 +78,8 @@ public final class AutoCompletionSources {
      * @param input
      * @return
      */
-    @Nonnull
-    public static String normalize(@Nonnull String input) {
+    @NonNull
+    public static String normalize(@NonNull String input) {
         return removeDiacritics(input).toLowerCase();
     }
 }

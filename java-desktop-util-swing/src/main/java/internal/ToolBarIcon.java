@@ -19,10 +19,10 @@ package internal;
 import ec.util.various.swing.UIItem;
 import java.awt.Font;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import javax.swing.Icon;
 import javax.swing.JToolBar;
 import javax.swing.UIManager;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *

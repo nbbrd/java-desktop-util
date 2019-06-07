@@ -6,10 +6,10 @@ package ec.util.chart.swing;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.entity.ChartEntity;
 import org.jfree.chart.entity.LegendItemEntity;
@@ -26,7 +26,7 @@ public class SelectionMouseListener extends MouseAdapter {
     protected final ListSelectionModel listSelectionModel;
     protected final boolean dragEnabled;
 
-    public SelectionMouseListener(@Nonnull ListSelectionModel listSelectionModel, boolean dragEnabled) {
+    public SelectionMouseListener(@NonNull ListSelectionModel listSelectionModel, boolean dragEnabled) {
         this.listSelectionModel = listSelectionModel;
         this.dragEnabled = dragEnabled;
     }
@@ -69,7 +69,7 @@ public class SelectionMouseListener extends MouseAdapter {
      * @return Index of the series in the collection; -1 if there was no valid
      * selection
      */
-    protected int getSelectionIndex(@Nonnull MouseEvent e) {
+    protected int getSelectionIndex(@NonNull MouseEvent e) {
         return getSelectionIndex(getSelection(e));
     }
 
@@ -78,7 +78,7 @@ public class SelectionMouseListener extends MouseAdapter {
     }
 
     @Nullable
-    private static LegendItemEntity getSelection(@Nonnull MouseEvent e) {
+    private static LegendItemEntity getSelection(@NonNull MouseEvent e) {
         ChartPanel chartPanel = (ChartPanel) e.getSource();
         ChartEntity entity = chartPanel.getEntityForPoint(e.getX(), e.getY());
         if (entity instanceof LegendItemEntity) {

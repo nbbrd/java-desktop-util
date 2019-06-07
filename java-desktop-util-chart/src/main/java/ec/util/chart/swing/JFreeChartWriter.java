@@ -19,8 +19,8 @@ package ec.util.chart.swing;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.openide.util.lookup.ServiceProvider;
@@ -32,10 +32,10 @@ import org.openide.util.lookup.ServiceProvider;
  */
 public abstract class JFreeChartWriter {
 
-    @Nonnull
+    @NonNull
     abstract public String getMediaType();
 
-    abstract public void writeChart(@Nonnull OutputStream stream, @Nonnull JFreeChart chart, @Nonnegative int width, @Nonnegative int height) throws IOException;
+    abstract public void writeChart(@NonNull OutputStream stream, @NonNull JFreeChart chart, @NonNegative int width, @NonNegative int height) throws IOException;
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
     @ServiceProvider(service = JFreeChartWriter.class)

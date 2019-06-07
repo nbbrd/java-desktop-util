@@ -17,7 +17,7 @@
 package ec.util.completion;
 
 import java.util.List;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface AutoCompletionSource {
 
@@ -28,12 +28,12 @@ public interface AutoCompletionSource {
         ASYNC
     }
 
-    @Nonnull
-    Behavior getBehavior(@Nonnull String term);
+    @NonNull
+    Behavior getBehavior(@NonNull String term);
 
-    @Nonnull
-    String toString(@Nonnull Object value);
+    @NonNull
+    String toString(@NonNull Object value);
 
-    @Nonnull
-    List<?> getValues(@Nonnull String term) throws Exception;
+    @NonNull
+    List<?> getValues(@NonNull String term) throws Exception;
 }

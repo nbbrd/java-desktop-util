@@ -22,8 +22,6 @@ import ec.util.various.swing.ModernUI;
 import internal.ToolBarIcon;
 import java.awt.BorderLayout;
 import java.awt.datatransfer.Transferable;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.ActionMap;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -37,6 +35,8 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
 import static javax.swing.TransferHandler.MOVE;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -138,7 +138,7 @@ public final class JListOrdering<T> extends JComponent {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Getters/Setters">
-    @Nonnull
+    @NonNull
     public DefaultListModel<T> getModel() {
         return model;
     }
@@ -149,7 +149,7 @@ public final class JListOrdering<T> extends JComponent {
         firePropertyChange(MODEL_PROPERTY, old, this.model);
     }
 
-    @Nonnull
+    @NonNull
     public ListCellRenderer<? super T> getCellRenderer() {
         return cellRenderer;
     }
@@ -160,7 +160,7 @@ public final class JListOrdering<T> extends JComponent {
         firePropertyChange(CELL_RENDERER_PROPERTY, old, this.cellRenderer);
     }
 
-    @Nonnull
+    @NonNull
     public ListSelectionModel getSelectionModel() {
         return selectionModel;
     }

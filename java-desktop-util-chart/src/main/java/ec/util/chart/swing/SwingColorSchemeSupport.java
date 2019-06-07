@@ -20,7 +20,7 @@ import ec.util.chart.ColorScheme;
 import ec.util.chart.ColorSchemeSupport;
 import internal.Colors;
 import java.awt.Color;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * An helper class that simplifies the use of a color scheme in the Swing
@@ -38,8 +38,8 @@ public abstract class SwingColorSchemeSupport extends ColorSchemeSupport<Color> 
      * @param alpha the alpha component
      * @return a non-null color
      */
-    @Nonnull
-    public static Color withAlpha(@Nonnull Color c, int alpha) {
+    @NonNull
+    public static Color withAlpha(@NonNull Color c, int alpha) {
         return Colors.withAlpha(c, alpha);
     }
 
@@ -51,8 +51,8 @@ public abstract class SwingColorSchemeSupport extends ColorSchemeSupport<Color> 
      * @param ratio the ratio used to blend
      * @return the non-null blended color
      */
-    @Nonnull
-    public static Color blend(@Nonnull Color from, @Nonnull Color to, double ratio) {
+    @NonNull
+    public static Color blend(@NonNull Color from, @NonNull Color to, double ratio) {
         return Colors.blend(from, to, ratio);
     }
 
@@ -85,7 +85,7 @@ public abstract class SwingColorSchemeSupport extends ColorSchemeSupport<Color> 
      * @param value the original RGB value
      * @return a non-null corresponding color
      */
-    @Nonnull
+    @NonNull
     public static Color rgbToColor(int value) {
         return Colors.rgbToColor(value);
     }
@@ -96,12 +96,12 @@ public abstract class SwingColorSchemeSupport extends ColorSchemeSupport<Color> 
      * @param color the original color
      * @return the corresponding RGB value
      */
-    public static int colorToRgb(@Nonnull Color color) {
+    public static int colorToRgb(@NonNull Color color) {
         return Colors.colorToRgb(color);
     }
 
-    @Nonnull
-    public static String toHex(@Nonnull Color color) {
+    @NonNull
+    public static String toHex(@NonNull Color color) {
         return Colors.toHex(color);
     }
     //</editor-fold>

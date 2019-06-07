@@ -25,8 +25,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -56,11 +56,11 @@ public class WinDesktop extends AwtDesktop {
     static final String QUOTE = "\"";
     //</editor-fold>
 
-    @Nonnull
+    @NonNull
     private final WinRegistry registry;
-    @Nonnull
+    @NonNull
     private final ZSystem system;
-    @Nonnull
+    @NonNull
     private final WinSearch search;
 
     // VisibleForTesting
@@ -145,12 +145,12 @@ public class WinDesktop extends AwtDesktop {
         }
     }
 
-    private static void showInFolder(@Nonnull ZSystem system, @Nonnull File file) throws IOException {
+    private static void showInFolder(@NonNull ZSystem system, @NonNull File file) throws IOException {
         // http://support.microsoft.com/kb/152457
         system.exec("explorer.exe", "/select,", quote(file.getAbsolutePath()));
     }
 
-    private static boolean isSearchEngineInstalled(@Nonnull WinRegistry registry) {
+    private static boolean isSearchEngineInstalled(@NonNull WinRegistry registry) {
         try {
             return registry.keyExists(HKEY_LOCAL_MACHINE, DESKTOP_SEARCH_KEY_PATH);
         } catch (IOException ex) {
@@ -160,13 +160,13 @@ public class WinDesktop extends AwtDesktop {
     }
 
     @Nullable
-    private static File getKnownFolderByName(@Nonnull WinRegistry registry, @Nonnull String winFolderName) throws IOException {
+    private static File getKnownFolderByName(@NonNull WinRegistry registry, @NonNull String winFolderName) throws IOException {
         Object result = registry.getValue(HKEY_CURRENT_USER, SHELL_FOLDERS_KEY_PATH, winFolderName);
         return result instanceof String && !((String) result).isEmpty() ? new File((String) result) : null;
     }
 
-    @Nonnull
-    private static String quote(@Nonnull String input) {
+    @NonNull
+    private static String quote(@NonNull String input) {
         return QUOTE + input + QUOTE;
     }
 }

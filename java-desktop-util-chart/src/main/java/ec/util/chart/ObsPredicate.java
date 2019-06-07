@@ -16,7 +16,8 @@
  */
 package ec.util.chart;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 
 /**
  *
@@ -26,21 +27,21 @@ public abstract class ObsPredicate {
 
     public abstract boolean apply(int series, int obs);
 
-    final public boolean apply(@Nonnull ObsIndex index) throws NullPointerException {
+    final public boolean apply(@NonNull ObsIndex index) throws NullPointerException {
         return apply(index.getSeries(), index.getObs());
     }
 
-    @Nonnull
+    @NonNull
     public ObsFunction<Boolean> asFunction() {
         return new AsFunction(this);
     }
 
-    @Nonnull
+    @NonNull
     public static ObsPredicate alwaysTrue() {
         return TRUE;
     }
 
-    @Nonnull
+    @NonNull
     public static ObsPredicate alwaysFalse() {
         return FALSE;
     }

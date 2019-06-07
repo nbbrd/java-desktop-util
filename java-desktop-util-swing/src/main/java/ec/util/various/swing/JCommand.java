@@ -26,13 +26,13 @@ import java.util.EventListener;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A command pattern that targets Swing components. It is similar to the
@@ -43,8 +43,8 @@ import javax.swing.event.ListSelectionListener;
  */
 public abstract class JCommand<C> {
 
-    @Nonnull
-    public static <X> JCommand<X> of(@Nonnull Consumer<X> consumer) {
+    @NonNull
+    public static <X> JCommand<X> of(@NonNull Consumer<X> consumer) {
         return new JCommand<X>() {
             @Override
             public void execute(X component) throws Exception {
@@ -61,7 +61,7 @@ public abstract class JCommand<C> {
      * @param component a non-null component
      * @throws Exception if something went wrong during the execution
      */
-    public abstract void execute(@Nonnull C component) throws Exception;
+    public abstract void execute(@NonNull C component) throws Exception;
 
     /**
      * Executes the command on the specified component but catches and returns
@@ -71,7 +71,7 @@ public abstract class JCommand<C> {
      * @return an exception if one were thrown; null otherwise
      */
     @Nullable
-    public Exception executeSafely(@Nonnull C component) {
+    public Exception executeSafely(@NonNull C component) {
         try {
             execute(component);
             return null;
@@ -87,7 +87,7 @@ public abstract class JCommand<C> {
      * @param component a non-null component
      * @return true if enabled; false otherwise
      */
-    public boolean isEnabled(@Nonnull C component) {
+    public boolean isEnabled(@NonNull C component) {
         return true;
     }
 
@@ -97,7 +97,7 @@ public abstract class JCommand<C> {
      * @param component a non-null component
      * @return true if selected; false otherwise
      */
-    public boolean isSelected(@Nonnull C component) {
+    public boolean isSelected(@NonNull C component) {
         return false;
     }
 
@@ -107,8 +107,8 @@ public abstract class JCommand<C> {
      * @param component a non-null component
      * @return a non-null action
      */
-    @Nonnull
-    public ActionAdapter toAction(@Nonnull C component) {
+    @NonNull
+    public ActionAdapter toAction(@NonNull C component) {
         return new ActionAdapter(component);
     }
 
@@ -117,11 +117,11 @@ public abstract class JCommand<C> {
      */
     public class ActionAdapter extends AbstractAction {
 
-        @Nonnull
+        @NonNull
         private final C component;
         private boolean listening;
 
-        public ActionAdapter(@Nonnull C component) {
+        public ActionAdapter(@NonNull C component) {
             this.component = component;
             this.listening = true;
             refreshActionState();
@@ -158,8 +158,8 @@ public abstract class JCommand<C> {
          * @param properties a list of properties to listen to
          * @return itself
          */
-        @Nonnull
-        public ActionAdapter withWeakPropertyChangeListener(@Nonnull Component source, @Nonnull String... properties) {
+        @NonNull
+        public ActionAdapter withWeakPropertyChangeListener(@NonNull Component source, @NonNull String... properties) {
             PropertyChangeListener realListener = evt -> refreshActionState();
             putValue("PropertyChangeListener", realListener);
             if (properties.length > 0) {
@@ -189,8 +189,8 @@ public abstract class JCommand<C> {
          * @param source a non-null list selection model
          * @return itself
          */
-        @Nonnull
-        public ActionAdapter withWeakListSelectionListener(@Nonnull ListSelectionModel source) {
+        @NonNull
+        public ActionAdapter withWeakListSelectionListener(@NonNull ListSelectionModel source) {
             ListSelectionListener realListener = evt -> refreshActionState();
             putValue("ListSelectionListener", realListener);
             source.addListSelectionListener(new WeakListSelectionListener(realListener) {
@@ -203,12 +203,12 @@ public abstract class JCommand<C> {
         }
 
         @Deprecated
-        public void registerPropertyChangeListener(@Nonnull Container source) {
+        public void registerPropertyChangeListener(@NonNull Container source) {
             withWeakPropertyChangeListener(source);
         }
 
         @Deprecated
-        public void registerListSelectionListener(@Nonnull ListSelectionModel source) {
+        public void registerListSelectionListener(@NonNull ListSelectionModel source) {
             withWeakListSelectionListener(source);
         }
     }
@@ -217,16 +217,16 @@ public abstract class JCommand<C> {
 
         protected final WeakReference<T> delegate;
 
-        public WeakEventListener(@Nonnull T delegate) {
+        public WeakEventListener(@NonNull T delegate) {
             this.delegate = new WeakReference<>(delegate);
         }
 
-        abstract protected void unregister(@Nonnull Object source);
+        abstract protected void unregister(@NonNull Object source);
     }
 
     private abstract static class WeakPropertyChangeListener extends WeakEventListener<PropertyChangeListener> implements PropertyChangeListener {
 
-        public WeakPropertyChangeListener(@Nonnull PropertyChangeListener delegate) {
+        public WeakPropertyChangeListener(@NonNull PropertyChangeListener delegate) {
             super(delegate);
         }
 
@@ -243,7 +243,7 @@ public abstract class JCommand<C> {
 
     private abstract static class WeakListSelectionListener extends WeakEventListener<ListSelectionListener> implements ListSelectionListener {
 
-        public WeakListSelectionListener(@Nonnull ListSelectionListener delegate) {
+        public WeakListSelectionListener(@NonNull ListSelectionListener delegate) {
             super(delegate);
         }
 

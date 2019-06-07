@@ -19,11 +19,11 @@ package ec.util.grid.swing;
 import ec.util.grid.CellIndex;
 import ec.util.various.swing.StandardSwingColor;
 import java.awt.Color;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComponent;
 import javax.swing.ListSelectionModel;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -83,7 +83,7 @@ abstract class AGrid extends JComponent {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters/Setters">
-    @Nonnull
+    @NonNull
     public GridModel getModel() {
         return model;
     }
@@ -114,7 +114,7 @@ abstract class AGrid extends JComponent {
         firePropertyChange(COLUMN_SELECTION_ALLOWED_PROPERTY, old, this.columnSelectionAllowed);
     }
 
-    @Nonnull
+    @NonNull
     public CellIndex getHoveredCell() {
         return hoveredCell;
     }
@@ -125,7 +125,7 @@ abstract class AGrid extends JComponent {
         firePropertyChange(HOVERED_CELL_PROPERTY, old, this.hoveredCell);
     }
 
-    @Nonnull
+    @NonNull
     public CellIndex getSelectedCell() {
         return selectedCell;
     }
@@ -156,7 +156,7 @@ abstract class AGrid extends JComponent {
         firePropertyChange(DRAG_ENABLED_PROPERTY, old, this.dragEnabled);
     }
 
-    @Nonnull
+    @NonNull
     public Color getGridColor() {
         return gridColor;
     }
@@ -167,18 +167,17 @@ abstract class AGrid extends JComponent {
         firePropertyChange(GRID_COLOR_PROPERTY, old, this.gridColor);
     }
 
-    @Nonnull
-    public XTable.NoDataRenderer getNoDataRenderer() {
+    public XTable.@NonNull NoDataRenderer getNoDataRenderer() {
         return noDataRenderer;
     }
 
-    public void setNoDataRenderer(@Nullable XTable.NoDataRenderer renderer) {
+    public void setNoDataRenderer(XTable.@Nullable NoDataRenderer renderer) {
         XTable.NoDataRenderer old = this.noDataRenderer;
         this.noDataRenderer = renderer != null ? renderer : DEFAULT_NO_DATA_RENDERER;
         firePropertyChange(NO_DATA_RENDERER_PROPERTY, old, this.noDataRenderer);
     }
 
-    @Nonnull
+    @NonNull
     public ListSelectionModel getRowSelectionModel() {
         return rowSelectionModel;
     }
@@ -189,7 +188,7 @@ abstract class AGrid extends JComponent {
         firePropertyChange(ROW_SELECTION_MODEL_PROPERTY, old, this.rowSelectionModel);
     }
 
-    @Nonnull
+    @NonNull
     public ListSelectionModel getColumnSelectionModel() {
         return columnSelectionModel;
     }

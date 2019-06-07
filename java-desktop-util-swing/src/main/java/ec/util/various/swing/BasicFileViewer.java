@@ -34,8 +34,6 @@ import java.util.TooManyListenersException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -43,6 +41,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.TransferHandler;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -272,7 +272,7 @@ public final class BasicFileViewer extends JPanel {
         firePropertyChange(FILE_PROPERTY, old, this.file);
     }
 
-    @Nonnull
+    @NonNull
     public StartRenderer getStartRenderer() {
         return startRenderer;
     }
@@ -283,7 +283,7 @@ public final class BasicFileViewer extends JPanel {
         firePropertyChange(START_RENDERER_PROPERTY, old, this.startRenderer);
     }
 
-    @Nonnull
+    @NonNull
     public DragRenderer getDragRenderer() {
         return dragRenderer;
     }
@@ -294,7 +294,7 @@ public final class BasicFileViewer extends JPanel {
         firePropertyChange(DRAG_RENDERER_PROPERTY, old, this.dragRenderer);
     }
 
-    @Nonnull
+    @NonNull
     public LoadRenderer getLoadRenderer() {
         return loadRenderer;
     }
@@ -305,7 +305,7 @@ public final class BasicFileViewer extends JPanel {
         firePropertyChange(LOAD_RENDERER_PROPERTY, old, this.loadRenderer);
     }
 
-    @Nonnull
+    @NonNull
     public FailureRenderer getFailureRenderer() {
         return failureRenderer;
     }

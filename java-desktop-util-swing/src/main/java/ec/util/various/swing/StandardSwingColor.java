@@ -20,11 +20,11 @@ import internal.InternalUtil;
 import java.awt.Color;
 import java.util.Objects;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * http://alvinalexander.com/java/java-uimanager-color-keys-list
@@ -87,8 +87,8 @@ public enum StandardSwingColor implements UIItem<Color> {
     }
 
     @Deprecated
-    @Nonnull
-    public Color or(@Nonnull Color fallback) {
+    @NonNull
+    public Color or(@NonNull Color fallback) {
         Objects.requireNonNull(fallback);
         Color result = value();
         return result != null ? result : fallback;

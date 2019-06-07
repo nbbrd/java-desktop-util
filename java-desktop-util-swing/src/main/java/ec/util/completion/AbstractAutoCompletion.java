@@ -19,8 +19,8 @@ package ec.util.completion;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public abstract class AbstractAutoCompletion<C> {
 
@@ -112,19 +112,19 @@ public abstract class AbstractAutoCompletion<C> {
 
     abstract public void close();
 
-    abstract public void search(@Nonnull String term);
+    abstract public void search(@NonNull String term);
 
-    @Nonnull
+    @NonNull
     abstract protected InputView<? extends C> getInputView();
 
-    @Nonnull
+    @NonNull
     abstract protected SearchView<? extends C> getSearchView();
 
-    public void addPropertyChangeListener(@Nonnull PropertyChangeListener listener) {
+    public void addPropertyChangeListener(@NonNull PropertyChangeListener listener) {
         support.addPropertyChangeListener(listener);
     }
 
-    public void removePropertyChangeListener(@Nonnull PropertyChangeListener listener) {
+    public void removePropertyChangeListener(@NonNull PropertyChangeListener listener) {
         support.removePropertyChangeListener(listener);
     }
 
@@ -165,12 +165,12 @@ public abstract class AbstractAutoCompletion<C> {
 
         void requestEditing();
 
-        @Nonnull
+        @NonNull
         String getTerm();
 
-        void setTerm(@Nonnull String term);
+        void setTerm(@NonNull String term);
 
-        @Nonnull
+        @NonNull
         C getComponent();
     }
 
@@ -178,18 +178,18 @@ public abstract class AbstractAutoCompletion<C> {
 
         void onClose();
 
-        void onSearchStarted(@Nonnull String term);
+        void onSearchStarted(@NonNull String term);
 
-        void onSearchFailed(@Nonnull String term, @Nonnull Exception ex);
+        void onSearchFailed(@NonNull String term, @NonNull Exception ex);
 
-        void onSearchDone(@Nonnull String term, @Nonnull List<?> values);
+        void onSearchDone(@NonNull String term, @NonNull List<?> values);
 
         void moveSelection(int steps, boolean page);
 
         @Nullable
         Object getSelectedValue();
 
-        @Nonnull
+        @NonNull
         C getComponent();
     }
 }

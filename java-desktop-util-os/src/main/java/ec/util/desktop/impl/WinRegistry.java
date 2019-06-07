@@ -25,8 +25,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Facade that allows retrieving values from the registry of Windows.
@@ -40,25 +40,25 @@ public abstract class WinRegistry {
         HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER
     }
 
-    abstract public boolean keyExists(@Nonnull Root root, @Nonnull String key) throws IOException;
+    abstract public boolean keyExists(@NonNull Root root, @NonNull String key) throws IOException;
 
     @Nullable
-    abstract public Object getValue(@Nonnull Root root, @Nonnull String key, @Nonnull String name) throws IOException;
+    abstract public Object getValue(@NonNull Root root, @NonNull String key, @NonNull String name) throws IOException;
 
-    @Nonnull
-    abstract public SortedMap<String, Object> getValues(@Nonnull Root root, @Nonnull String key) throws IOException;
+    @NonNull
+    abstract public SortedMap<String, Object> getValues(@NonNull Root root, @NonNull String key) throws IOException;
 
-    @Nonnull
+    @NonNull
     public static WinRegistry noOp() {
         return NoOpRegistry.INSTANCE;
     }
 
-    @Nonnull
+    @NonNull
     public static WinRegistry failing() {
         return FailingRegistry.INSTANCE;
     }
 
-    @Nonnull
+    @NonNull
     public static WinRegistry getDefault() {
         return LazyHolder.INSTANCE;
     }

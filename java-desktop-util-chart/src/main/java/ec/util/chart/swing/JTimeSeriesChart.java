@@ -47,12 +47,12 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
-import javax.annotation.Nonnull;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
@@ -457,7 +457,7 @@ public final class JTimeSeriesChart extends ATimeSeriesChart {
         notification.resume();
     }
 
-    @Nonnull
+    @NonNull
     public double[] getZoom() {
         Range domainRange = roSubPlots.get(0).getDomainAxis().getRange();
         Range rangeRange = roSubPlots.get(0).getRangeAxis().getRange();
@@ -482,7 +482,7 @@ public final class JTimeSeriesChart extends ATimeSeriesChart {
      * @deprecated use {@link #getSeriesSelectionModel()} instead
      */
     @Deprecated
-    @Nonnull
+    @NonNull
     public ListSelectionModel getSelectionModel() {
         return getSeriesSelectionModel();
     }
@@ -493,7 +493,7 @@ public final class JTimeSeriesChart extends ATimeSeriesChart {
      *
      * @return a non-null selection model
      */
-    @Nonnull
+    @NonNull
     public ListSelectionModel getSeriesSelectionModel() {
         return seriesSelectionModel;
     }

@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -54,6 +52,8 @@ import javax.swing.ListModel;
 import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
 import javax.swing.event.ListDataListener;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -271,7 +271,7 @@ public final class JListSelection<E> extends JComponent {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Getters/Setters">
-    @Nonnull
+    @NonNull
     public DefaultListModel<E> getSourceModel() {
         return sourceModel;
     }
@@ -282,7 +282,7 @@ public final class JListSelection<E> extends JComponent {
         firePropertyChange(SOURCE_MODEL_PROPERTY, old, this.sourceModel);
     }
 
-    @Nonnull
+    @NonNull
     public DefaultListModel<E> getTargetModel() {
         return targetModel;
     }
@@ -293,7 +293,7 @@ public final class JListSelection<E> extends JComponent {
         firePropertyChange(SOURCE_MODEL_PROPERTY, old, this.targetModel);
     }
 
-    @Nonnull
+    @NonNull
     public ListCellRenderer<? super E> getCellRenderer() {
         return cellRenderer;
     }
@@ -362,7 +362,7 @@ public final class JListSelection<E> extends JComponent {
     }
     //</editor-fold>
 
-    @Nonnull
+    @NonNull
     public List<E> getSelectedValues() {
         return JLists.stream(targetModel).collect(Collectors.toList());
     }

@@ -34,9 +34,9 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Random;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jfree.data.time.Month;
 import org.jfree.data.time.TimePeriodAnchor;
 import org.jfree.data.time.TimeSeries;
@@ -133,23 +133,23 @@ public abstract class JTimeSeriesChartCommand extends JCommand<JTimeSeriesChart>
         return new Adapter(TimeSeriesChartCommand.applyTitle(title));
     }
 
-    @Nonnull
+    @NonNull
     public static JTimeSeriesChartCommand applyCrosshairOrientation(CrosshairOrientation crosshairOrientation) {
         return new Adapter(TimeSeriesChartCommand.applyCrosshairOrientation(crosshairOrientation));
     }
 
-    @Nonnull
+    @NonNull
     public static JTimeSeriesChartCommand applyObsHighlighter(@Nullable ObsPredicate obsHighlighter) {
         return new Adapter(TimeSeriesChartCommand.applyObsHighlighter(obsHighlighter));
     }
 
-    @Nonnull
-    public static JTimeSeriesChartCommand applyTooltipTrigger(@Nonnull DisplayTrigger tooltipTrigger) {
+    @NonNull
+    public static JTimeSeriesChartCommand applyTooltipTrigger(@NonNull DisplayTrigger tooltipTrigger) {
         return new Adapter(TimeSeriesChartCommand.applyTooltipTrigger(tooltipTrigger));
     }
 
-    @Nonnull
-    public static JTimeSeriesChartCommand applyCrosshairTrigger(@Nonnull DisplayTrigger crosshairTrigger) {
+    @NonNull
+    public static JTimeSeriesChartCommand applyCrosshairTrigger(@NonNull DisplayTrigger crosshairTrigger) {
         return new Adapter(TimeSeriesChartCommand.applyCrosshairTrigger(crosshairTrigger));
     }
 

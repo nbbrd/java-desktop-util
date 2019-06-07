@@ -16,7 +16,8 @@
  */
 package ec.util.chart;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 
 /**
  *
@@ -26,17 +27,17 @@ public abstract class SeriesPredicate {
 
     public abstract boolean apply(int series);
 
-    @Nonnull
+    @NonNull
     public SeriesFunction<Boolean> asFunction() {
         return new AsFunction(this);
     }
 
-    @Nonnull
+    @NonNull
     public static SeriesPredicate alwaysTrue() {
         return TRUE;
     }
 
-    @Nonnull
+    @NonNull
     public static SeriesPredicate alwaysFalse() {
         return FALSE;
     }

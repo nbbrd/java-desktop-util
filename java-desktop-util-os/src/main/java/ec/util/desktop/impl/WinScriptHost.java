@@ -23,7 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.Locale;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Facade that allows executing script in Windows Script Host.
@@ -32,27 +32,27 @@ import javax.annotation.Nonnull;
  */
 public abstract class WinScriptHost {
 
-    public abstract boolean canExec(@Nonnull File script);
+    public abstract boolean canExec(@NonNull File script);
 
-    public abstract boolean canExec(@Nonnull String script, @Nonnull String language);
+    public abstract boolean canExec(@NonNull String script, @NonNull String language);
 
-    @Nonnull
-    public abstract Process exec(@Nonnull File script, @Nonnull String... args) throws IOException;
+    @NonNull
+    public abstract Process exec(@NonNull File script, @NonNull String... args) throws IOException;
 
-    @Nonnull
-    public abstract Process exec(@Nonnull String script, @Nonnull String language, @Nonnull String... args) throws IOException;
+    @NonNull
+    public abstract Process exec(@NonNull String script, @NonNull String language, @NonNull String... args) throws IOException;
 
-    @Nonnull
+    @NonNull
     public static WinScriptHost noOp() {
         return NoOpScriptHost.INSTANCE;
     }
 
-    @Nonnull
+    @NonNull
     public static WinScriptHost failing() {
         return FailingScriptHost.INSTANCE;
     }
 
-    @Nonnull
+    @NonNull
     public static WinScriptHost getDefault() {
         return LazyHolder.INSTANCE;
     }
@@ -134,7 +134,7 @@ public abstract class WinScriptHost {
         private final ZSystem system;
 
         //@VisibleForTesting
-        CScript(@Nonnull ZSystem system) {
+        CScript(@NonNull ZSystem system) {
             this.system = system;
         }
 

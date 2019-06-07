@@ -25,14 +25,14 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A Swing launcher that allows fast GUI prototyping by handling tedious code
@@ -52,69 +52,69 @@ public final class BasicSwingLauncher {
     private boolean resizable = true;
 
     //<editor-fold defaultstate="collapsed" desc="Options setters">
-    @Nonnull
+    @NonNull
     public BasicSwingLauncher logLevel(@Nullable Level level) {
         LOGGER.setLevel(level);
         return this;
     }
 
-    @Nonnull
+    @NonNull
     public BasicSwingLauncher systemLookAndFeel() {
         return lookAndFeel(UIManager.getSystemLookAndFeelClassName());
     }
 
-    @Nonnull
+    @NonNull
     public BasicSwingLauncher lookAndFeel(@Nullable String lookAndFeelClassName) {
         this.lookAndFeelClassName = lookAndFeelClassName;
         return this;
     }
 
-    @Nonnull
+    @NonNull
     public BasicSwingLauncher title(@Nullable String title) {
         this.title = title;
         return this;
     }
 
-    @Nonnull
+    @NonNull
     public BasicSwingLauncher size(int width, int height) {
         return size(new Dimension(width, height));
     }
 
-    @Nonnull
+    @NonNull
     public BasicSwingLauncher size(@Nullable Dimension size) {
         this.size = size;
         return this;
     }
 
-    @Nonnull
+    @NonNull
     public BasicSwingLauncher content(@Nullable Class<? extends Component> contentClass) {
         return content(contentClass == null ? null : contentClass::newInstance);
     }
 
-    @Nonnull
+    @NonNull
     public BasicSwingLauncher content(@Nullable Callable<? extends Component> contentSupplier) {
         this.contentSupplier = contentSupplier;
         return this;
     }
 
-    @Nonnull
+    @NonNull
     public BasicSwingLauncher centerOnScreen(boolean centerOnScreen) {
         this.centerOnScreen = centerOnScreen;
         return this;
     }
 
-    @Nonnull
+    @NonNull
     public BasicSwingLauncher resizable(boolean resizable) {
         this.resizable = resizable;
         return this;
     }
 
-    @Nonnull
-    public BasicSwingLauncher icons(@Nonnull String... iconsPaths) {
+    @NonNull
+    public BasicSwingLauncher icons(@NonNull String... iconsPaths) {
         return icons(newImageList(iconsPaths));
     }
 
-    @Nonnull
+    @NonNull
     public BasicSwingLauncher icons(@Nullable Callable<? extends List<? extends Image>> iconsSupplier) {
         this.iconsSupplier = iconsSupplier;
         return this;
@@ -133,11 +133,11 @@ public final class BasicSwingLauncher {
     }
 
     private static void launch(
-            @Nonnull final String lookAndFeelClassName,
-            @Nonnull final String title,
-            @Nonnull final Dimension size,
-            @Nonnull final Callable<? extends Component> contentSupplier,
-            @Nonnull final Callable<? extends List<? extends Image>> iconsSupplier,
+            @NonNull final String lookAndFeelClassName,
+            @NonNull final String title,
+            @NonNull final Dimension size,
+            @NonNull final Callable<? extends Component> contentSupplier,
+            @NonNull final Callable<? extends List<? extends Image>> iconsSupplier,
             final boolean centerOnScreen, final boolean resizable) {
 
         LOGGER.log(Level.FINE, "lookAndFeelClassName='%s'", lookAndFeelClassName);
@@ -172,8 +172,8 @@ public final class BasicSwingLauncher {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    @Nonnull
-    private static Callable<List<? extends Image>> newImageList(@Nonnull final String... iconsPaths) {
+    @NonNull
+    private static Callable<List<? extends Image>> newImageList(@NonNull final String... iconsPaths) {
         return () -> Arrays.stream(iconsPaths)
                 .map(o -> BasicSwingLauncher.class.getResource(o))
                 .filter(o -> o != null)

@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -138,7 +138,7 @@ public class AwtDesktop implements Desktop {
     }
 
     @Deprecated
-    @Nonnull
+    @NonNull
     protected static File checkFile(File file) throws NullPointerException, IllegalArgumentException {
         return Util.checkFileValidation(file);
     }
@@ -155,14 +155,14 @@ public class AwtDesktop implements Desktop {
     }
 
     @Deprecated
-    @Nonnull
-    protected static File extractResource(@Nonnull String resourceName, @Nonnull String filePrefix, @Nonnull String fileSuffix) throws IOException {
+    @NonNull
+    protected static File extractResource(@NonNull String resourceName, @NonNull String filePrefix, @NonNull String fileSuffix) throws IOException {
         return Util.extractResource(resourceName, filePrefix, fileSuffix);
     }
 
     @Deprecated
-    @Nonnull
-    protected static File[] toFiles(@Nonnull Process p, @Nonnull Charset charset) throws IOException {
+    @NonNull
+    protected static File[] toFiles(@NonNull Process p, @NonNull Charset charset) throws IOException {
         return Util.toFiles(p, charset);
     }
 }

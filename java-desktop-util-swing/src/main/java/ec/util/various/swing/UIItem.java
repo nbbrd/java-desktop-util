@@ -17,8 +17,8 @@
 package ec.util.various.swing;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -27,13 +27,13 @@ import javax.annotation.Nullable;
  */
 public interface UIItem<T> {
 
-    @Nonnull
+    @NonNull
     String key();
 
     @Nullable
     T value();
 
-    @Nonnull
+    @NonNull
     default Optional<T> lookup() {
         return Optional.ofNullable(value());
     }

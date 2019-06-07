@@ -18,13 +18,13 @@ package ec.util.table.swing;
 
 import java.awt.Component;
 import java.util.function.BiConsumer;
-import javax.annotation.Nonnull;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -33,8 +33,8 @@ import javax.swing.table.TableColumnModel;
 @lombok.experimental.UtilityClass
 public class JTables {
 
-    @Nonnull
-    public <E> TableCellRenderer cellRendererOf(@Nonnull BiConsumer<JLabel, E> consumer) {
+    @NonNull
+    public <E> TableCellRenderer cellRendererOf(@NonNull BiConsumer<JLabel, E> consumer) {
         return new LabelTableCellRenderer<>(consumer);
     }
 
@@ -50,7 +50,7 @@ public class JTables {
      * @see
      * http://kahdev.wordpress.com/2011/10/30/java-specifying-the-column-widths-of-a-jtable-as-percentages/
      */
-    public void setWidthAsPercentages(@Nonnull JTable table, @Nonnull double... percentages) {
+    public void setWidthAsPercentages(@NonNull JTable table, @NonNull double... percentages) {
         final double factor = 10000;
         TableColumnModel model = table.getColumnModel();
         for (int columnIndex = 0; columnIndex < percentages.length; columnIndex++) {

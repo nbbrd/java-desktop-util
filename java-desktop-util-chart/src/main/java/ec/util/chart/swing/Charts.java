@@ -50,13 +50,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.ServiceLoader;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import static org.jfree.chart.ChartPanel.*;
@@ -134,7 +134,7 @@ public final class Charts {
      * @param dataset Data used by the chart
      * @return Index of dataitem in the series
      */
-    public static int getNearestLeftPoint(double chartX, int begin, int end, int series, @Nonnull XYDataset dataset) {
+    public static int getNearestLeftPoint(double chartX, int begin, int end, int series, @NonNull XYDataset dataset) {
         // Index of center point
         int mid = begin + (end - begin) / 2;
 
@@ -167,7 +167,7 @@ public final class Charts {
     private static final int TOL = 3;
     private static final int NO_SERIES_FOUND_INDEX = -1;
 
-    @Nonnull
+    @NonNull
     public static LegendItemEntity createFakeLegendItemEntity(XYDataset dataset, Comparable<?> seriesKey) {
         LegendItemEntity result = new LegendItemEntity(new Area());
         result.setDataset(dataset);
@@ -176,7 +176,7 @@ public final class Charts {
     }
 
     @Nullable
-    public static LegendItemEntity getSeriesForPoint(@Nonnull Point pt, @Nonnull ChartPanel cp) {
+    public static LegendItemEntity getSeriesForPoint(@NonNull Point pt, @NonNull ChartPanel cp) {
 
         final double chartX;
         final double chartY;
@@ -276,7 +276,7 @@ public final class Charts {
      * } instead
      */
     @Deprecated
-    public static int getSelectedSeries(@Nonnull Point pt, @Nonnull ChartPanel cp) {
+    public static int getSelectedSeries(@NonNull Point pt, @NonNull ChartPanel cp) {
         LegendItemEntity result = getSeriesForPoint(pt, cp);
         return result != null ? ((SeriesDataset) result.getDataset()).indexOf(result.getSeriesKey()) : NO_SERIES_FOUND_INDEX;
     }
@@ -292,7 +292,7 @@ public final class Charts {
         return o.getScaleX() == 1.0 && o.getScaleY() == 1.0;
     }
 
-    @Nonnull
+    @NonNull
     public static ChartPanel newChartPanel(@Nullable JFreeChart chart) {
         ChartPanel result = new ChartPanel(
                 chart,
@@ -312,8 +312,8 @@ public final class Charts {
         return avoidScaling(result);
     }
 
-    @Nonnull
-    public static ChartPanel avoidScaling(@Nonnull ChartPanel chartPanel) {
+    @NonNull
+    public static ChartPanel avoidScaling(@NonNull ChartPanel chartPanel) {
         chartPanel.setMinimumDrawWidth(1);
         chartPanel.setMinimumDrawHeight(1);
         chartPanel.setMaximumDrawWidth(Integer.MAX_VALUE);
@@ -334,8 +334,8 @@ public final class Charts {
      * @return
      * @author Philippe Charles
      */
-    @Nonnull
-    public static JFreeChart createSparkLineChart(@Nonnull XYDataset dataset) {
+    @NonNull
+    public static JFreeChart createSparkLineChart(@NonNull XYDataset dataset) {
         JFreeChart result = ChartFactory.createTimeSeriesChart(null, null, null, dataset, false, false, false);
         result.setBorderVisible(false);
         result.setBackgroundPaint(null);
@@ -361,17 +361,17 @@ public final class Charts {
      * @param p
      * @return
      */
-    @Nonnull
-    public static ChartPanel enableFocusOnClick(@Nonnull ChartPanel p) {
+    @NonNull
+    public static ChartPanel enableFocusOnClick(@NonNull ChartPanel p) {
         p.addMouseListener(FOCUS_ON_CLICK);
         return p;
     }
 
-    public static boolean isPopup(@Nonnull MouseEvent e) {
+    public static boolean isPopup(@NonNull MouseEvent e) {
         return !SwingUtilities.isLeftMouseButton(e);
     }
 
-    public static boolean isDoubleClick(@Nonnull MouseEvent e) {
+    public static boolean isDoubleClick(@NonNull MouseEvent e) {
         return e.getClickCount() > 1;
     }
 
@@ -383,8 +383,8 @@ public final class Charts {
      * @param y
      * @return
      */
-    @Nonnull
-    public static ItemLabelPosition computeItemLabelPosition(@Nonnull Rectangle bounds, double x, double y) {
+    @NonNull
+    public static ItemLabelPosition computeItemLabelPosition(@NonNull Rectangle bounds, double x, double y) {
         boolean left = x < bounds.x + bounds.width / 2;
         boolean top = y < bounds.y + bounds.height / 2;
         return left ? (top ? TOP_LEFT : BOTTOM_LEFT) : (top ? TOP_RIGHT : BOTTOM_RIGHT);
@@ -394,13 +394,13 @@ public final class Charts {
         return dataset == null || dataset.getSeriesCount() == 0;
     }
 
-    @Nonnull
+    @NonNull
     public static IntervalXYDataset emptyXYDataset() {
         return EmptyDataset.INSTANCE;
     }
 
-    @Nonnull
-    public static List<XYDataset> asDatasetList(@Nonnull final XYPlot plot) {
+    @NonNull
+    public static List<XYDataset> asDatasetList(@NonNull final XYPlot plot) {
         return new AbstractList<XYDataset>() {
 
             @Override
@@ -419,7 +419,7 @@ public final class Charts {
         JTimeSeriesRendererSupport.drawToolTip(g2, x, y, anchorOffset, label, font, paint, fillPaint, outlinePaint, outlineStroke);
     }
 
-    public static void copyChart(@Nonnull ChartPanel chartPanel) {
+    public static void copyChart(@NonNull ChartPanel chartPanel) {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         Insets insets = chartPanel.getInsets();
         int w = chartPanel.getWidth() - insets.left - insets.right;
@@ -430,7 +430,7 @@ public final class Charts {
         clipboard.setContents(selection, null);
     }
 
-    public static void saveChart(@Nonnull ChartPanel chartPanel) throws IOException {
+    public static void saveChart(@NonNull ChartPanel chartPanel) throws IOException {
         JFileChooser fileChooser = new JFileChooser();
         FileFilter defaultFilter = new FileNameExtensionFilter("PNG (.png)", "png");
         fileChooser.addChoosableFileFilter(defaultFilter);
@@ -453,7 +453,7 @@ public final class Charts {
         }
     }
 
-    public static void writeChart(@Nonnull String mediaType, @Nonnull OutputStream stream, @Nonnull JFreeChart chart, @Nonnegative int width, @Nonnegative int height) throws IOException {
+    public static void writeChart(@NonNull String mediaType, @NonNull OutputStream stream, @NonNull JFreeChart chart, @NonNegative int width, @NonNegative int height) throws IOException {
         for (JFreeChartWriter writer : ServiceLoader.load(JFreeChartWriter.class)) {
             if (mediaType.equals(writer.getMediaType())) {
                 writer.writeChart(stream, chart, width, height);
@@ -463,7 +463,7 @@ public final class Charts {
         throw new IOException("Media type '" + mediaType + "' not supported");
     }
 
-    public static void writeChartAsSVG(@Nonnull OutputStream stream, @Nonnull JFreeChart chart, @Nonnegative int width, @Nonnegative int height) throws IOException {
+    public static void writeChartAsSVG(@NonNull OutputStream stream, @NonNull JFreeChart chart, @NonNegative int width, @NonNegative int height) throws IOException {
         String svg = generateSVG(chart, width, height);
         try (OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             writer.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
@@ -566,8 +566,8 @@ public final class Charts {
     private static final String SVG_MEDIA_TYPE = "image/svg+xml";
     private static final String SVG_COMP_MEDIA_TYPE = "image/svg+xml-compressed";
 
-    @Nonnull
-    private static String getMediaType(@Nonnull File file) {
+    @NonNull
+    private static String getMediaType(@NonNull File file) {
         String ext = file.getPath().toLowerCase(Locale.ROOT);
         if (ext.endsWith(".png")) {
             return PNG_MEDIA_TYPE;

@@ -19,9 +19,9 @@ package internal;
 import java.awt.Font;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import javax.swing.Icon;
 import javax.swing.JLabel;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -30,13 +30,13 @@ import javax.swing.JLabel;
 @lombok.experimental.UtilityClass
 public class InternalUtil {
 
-    @Nonnull
-    public Font resizeByFactor(@Nonnull Font font, float factor) {
+    @NonNull
+    public Font resizeByFactor(@NonNull Font font, float factor) {
         return font.deriveFont(font.getSize2D() * factor);
     }
 
-    @Nonnull
-    public <X> Supplier<X> getLazyResource(@Nonnull Supplier<X> factory) {
+    @NonNull
+    public <X> Supplier<X> getLazyResource(@NonNull Supplier<X> factory) {
         return new LazyResource<>(factory);
     }
 

@@ -46,8 +46,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.util.Enumeration;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.CellRendererPane;
 import javax.swing.JComponent;
@@ -74,6 +72,8 @@ import javax.swing.table.TableColumnModel;
 import static ec.util.various.swing.ModernUI.withEmptyBorders;
 import internal.Colors;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A grid component for Swing that differs from a JTable by adding a row header.
@@ -809,7 +809,7 @@ public final class JGrid extends AGrid {
         protected final JLabel renderer;
         private final GridUIResource gridResource;
 
-        public GridCellRenderer(@Nonnull JGrid grid) {
+        public GridCellRenderer(@NonNull JGrid grid) {
             this.grid = grid;
             this.renderer = new DefaultTableCellRenderer();
             this.gridResource = GridUIResource.getDefault();
@@ -837,13 +837,13 @@ public final class JGrid extends AGrid {
 
     private static abstract class GridUIResource {
 
-        @Nonnull
+        @NonNull
         abstract public CellUIResource getHeader(boolean selected, boolean hovered);
 
-        @Nonnull
+        @NonNull
         abstract public CellUIResource getCell(boolean selected, boolean hovered);
 
-        @Nonnull
+        @NonNull
         public static GridUIResource getDefault() {
             return GridColorsImpl.INSTANCE;
         }
@@ -901,16 +901,16 @@ public final class JGrid extends AGrid {
 
     private static abstract class CellUIResource {
 
-        @Nonnull
+        @NonNull
         abstract public Color getBackground();
 
-        @Nonnull
+        @NonNull
         abstract public Color getForeground();
 
-        @Nonnull
+        @NonNull
         abstract public Border getBorder();
 
-        @Nonnull
+        @NonNull
         public static CellUIResource of(final Color background, final Color foreground, final Border border) {
             return new CellUIResource() {
                 @Override

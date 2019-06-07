@@ -26,7 +26,7 @@ import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * The DesktopManager is a utility class that allows you to retrieve a suitable
@@ -54,7 +54,7 @@ public final class DesktopManager {
      *
      * @return the non-null current Desktop
      */
-    @Nonnull
+    @NonNull
     public static synchronized Desktop get() {
         if (DESKTOP == null) {
             try {
@@ -73,7 +73,7 @@ public final class DesktopManager {
      * @param newDesktop a non-null new Desktop
      * @throws NullPointerException if the parameter is null
      */
-    public static synchronized void set(@Nonnull Desktop newDesktop) {
+    public static synchronized void set(@NonNull Desktop newDesktop) {
         DESKTOP = Objects.requireNonNull(newDesktop, "desktop");
     }
 
@@ -86,8 +86,8 @@ public final class DesktopManager {
      * @return a non-null Desktop implementation
      * @throws NullPointerException if the parameter is null
      */
-    @Nonnull
-    public static Desktop load(@Nonnull Iterable<? extends Factory> factories) {
+    @NonNull
+    public static Desktop load(@NonNull Iterable<? extends Factory> factories) {
         Objects.requireNonNull(factories, "factories");
 
         String osArch = System.getProperty("os.arch");
