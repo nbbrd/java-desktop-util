@@ -18,7 +18,7 @@ If Err.Number <> 0 Then
 End If
 
 Set rs = CreateObject("ADODB.Recordset")
-rs.Open "SELECT System.ItemUrl FROM SYSTEMINDEX WHERE System.FileName like '%" & query & "%'", conn
+rs.Open "SELECT System.ItemUrl FROM SYSTEMINDEX WHERE SCOPE='file:' AND System.FileName like '%" & query & "%'", conn
 
 If Err.Number <> 0 Then
   Wscript.Echo "Query failed: [" &  Err.Number & "] " & Err.Description

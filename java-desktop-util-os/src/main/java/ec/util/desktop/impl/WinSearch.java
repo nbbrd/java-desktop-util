@@ -34,6 +34,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * http://en.wikipedia.org/wiki/Windows_Search
+ * https://docs.microsoft.com/en-us/windows/desktop/search/windows-search
  *
  * @author Philippe Charles
  */
@@ -112,7 +113,7 @@ abstract class WinSearch {
         }
     }
 
-    public static final class JnaSearch extends WinSearch {
+    static final class JnaSearch extends WinSearch {
 
         private final Factory factory = new Factory();
 
@@ -124,7 +125,7 @@ abstract class WinSearch {
             try {
                 conn = factory.createObject(Connection.class);
                 conn.Open("Provider=Search.CollatorDSO;Extended Properties='Application=Windows';");
-                rs = conn.Execute("SELECT System.ItemUrl FROM SYSTEMINDEX WHERE System.FileName like '%" + escapeQuery(query) + "%'");
+                rs = conn.Execute("SELECT System.ItemUrl FROM SYSTEMINDEX WHERE SCOPE='file:' AND System.FileName like '%" + escapeQuery(query) + "%'");
                 if (!(rs.getBOF() && rs.getEOF())) {
                     rs.MoveFirst();
                     while (!rs.getEOF()) {
@@ -199,7 +200,7 @@ abstract class WinSearch {
         }
     }
 
-    private static final class VbsSearch extends WinSearch {
+    static final class VbsSearch extends WinSearch {
 
         private static final String QUOTE = "\"";
 
