@@ -31,7 +31,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import static org.junit.Assert.*;
@@ -216,8 +218,8 @@ public class WinDesktopTest {
     private static final class FakeSearch extends WinSearch {
 
         @Override
-        public File[] search(String query) throws IOException {
-            return new File[]{new File("hello.html")};
+        public List<File> getFilesByName(String query) throws IOException {
+            return Collections.singletonList(new File("hello.html"));
         }
     }
     //</editor-fold>

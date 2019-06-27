@@ -22,10 +22,12 @@ import com.sun.jna.platform.win32.COM.util.annotation.ComInterface;
 import com.sun.jna.platform.win32.COM.util.annotation.ComMethod;
 import com.sun.jna.platform.win32.COM.util.annotation.ComObject;
 import com.sun.jna.platform.win32.COM.util.annotation.ComProperty;
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,7 +43,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 abstract class WinSearch {
 
     @NonNull
-    abstract public File[] search(@NonNull String query) throws IOException;
+    public File[] search(@NonNull String query) throws IOException {
+        List<File> result = getFilesByName(query);
+        return result.toArray(new File[result.size()]);
+    }
+
+    @NonNull
+    abstract public List<File> getFilesByName(@NonNull String query) throws IOException;
 
     @NonNull
     public static WinSearch noOp() {
@@ -98,8 +106,8 @@ abstract class WinSearch {
         private static final WinSearch INSTANCE = new NoOpSearch();
 
         @Override
-        public File[] search(String query) throws IOException {
-            return new File[0];
+        public List<File> getFilesByName(String query) throws IOException {
+            return Collections.emptyList();
         }
     }
 
@@ -108,42 +116,37 @@ abstract class WinSearch {
         public static final FailingSearch INSTANCE = new FailingSearch();
 
         @Override
-        public File[] search(String query) throws IOException {
+        public List<File> getFilesByName(String query) throws IOException {
             throw new IOException();
         }
     }
 
-    static final class JnaSearch extends WinSearch {
+    public static final class JnaSearch extends WinSearch {
 
         private final Factory factory = new Factory();
 
         @Override
-        public File[] search(String query) throws IOException {
-            List<File> result = new ArrayList<>();
-            Connection conn = null;
-            Recordset rs = null;
-            try {
-                conn = factory.createObject(Connection.class);
+        public List<File> getFilesByName(String query) throws IOException {
+            try (Connection conn = factory.createObject(Connection.class)) {
                 conn.Open("Provider=Search.CollatorDSO;Extended Properties='Application=Windows';");
-                rs = conn.Execute("SELECT System.ItemUrl FROM SYSTEMINDEX WHERE SCOPE='file:' AND System.FileName like '%" + escapeQuery(query) + "%'");
-                if (!(rs.getBOF() && rs.getEOF())) {
-                    rs.MoveFirst();
-                    while (!rs.getEOF()) {
-                        result.add(new File(rs.getFields().getItem(0).getValue().toString().replace("file:", "")));
-                        rs.MoveNext();
+                try (Recordset rs = conn.Execute("SELECT System.ItemUrl FROM SYSTEMINDEX WHERE SCOPE='file:' AND System.FileName like '%" + escapeQuery(query) + "%'")) {
+                    List<File> result = new ArrayList<>();
+                    if (!(rs.getBOF() && rs.getEOF())) {
+                        rs.MoveFirst();
+                        while (!rs.getEOF()) {
+                            result.add(toFile(rs.getFields().getItem(0)));
+                            rs.MoveNext();
+                        }
                     }
+                    return result;
                 }
             } catch (COMException ex) {
                 throw new IOException(ex);
-            } finally {
-                if (rs != null) {
-                    rs.Close();
-                }
-                if (conn != null) {
-                    conn.Close();
-                }
             }
-            return result.toArray(new File[result.size()]);
+        }
+
+        private static File toFile(Field field) {
+            return new File(field.getValue().toString().replace("file:", ""));
         }
 
         private static String escapeQuery(String query) {
@@ -151,7 +154,7 @@ abstract class WinSearch {
         }
 
         @ComObject(progId = "ADODB.Connection")
-        public interface Connection {
+        public interface Connection extends Closeable {
 
             @ComMethod
             void Open(String connectionString);
@@ -161,10 +164,15 @@ abstract class WinSearch {
 
             @ComMethod
             Recordset Execute(String commandText);
+
+            @Override
+            default void close() throws IOException {
+                Close();
+            }
         }
 
         @ComInterface
-        public interface Recordset {
+        public interface Recordset extends Closeable {
 
             @ComMethod
             void Close();
@@ -183,6 +191,11 @@ abstract class WinSearch {
 
             @ComProperty
             Fields getFields();
+
+            @Override
+            default void close() throws IOException {
+                Close();
+            }
         }
 
         @ComInterface
@@ -213,10 +226,10 @@ abstract class WinSearch {
         }
 
         @Override
-        public File[] search(String query) throws IOException {
+        public List<File> getFilesByName(String query) throws IOException {
             String quotedQuery = quote(query.replace(QUOTE, ""));
             Process p = wsh.exec(searchScript, quotedQuery);
-            return Util.toFiles(p, Charset.defaultCharset());
+            return Util.toList(p, Charset.defaultCharset(), File::new);
         }
 
         @NonNull

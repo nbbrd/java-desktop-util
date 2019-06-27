@@ -27,6 +27,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -91,13 +92,19 @@ final class Util {
 
     @NonNull
     public static File[] toFiles(@NonNull Process p, @NonNull Charset charset) throws IOException {
-        List<File> result = new ArrayList<>();
+        List<File> result = toList(p, charset, File::new);
+        return result.toArray(new File[result.size()]);
+    }
+
+    @NonNull
+    public static <T> List<T> toList(@NonNull Process p, @NonNull Charset charset, @NonNull Function<String, T> func) throws IOException {
+        List<T> result = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), charset))) {
             // we need the process to end, else we'll get an illegal Thread State Exception
             String line;
             while ((line = reader.readLine()) != null) {
-                result.add(new File(line));
+                result.add(func.apply(line));
             }
             try {
                 p.waitFor();
@@ -106,6 +113,6 @@ final class Util {
             }
         }
 
-        return result.toArray(new File[result.size()]);
+        return result;
     }
 }
