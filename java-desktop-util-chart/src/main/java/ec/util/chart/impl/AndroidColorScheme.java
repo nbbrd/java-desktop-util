@@ -21,7 +21,7 @@ import ec.util.chart.ColorSchemeSupport;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  * Android 4 color scheme.
@@ -76,7 +76,7 @@ public abstract class AndroidColorScheme extends AbstractColorScheme {
      * @author Philippe Charles
      * @author Jeremy Demortier
      */
-    @ServiceProvider(service = ColorScheme.class)
+    @ServiceProvider(ColorScheme.class)
     public static class AndroidDarkColorScheme extends AndroidColorScheme {
 
         @Override
@@ -112,7 +112,7 @@ public abstract class AndroidColorScheme extends AbstractColorScheme {
      * @author Philippe Charles
      * @author Jeremy Demortier
      */
-    @ServiceProvider(service = ColorScheme.class)
+    @ServiceProvider(ColorScheme.class)
     public static class AndroidLightColorScheme extends AndroidColorScheme {
 
         @Override

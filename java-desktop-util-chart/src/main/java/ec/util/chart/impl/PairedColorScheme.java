@@ -20,7 +20,7 @@ import ec.util.chart.ColorScheme;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  * Paired color scheme.
@@ -29,7 +29,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Philippe Charles
  * @author Jeremy Demortier
  */
-@ServiceProvider(service = ColorScheme.class)
+@ServiceProvider(ColorScheme.class)
 public class PairedColorScheme extends AbstractColorScheme {
 
     public static final int C0 = 0xA6CEE3; // LIGHT_BLUE

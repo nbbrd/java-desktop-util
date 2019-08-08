@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nbbrd.service.ServiceProvider;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * A generic {@link Desktop} implementation for Linux.<p>
@@ -119,7 +119,7 @@ public class XdgDesktop extends AwtDesktop {
         return Util.toFiles(p, Charset.defaultCharset());
     }
 
-    @ServiceProvider(service = Desktop.Factory.class)
+    @ServiceProvider(Desktop.Factory.class)
     public static class Factory implements Desktop.Factory {
 
         @Override

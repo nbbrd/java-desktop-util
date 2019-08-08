@@ -21,7 +21,7 @@ import static ec.util.chart.ColorSchemeSupport.rgb;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  * Smart color scheme.
@@ -31,7 +31,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Philippe Charles
  * @author Demortier Jeremy
  */
-@ServiceProvider(service = ColorScheme.class)
+@ServiceProvider(ColorScheme.class)
 public class SmartColorScheme extends AbstractColorScheme {
 
     public static final String NAME = "Smart";

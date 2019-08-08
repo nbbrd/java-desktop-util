@@ -20,7 +20,7 @@ import ec.util.chart.ColorScheme;
 import static java.util.Arrays.asList;
 import java.util.List;
 import java.util.Map;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  * Solarized - Precision colors for machines and people.
@@ -91,7 +91,7 @@ public abstract class SolarizedColorScheme extends AbstractColorScheme {
      * @author Philippe Charles
      * @author Jeremy Demortier
      */
-    @ServiceProvider(service = ColorScheme.class)
+    @ServiceProvider(ColorScheme.class)
     public static class SolarizedDarkColorScheme extends SolarizedColorScheme {
 
         @Override
@@ -117,7 +117,7 @@ public abstract class SolarizedColorScheme extends AbstractColorScheme {
      * @author Philippe Charles
      * @author Jeremy Demortier
      */
-    @ServiceProvider(service = ColorScheme.class)
+    @ServiceProvider(ColorScheme.class)
     public static class SolarizedLightColorScheme extends SolarizedColorScheme {
 
         @Override

@@ -19,11 +19,11 @@ package ec.util.chart.swing;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
+import nbbrd.service.ServiceProvider;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
@@ -38,7 +38,7 @@ public abstract class JFreeChartWriter {
     abstract public void writeChart(@NonNull OutputStream stream, @NonNull JFreeChart chart, @NonNegative int width, @NonNegative int height) throws IOException;
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    @ServiceProvider(service = JFreeChartWriter.class)
+    @ServiceProvider(JFreeChartWriter.class)
     public static final class SvgWriter extends JFreeChartWriter {
 
         @Override
@@ -52,7 +52,7 @@ public abstract class JFreeChartWriter {
         }
     }
 
-    @ServiceProvider(service = JFreeChartWriter.class)
+    @ServiceProvider(JFreeChartWriter.class)
     public static final class SvgzWriter extends JFreeChartWriter {
 
         @Override
@@ -68,7 +68,7 @@ public abstract class JFreeChartWriter {
         }
     }
 
-    @ServiceProvider(service = JFreeChartWriter.class)
+    @ServiceProvider(JFreeChartWriter.class)
     public static final class PngWriter extends JFreeChartWriter {
 
         @Override
@@ -82,7 +82,7 @@ public abstract class JFreeChartWriter {
         }
     }
 
-    @ServiceProvider(service = JFreeChartWriter.class)
+    @ServiceProvider(JFreeChartWriter.class)
     public static final class JpegWriter extends JFreeChartWriter {
 
         @Override

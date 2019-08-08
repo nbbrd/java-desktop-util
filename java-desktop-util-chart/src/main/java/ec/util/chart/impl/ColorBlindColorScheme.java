@@ -20,7 +20,7 @@ import ec.util.chart.ColorScheme;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  * Color Blindness Color Scheme based on
@@ -28,7 +28,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Laurent Jadoul
  */
-@ServiceProvider(service = ColorScheme.class)
+@ServiceProvider(ColorScheme.class)
 public final class ColorBlindColorScheme extends AbstractColorScheme {
 
     private final int ORANGE = 0xE69F00;

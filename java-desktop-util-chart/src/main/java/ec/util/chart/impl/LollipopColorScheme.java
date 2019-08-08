@@ -20,14 +20,14 @@ import ec.util.chart.ColorScheme;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  * Android 5 color scheme
  *
  * @author Jeremy Demortier
  */
-@ServiceProvider(service = ColorScheme.class)
+@ServiceProvider(ColorScheme.class)
 public class LollipopColorScheme extends AbstractColorScheme {
 
     private final int BLUE = 0x2196f3;

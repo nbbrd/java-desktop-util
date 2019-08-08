@@ -21,9 +21,9 @@ import ec.util.desktop.Desktop.Action;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import nbbrd.service.ServiceProvider;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * A generic {@link Desktop} implementation for Mac OS X.
@@ -103,7 +103,7 @@ public class MacDesktop extends AwtDesktop {
         return Util.toFiles(p, Charset.defaultCharset());
     }
 
-    @ServiceProvider(service = Desktop.Factory.class)
+    @ServiceProvider(Desktop.Factory.class)
     public static class Factory implements Desktop.Factory {
 
         @Override
