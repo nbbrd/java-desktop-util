@@ -16,7 +16,6 @@
  */
 package ec.util.desktop.impl;
 
-import com.sun.jna.platform.FileUtils;
 import ec.util.desktop.Desktop;
 import java.io.Closeable;
 import java.io.File;
@@ -35,9 +34,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public class AwtDesktop implements Desktop {
 
     private final java.awt.Desktop awt;
+    private final Trash trash;
 
     public AwtDesktop() {
         this.awt = java.awt.Desktop.getDesktop();
+        this.trash = Trash.getDefault();
     }
 
     @Override
@@ -56,7 +57,7 @@ public class AwtDesktop implements Desktop {
             case SHOW_IN_FOLDER:
                 return awt.isSupported(java.awt.Desktop.Action.OPEN);
             case MOVE_TO_TRASH:
-                return Util.isClassAvailable("com.sun.jna.platform.FileUtils") && FileUtils.getInstance().hasTrash();
+                return trash.hasTrash();
             case SEARCH:
                 return false;
             case KNOWN_FOLDER_LOOKUP:
@@ -102,10 +103,7 @@ public class AwtDesktop implements Desktop {
 
     @Override
     public void moveToTrash(File... files) throws IOException {
-        if (!isSupported(Action.MOVE_TO_TRASH)) {
-            throw new UnsupportedOperationException(Action.MOVE_TO_TRASH.name());
-        }
-        FileUtils.getInstance().moveToTrash(files);
+        trash.moveToTrash(files);
     }
 
     @Override

@@ -16,15 +16,9 @@
  */
 package ec.util.desktop.impl;
 
-import com.sun.jna.platform.win32.Advapi32Util;
-import com.sun.jna.platform.win32.Win32Exception;
-import com.sun.jna.platform.win32.WinReg;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -33,6 +27,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @author Philippe Charles
  */
+@lombok.extern.java.Log
 public abstract class WinRegistry {
 
     public static enum Root {
@@ -73,10 +68,11 @@ public abstract class WinRegistry {
 
         private static WinRegistry createInstance() {
             if (Util.isClassAvailable("com.sun.jna.platform.win32.Advapi32Util")) {
+                log.log(Level.INFO, "Using JnaRegistry");
                 return new JnaRegistry();
             }
-            Logger.getLogger(WinRegistry.class.getName()).log(Level.SEVERE, "Cannot load JNA Platform");
             // fallback
+            log.log(Level.INFO, "Using NoOpRegistry");
             return noOp();
         }
     }
@@ -97,7 +93,7 @@ public abstract class WinRegistry {
 
         @Override
         public SortedMap<String, Object> getValues(Root root, String key) throws IOException {
-            return EMPTY_SORTED_MAP;
+            return Util.EMPTY_SORTED_MAP;
         }
     }
 
@@ -120,49 +116,5 @@ public abstract class WinRegistry {
             throw new IOException();
         }
     }
-
-    private static final class JnaRegistry extends WinRegistry {
-
-        @Override
-        public boolean keyExists(Root root, String key) throws IOException {
-            try {
-                return Advapi32Util.registryKeyExists(convert(root), key);
-            } catch (Win32Exception | UnsatisfiedLinkError ex) {
-                throw new IOException("While checking key existence", ex);
-            }
-        }
-
-        @Override
-        public Object getValue(Root root, String key, String name) throws IOException {
-            try {
-                WinReg.HKEY hkey = convert(root);
-                return Advapi32Util.registryValueExists(hkey, key, name) ? Advapi32Util.registryGetValue(hkey, key, name) : null;
-            } catch (Win32Exception | UnsatisfiedLinkError ex) {
-                throw new IOException("While getting string value", ex);
-            }
-        }
-
-        @Override
-        public SortedMap<String, Object> getValues(Root root, String key) throws IOException {
-            try {
-                WinReg.HKEY hkey = convert(root);
-                return Advapi32Util.registryKeyExists(hkey, key) ? Advapi32Util.registryGetValues(hkey, key) : EMPTY_SORTED_MAP;
-            } catch (Win32Exception | UnsatisfiedLinkError ex) {
-                throw new IOException("While getting values", ex);
-            }
-        }
-
-        private WinReg.HKEY convert(Root root) {
-            switch (root) {
-                case HKEY_CURRENT_USER:
-                    return WinReg.HKEY_CURRENT_USER;
-                case HKEY_LOCAL_MACHINE:
-                    return WinReg.HKEY_LOCAL_MACHINE;
-            }
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-    }
-
-    private static final SortedMap<String, Object> EMPTY_SORTED_MAP = Collections.unmodifiableSortedMap(new TreeMap<String, Object>());
     //</editor-fold>
 }

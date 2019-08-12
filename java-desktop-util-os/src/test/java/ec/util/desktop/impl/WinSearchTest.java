@@ -32,7 +32,7 @@ public class WinSearchTest {
     public void testJnaSearch() throws IOException {
         Assume.assumeTrue(Util.is64bit() && isWindows());
 
-        WinSearch winSearch = new WinSearch.JnaSearch();
+        WinSearch winSearch = new JnaSearch();
 
         assertThat(winSearch.search("java"))
                 .extracting(File::getPath)
