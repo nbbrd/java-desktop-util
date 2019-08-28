@@ -79,7 +79,7 @@ public final class ColorSchemeDemo {
     }
 
     private static ColorScheme[] getColorSchemes() {
-        return ColorSchemeLoader.get().toArray(ColorScheme[]::new);
+        return ColorSchemeLoader.get().toArray(new ColorScheme[0]);
     }
 
     private static final class ColorRenderer implements ListCellRenderer<Integer>, Icon {
