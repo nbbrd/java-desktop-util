@@ -18,13 +18,14 @@ package ec.util.desktop;
 
 import ec.util.desktop.Desktop.Factory;
 import ec.util.desktop.Desktop.Factory.SupportType;
-import java.util.AbstractMap;
-import java.util.Map.Entry;
+import ec.util.desktop.impl.DesktopFactoryLoader;
+import ec.util.desktop.impl.DesktopFactoryProc;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -58,7 +59,7 @@ public final class DesktopManager {
     public static synchronized Desktop get() {
         if (DESKTOP == null) {
             try {
-                DESKTOP = load(ServiceLoader.load(Factory.class));
+                DESKTOP = load(new DesktopFactoryLoader().get());
             } catch (java.util.ServiceConfigurationError ex) {
                 LOGGER.log(Level.SEVERE, "While loading factories", ex);
                 DESKTOP = new NoOpDesktop();
@@ -87,42 +88,28 @@ public final class DesktopManager {
      * @throws NullPointerException if the parameter is null
      */
     @NonNull
+    @Deprecated
     public static Desktop load(@NonNull Iterable<? extends Factory> factories) {
         Objects.requireNonNull(factories, "factories");
+        Stream<Factory> stream = StreamSupport.stream(factories.spliterator(), false).map(Factory.class::cast);
+        return load(DesktopFactoryProc.INSTANCE.apply(stream).findFirst());
+    }
 
-        String osArch = System.getProperty("os.arch");
-        String osName = System.getProperty("os.name");
-        String osVersion = System.getProperty("os.version");
-
-        Optional<AbstractMap.SimpleEntry<SupportType, Factory>> bestFactory
-                = StreamSupport.stream(factories.spliterator(), false)
-                .map(o -> new AbstractMap.SimpleEntry<>(o.getSupportType(osArch, osName, osVersion), o))
-                .sorted(DesktopManager::compareByLevelOfSupport)
-                .findFirst();
-
+    private static Desktop load(Optional<Factory> bestFactory) {
         if (!bestFactory.isPresent()) {
             LOGGER.info("No factories found");
             return new NoOpDesktop();
         }
 
-        if (bestFactory.get().getKey() == SupportType.NONE) {
-            LOGGER.info("No support for this OS");
-            return new NoOpDesktop();
-        }
+        String osArch = System.getProperty("os.arch");
+        String osName = System.getProperty("os.name");
+        String osVersion = System.getProperty("os.version");
 
-        LOGGER.log(Level.INFO, "Using factory ''{0}''", bestFactory.get().getValue().getClass().getName());
-        return bestFactory.get().getValue().create(osArch, osName, osVersion);
+        LOGGER.log(Level.INFO, "Using factory ''{0}''", bestFactory.get().getClass().getName());
+        return bestFactory.get().create(osArch, osName, osVersion);
     }
 
     private DesktopManager() {
         // static class
-    }
-
-    /**
-     * The comparator used to select the best factory through their level of
-     * support.
-     */
-    private static int compareByLevelOfSupport(Entry<SupportType, Factory> l, Entry<SupportType, Factory> r) {
-        return r.getKey().compareTo(l.getKey());
     }
 }

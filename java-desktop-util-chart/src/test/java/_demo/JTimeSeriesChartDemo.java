@@ -38,6 +38,7 @@ import static ec.util.chart.swing.SwingColorSchemeSupport.isDark;
 import ec.util.various.swing.BasicSwingLauncher;
 import ec.util.various.swing.JCommand;
 import internal.SpinningIcon;
+import internal.chart.ColorSchemeLoader;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -46,7 +47,6 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.logging.Level;
 import javax.swing.AbstractAction;
 import static javax.swing.BorderFactory.createCompoundBorder;
@@ -190,7 +190,7 @@ public final class JTimeSeriesChartDemo extends JPanel {
         result.addSeparator();
 
         item = new JMenu("Color scheme");
-        for (ColorScheme o : ServiceLoader.load(ColorScheme.class)) {
+        for (ColorScheme o : ColorSchemeLoader.get()) {
             JMenuItem subItem = item.add(new JCheckBoxMenuItem(applyColorScheme(o).toAction(chart)));
             subItem.setText(o.getDisplayName());
             subItem.setIcon(new ColorSchemeIcon(o));

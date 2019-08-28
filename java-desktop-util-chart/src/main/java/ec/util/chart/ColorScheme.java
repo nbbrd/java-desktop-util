@@ -18,6 +18,9 @@ package ec.util.chart;
 
 import java.util.List;
 import java.util.Map;
+import nbbrd.service.Mutability;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -44,6 +47,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Philippe Charles
  * @author Demortier Jeremy
  */
+@ServiceDefinition(
+        singleton = true,
+        quantifier = Quantifier.MULTIPLE,
+        mutability = Mutability.CONCURRENT,
+        loaderName = "internal.chart.ColorSchemeLoader"
+)
 public interface ColorScheme {
 
     /**

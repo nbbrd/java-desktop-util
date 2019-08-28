@@ -16,17 +16,21 @@
  */
 package ec.util.desktop;
 
+import ec.util.desktop.impl.DesktopFactoryProc;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import nbbrd.service.Mutability;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * This interface is the main user entry point of the Desktop API. The real work
- * is done by a concrete implementation loaded at runtime.<p>You can instantiate
- * a concrete implementation but this work is already done by the
- * {@link DesktopManager} class through the use of {@link Factory}.
+ * is done by a concrete implementation loaded at runtime.<p>
+ * You can instantiate a concrete implementation but this work is already done
+ * by the {@link DesktopManager} class through the use of {@link Factory}.
  *
  * @see DesktopManager
  * @see Factory
@@ -94,8 +98,8 @@ public interface Desktop {
         SEARCH,
         /**
          * Represents the lookup of known folders.
-         * 
-         * @see Desktop#getKnownFolderPath(ec.util.desktop.Desktop.KnownFolder) 
+         *
+         * @see Desktop#getKnownFolderPath(ec.util.desktop.Desktop.KnownFolder)
          */
         KNOWN_FOLDER_LOOKUP;
     }
@@ -118,11 +122,11 @@ public interface Desktop {
     /**
      * Tests whether an action is supported on the current platform.
      *
-     * <p>Even when the platform supports an action, a file or URI may not have
-     * a registered application for the action. For example, most of the
-     * platforms support the {@link Desktop.Action#OPEN} action. But for a
-     * specific file, there may not be an application registered to open it. In
-     * this case, {@link
+     * <p>
+     * Even when the platform supports an action, a file or URI may not have a
+     * registered application for the action. For example, most of the platforms
+     * support the {@link Desktop.Action#OPEN} action. But for a specific file,
+     * there may not be an application registered to open it. In this case, {@link
      * #isSupported} may return {@code true}, but the corresponding action
      * method will throw an {@link IOException}.
      *
@@ -136,7 +140,8 @@ public interface Desktop {
     /**
      * Launches the associated application to open the file.
      *
-     * <p> If the specified file is a directory, the file manager of the current
+     * <p>
+     * If the specified file is a directory, the file manager of the current
      * platform is launched to open it.
      *
      * @param file the file to be opened with the associated application
@@ -202,11 +207,12 @@ public interface Desktop {
      * browser is not able to handle the specified {@code URI}, the application
      * registered for handling {@code URIs} of the specified type is invoked.
      * The application is determined from the protocol and path of the
-     * {@code URI}, as defined by the {@code URI} class. <p> If the calling
-     * thread does not have the necessary permissions, and this is invoked from
-     * within an applet, {@code AppletContext.showDocument()} is used.
-     * Similarly, if the calling does not have the necessary permissions, and
-     * this is invoked from within a Java Web Started application,
+     * {@code URI}, as defined by the {@code URI} class.
+     * <p>
+     * If the calling thread does not have the necessary permissions, and this
+     * is invoked from within an applet, {@code AppletContext.showDocument()} is
+     * used. Similarly, if the calling does not have the necessary permissions,
+     * and this is invoked from within a Java Web Started application,
      * {@code BasicService.showDocument()} is used.
      *
      * @param uri the URI to be displayed in the user default browser
@@ -246,7 +252,8 @@ public interface Desktop {
      * filling the message fields specified by a {@code
      * mailto:} URI.
      *
-     * <p> A
+     * <p>
+     * A
      * <code>mailto:</code> URI can specify message fields including
      * <i>"to"</i>, <i>"cc"</i>, <i>"subject"</i>, <i>"body"</i>, etc. See <a
      * href="http://www.ietf.org/rfc/rfc2368.txt">The mailto URL scheme (RFC
@@ -322,11 +329,15 @@ public interface Desktop {
     File[] search(@NonNull String query) throws IOException;
 
     /**
-     * A factory used to create a Desktop implementation.<p>A Desktop
-     * implementation is never created directly but through a factory. The
-     * factory gives also the type of support and therefore allows to select the
-     * best Desktop implementation available.
+     * A factory used to create a Desktop implementation.<p>
+     * A Desktop implementation is never created directly but through a factory.
+     * The factory gives also the type of support and therefore allows to select
+     * the best Desktop implementation available.
      */
+    @ServiceDefinition(
+            loaderName = "ec.util.desktop.impl.DesktopFactoryLoader",
+            preprocessor = DesktopFactoryProc.class
+    )
     public interface Factory {
 
         /**

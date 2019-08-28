@@ -19,6 +19,9 @@ package ec.util.chart.swing;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
+import nbbrd.service.Mutability;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
 import nbbrd.service.ServiceProvider;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -30,6 +33,12 @@ import org.jfree.chart.JFreeChart;
  * @author Philippe Charles
  * @since 2.1.0
  */
+@ServiceDefinition(
+        singleton = true,
+        quantifier = Quantifier.MULTIPLE,
+        mutability = Mutability.CONCURRENT,
+        loaderName = "internal.chart.swing.JFreeChartWriterLoader"
+)
 public abstract class JFreeChartWriter {
 
     @NonNull

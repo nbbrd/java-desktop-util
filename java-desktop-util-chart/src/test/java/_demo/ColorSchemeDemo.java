@@ -22,13 +22,12 @@ import static ec.util.chart.swing.SwingColorSchemeSupport.toHex;
 import ec.util.list.swing.JLists;
 import ec.util.various.swing.BasicSwingLauncher;
 import ec.util.various.swing.ModernUI;
+import internal.chart.ColorSchemeLoader;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.util.ServiceLoader;
 import java.util.logging.Level;
-import java.util.stream.StreamSupport;
 import javax.swing.Icon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -80,7 +79,7 @@ public final class ColorSchemeDemo {
     }
 
     private static ColorScheme[] getColorSchemes() {
-        return StreamSupport.stream(ServiceLoader.load(ColorScheme.class).spliterator(), false).toArray(ColorScheme[]::new);
+        return ColorSchemeLoader.get().toArray(ColorScheme[]::new);
     }
 
     private static final class ColorRenderer implements ListCellRenderer<Integer>, Icon {

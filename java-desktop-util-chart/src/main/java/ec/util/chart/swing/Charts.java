@@ -16,6 +16,7 @@
  */
 package ec.util.chart.swing;
 
+import internal.chart.swing.JFreeChartWriterLoader;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
@@ -49,7 +50,6 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
-import java.util.ServiceLoader;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
@@ -454,7 +454,7 @@ public final class Charts {
     }
 
     public static void writeChart(@NonNull String mediaType, @NonNull OutputStream stream, @NonNull JFreeChart chart, @NonNegative int width, @NonNegative int height) throws IOException {
-        for (JFreeChartWriter writer : ServiceLoader.load(JFreeChartWriter.class)) {
+        for (JFreeChartWriter writer : JFreeChartWriterLoader.get()) {
             if (mediaType.equals(writer.getMediaType())) {
                 writer.writeChart(stream, chart, width, height);
                 return;

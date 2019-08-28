@@ -33,4 +33,6 @@ module nbbrd.desktop.os {
             ec.util.desktop.impl.AwtDesktop.Factory,
             ec.util.desktop.impl.MacDesktop.Factory,
             ec.util.desktop.impl.XdgDesktop.Factory;
+
+    uses ec.util.desktop.Desktop.Factory;
 }
