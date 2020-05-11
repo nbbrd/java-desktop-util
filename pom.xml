@@ -31,7 +31,7 @@
     </modules>
 	
     <properties>
-        <ikonli.version>2.5.0</ikonli.version>
+        <ikonli.version>2.6.0</ikonli.version>
     </properties>
         
     <dependencyManagement>
