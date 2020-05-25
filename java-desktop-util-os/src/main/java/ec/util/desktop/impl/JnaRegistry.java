@@ -20,6 +20,7 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.SortedMap;
 
 /**
@@ -30,6 +31,8 @@ final class JnaRegistry extends WinRegistry {
 
     @Override
     public boolean keyExists(Root root, String key) throws IOException {
+        Objects.requireNonNull(root);
+        Objects.requireNonNull(key);
         try {
             return Advapi32Util.registryKeyExists(convert(root), key);
         } catch (Win32Exception | UnsatisfiedLinkError ex) {
@@ -39,6 +42,9 @@ final class JnaRegistry extends WinRegistry {
 
     @Override
     public Object getValue(Root root, String key, String name) throws IOException {
+        Objects.requireNonNull(root);
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(name);
         try {
             WinReg.HKEY hkey = convert(root);
             return Advapi32Util.registryValueExists(hkey, key, name) ? Advapi32Util.registryGetValue(hkey, key, name) : null;
@@ -49,6 +55,8 @@ final class JnaRegistry extends WinRegistry {
 
     @Override
     public SortedMap<String, Object> getValues(Root root, String key) throws IOException {
+        Objects.requireNonNull(root);
+        Objects.requireNonNull(key);
         try {
             WinReg.HKEY hkey = convert(root);
             return Advapi32Util.registryKeyExists(hkey, key) ? Advapi32Util.registryGetValues(hkey, key) : Util.EMPTY_SORTED_MAP;

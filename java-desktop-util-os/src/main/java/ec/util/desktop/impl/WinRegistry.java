@@ -72,8 +72,8 @@ public abstract class WinRegistry {
                 return new JnaRegistry();
             }
             // fallback
-            log.log(Level.INFO, "Using NoOpRegistry");
-            return noOp();
+            log.log(Level.INFO, "Using RegRegistry");
+            return new RegRegistry();
         }
     }
 
