@@ -9,10 +9,6 @@ env:
 
 services:
   - xvfb
-addons:
-  apt:
-    packages:
-      - xvfb
 
 _java_windows_amd64: &_java_windows_amd64
   os: windows
@@ -32,7 +28,11 @@ _java_linux_arm64: &_java_linux_arm64
   arch: arm64
   addons:
     apt:
-      packages: maven
+      packages: 
+        - maven
+        - xvfb
+  before_script:
+   - Xvfb :99 &
 
 jobs:
   include:
