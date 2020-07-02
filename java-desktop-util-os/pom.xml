@@ -10,27 +10,7 @@
     
     <artifactId>java-desktop-util-os</artifactId>
     <packaging>jar</packaging>
-    
-    <properties>
-        <!-- dependencies -->
-        <jna.version>5.4.0</jna.version>
-    </properties>
-    
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>net.java.dev.jna</groupId>
-                <artifactId>jna</artifactId>
-                <version>${jna.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.java.dev.jna</groupId>
-                <artifactId>jna-platform</artifactId>
-                <version>${jna.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-    
+        
     <dependencies>
         <!-- compile only -->
         <dependency>
@@ -47,18 +27,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
-        </dependency>
-        
-        <!-- compile and runtime -->
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna-platform</artifactId>
-            <optional>true</optional>
         </dependency>
         
         <!-- test only -->

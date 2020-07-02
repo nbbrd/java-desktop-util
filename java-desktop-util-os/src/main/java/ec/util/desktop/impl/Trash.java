@@ -45,10 +45,6 @@ abstract class Trash {
         private static final Trash INSTANCE = createInstance();
 
         private static Trash createInstance() {
-            if (Util.isClassAvailable("com.sun.jna.platform.FileUtils")) {
-                log.log(Level.INFO, "Using JnaTrash");
-                return new JnaTrash();
-            }
             // fallback
             log.log(Level.INFO, "Using NoOpTrash");
             return new NoOpTrash();
