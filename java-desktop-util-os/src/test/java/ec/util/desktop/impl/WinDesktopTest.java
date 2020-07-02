@@ -51,7 +51,7 @@ public class WinDesktopTest {
 
     @BeforeClass
     public static void beforeClass() throws IOException {        
-        assumeThat(java.awt.Desktop.isDesktopSupported());
+        assumeThat(java.awt.Desktop.isDesktopSupported()).isTrue();
 
         File script = File.createTempFile("search", "");
         script.deleteOnExit();

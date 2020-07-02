@@ -18,7 +18,7 @@ public class XdgDesktopTest {
 
     @Test
     public void testNoOp() throws IOException {
-        assumeThat(java.awt.Desktop.isDesktopSupported());
+        assumeThat(java.awt.Desktop.isDesktopSupported()).isTrue();
         
         Desktop desktop = new XdgDesktop(ZSystem.noOp(), XdgConfig.noOp());
         for (Desktop.KnownFolder o : Desktop.KnownFolder.values()) {
