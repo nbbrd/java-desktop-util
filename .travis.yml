@@ -9,6 +9,10 @@ env:
 
 services:
   - xvfb
+addons:
+  apt:
+    packages:
+      - xvfb
 
 _java_windows_amd64: &_java_windows_amd64
   os: windows
