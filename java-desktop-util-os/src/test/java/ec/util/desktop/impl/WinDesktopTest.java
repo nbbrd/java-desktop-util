@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,7 +50,9 @@ public class WinDesktopTest {
     static Input GOOD, BAD, UGLY;
 
     @BeforeClass
-    public static void beforeClass() throws IOException {
+    public static void beforeClass() throws IOException {        
+        assumeThat(java.awt.Desktop.isDesktopSupported());
+
         File script = File.createTempFile("search", "");
         script.deleteOnExit();
         GOOD = new Input(FakeRegistry.create(), script, new FakeLauncher(), new FakeSearch());
