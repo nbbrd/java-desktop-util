@@ -320,6 +320,7 @@
                 <property>
                     <name>!skipEnforceCodeCoverage</name>
                 </property>
+		<jdk>(,11]</jdk>
             </activation>
             <build>
                 <plugins>
