@@ -11,14 +11,3 @@ updates:
     versions:
     - ">= 1.5.a"
     - "< 1.6"
-  - dependency-name: org.kordamp.ikonli:ikonli-materialdesign-pack
-    versions:
-    - ">= 11.a"
-    - "< 12"
-  - dependency-name: org.kordamp.ikonli:ikonli-swing
-    versions:
-    - ">= 11.a"
-    - "< 12"
-  - dependency-name: org.netbeans.api:org-openide-util-lookup
-    versions:
-    - "> RELEASE82"
