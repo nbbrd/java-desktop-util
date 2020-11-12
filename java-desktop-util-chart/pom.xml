@@ -13,7 +13,7 @@
 
     <properties>
         <!-- dependencies -->
-        <jfreechart.version>1.0.19</jfreechart.version>
+        <jfreechart.version>1.5.1</jfreechart.version>
         <jfreesvg.version>3.4</jfreesvg.version>
     </properties>
     
