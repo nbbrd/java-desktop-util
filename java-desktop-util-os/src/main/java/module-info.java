@@ -22,6 +22,7 @@ module nbbrd.desktop.os {
 
     requires java.desktop;
     requires java.logging;
+    requires nbbrd.io.win;
 
     exports ec.util.desktop;
 

@@ -1,17 +1,17 @@
 /*
  * Copyright 2013 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package _demo;
@@ -85,8 +85,10 @@ public final class DesktopDemo extends javax.swing.JPanel {
         this.desktop = DesktopManager.get();
 
         List<Entry<Desktop.KnownFolder, File>> data = new ArrayList<>();
-        for (Desktop.KnownFolder o : Desktop.KnownFolder.values()) {
-            data.add(new AbstractMap.SimpleEntry<>(o, desktop.getKnownFolder(o)));
+        if (desktop.isSupported(Desktop.Action.KNOWN_FOLDER_LOOKUP)) {
+            for (Desktop.KnownFolder o : Desktop.KnownFolder.values()) {
+                data.add(new AbstractMap.SimpleEntry<>(o, getKnownFolderPathOrNull(desktop, o)));
+            }
         }
         jList1.setListData(data.toArray());
         jList1.setCellRenderer(new KnownFolderRenderer());
@@ -535,23 +537,25 @@ public final class DesktopDemo extends javax.swing.JPanel {
                 tests.add(r);
             }
 
-            for (Desktop.KnownFolder o : Desktop.KnownFolder.values()) {
-                Test r = new Test();
-                r.type = o.getClass().getSimpleName();
-                r.name = o.name();
-                File folder = desktop.getKnownFolder(o);
-                if (folder == null) {
-                    r.supportType = SupportType.NONE;
-                } else if (!folder.isDirectory()) {
-                    r.supportType = SupportType.BAD;
-                    r.details = "not a folder";
-                } else if (!folder.exists()) {
-                    r.supportType = SupportType.BAD;
-                    r.details = "doesn't exist";
-                } else {
-                    r.supportType = SupportType.OK;
+            if (desktop.isSupported(Desktop.Action.KNOWN_FOLDER_LOOKUP)) {
+                for (Desktop.KnownFolder o : Desktop.KnownFolder.values()) {
+                    Test r = new Test();
+                    r.type = o.getClass().getSimpleName();
+                    r.name = o.name();
+                    File folder = getKnownFolderPathOrNull(desktop, o);
+                    if (folder == null) {
+                        r.supportType = SupportType.NONE;
+                    } else if (!folder.isDirectory()) {
+                        r.supportType = SupportType.BAD;
+                        r.details = "not a folder";
+                    } else if (!folder.exists()) {
+                        r.supportType = SupportType.BAD;
+                        r.details = "doesn't exist";
+                    } else {
+                        r.supportType = SupportType.OK;
+                    }
+                    tests.add(r);
                 }
-                tests.add(r);
             }
 
             report.tests = tests.toArray(new Test[tests.size()]);
@@ -620,5 +624,13 @@ public final class DesktopDemo extends javax.swing.JPanel {
 
     private void reportException(Throwable ex) {
         JOptionPane.showMessageDialog(this, ex.getMessage(), "Exception", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private static File getKnownFolderPathOrNull(Desktop desktop, Desktop.KnownFolder knownFolder) {
+        try {
+            return desktop.getKnownFolderPath(knownFolder);
+        } catch (IOException e) {
+            return null;
+        }
     }
 }

@@ -28,6 +28,13 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <!-- compile and runtime -->
+        <dependency>
+            <groupId>be.nbb.rd</groupId>
+            <artifactId>java-io-win</artifactId>
+            <version>0.0.10</version>
+        </dependency>
         
         <!-- test only -->
         <dependency>
