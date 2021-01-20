@@ -18,8 +18,8 @@
 module nbbrd.desktop.swing {
     requires static lombok;
     requires static org.checkerframework.checker.qual;
-    requires static jcip.annotations;
-    
+    requires static nbbrd.design;
+
     requires java.desktop;
     requires java.logging;
     
