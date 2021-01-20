@@ -29,38 +29,40 @@ final class RegRegistry extends WinRegistry {
 
     private static final String KEY_SEPARATOR = "\\";
 
-    private List<RegWrapper.RegValue> getValuesOrNull(WinRegistry.Root root, String key) throws IOException {
+    private List<RegWrapper.RegValue> getValuesOrEmpty(WinRegistry.Root root, String key) throws IOException {
         Objects.requireNonNull(root);
         Objects.requireNonNull(key);
         String keyName = root.name() + KEY_SEPARATOR + key;
-        return RegWrapper.query(keyName, false).get(keyName);
+        try {
+            return RegWrapper.query(keyName, false).getOrDefault(keyName, Collections.emptyList());
+        } catch (IOException ex) {
+            if (ex.getMessage().contains("Invalid exit value: 1")) {
+                return Collections.emptyList();
+            }
+            throw ex;
+        }
     }
 
     @Override
     public boolean keyExists(WinRegistry.Root root, String key) throws IOException {
-        List<RegWrapper.RegValue> data = getValuesOrNull(root, key);
-        return data != null;
+        return !getValuesOrEmpty(root, key).isEmpty();
     }
 
     @Override
     public Object getValue(WinRegistry.Root root, String key, String name) throws IOException {
-        List<RegWrapper.RegValue> data = getValuesOrNull(root, key);
+        List<RegWrapper.RegValue> data = getValuesOrEmpty(root, key);
         Objects.requireNonNull(name);
-        return data != null
-                ? data
+        return data
                 .stream()
                 .filter(regValue -> regValue.getName().equals(name))
                 .map(regValue -> regValue.getValue())
                 .findFirst()
-                .orElse(null)
-                : null;
+                .orElse(null);
     }
 
     @Override
     public SortedMap<String, Object> getValues(WinRegistry.Root root, String key) throws IOException {
-        List<RegWrapper.RegValue> data = getValuesOrNull(root, key);
-        return data != null
-                ? data.stream().collect(Collectors.toMap(RegWrapper.RegValue::getName, regValue -> (Object) regValue.getValue(), (l, r) -> l, TreeMap::new))
-                : Collections.emptySortedMap();
+        List<RegWrapper.RegValue> data = getValuesOrEmpty(root, key);
+        return data.stream().collect(Collectors.toMap(RegWrapper.RegValue::getName, RegWrapper.RegValue::getValue, (l, r) -> l, TreeMap::new));
     }
 }
