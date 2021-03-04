@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
@@ -12,10 +13,6 @@
     <description>Desktop utilities for Java</description>
     <url>https://github.com/nbbrd/java-desktop-util</url>
 
-    <organization>
-        <name>National Bank of Belgium</name>
-    </organization>
-
     <licenses>
         <license>
             <name>European Union Public Licence (EUPL)</name>
@@ -23,21 +20,36 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <name>Philippe Charles</name>
+            <email>philippe.charles@nbb.be</email>
+            <organization>National Bank of Belgium</organization>
+            <organizationUrl>https://www.nbb.be</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/nbbrd/java-desktop-util.git</connection>
+        <developerConnection>scm:git:ssh://github.com:nbbrd/java-desktop-util.git</developerConnection>
+        <url>http://github.com/nbbrd/java-desktop-util/tree/master</url>
+    </scm>
+
     <modules>
         <module>java-desktop-util-fa</module>
         <module>java-desktop-util-chart</module>
         <module>java-desktop-util-swing</module>
         <module>java-desktop-util-os</module>
     </modules>
-	
+
     <properties>
         <ikonli.version>2.6.0</ikonli.version>
     </properties>
-        
+
     <dependencyManagement>
         <dependencies>
             <!-- annotations & processors -->
-            <dependency>     
+            <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
                 <version>3.11.0</version>
@@ -54,7 +66,7 @@
                 <artifactId>assertj-core</artifactId>
                 <version>3.19.0</version>
             </dependency>
-            
+
             <!-- demos resources -->
             <dependency>
                 <groupId>org.kordamp.ikonli</groupId>
@@ -75,10 +87,10 @@
                 <groupId>org.glassfish.jaxb</groupId>
                 <artifactId>jaxb-runtime</artifactId>
                 <version>2.4.0-b180830.0438</version>
-            </dependency>                
+            </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <profiles>
         <!-- Base build java8 -->
         <profile>
@@ -91,7 +103,7 @@
             <properties>
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
                 <maven.compiler.target>1.8</maven.compiler.target>
-                <maven.compiler.source>1.8</maven.compiler.source>                
+                <maven.compiler.source>1.8</maven.compiler.source>
             </properties>
             <build>
                 <plugins>
@@ -194,7 +206,7 @@
             <properties>
                 <!-- Fix NetBeans bug with test packages -->
                 <maven.compiler.target>9</maven.compiler.target>
-                <maven.compiler.source>9</maven.compiler.source>                
+                <maven.compiler.source>9</maven.compiler.source>
             </properties>
             <build>
                 <plugins>
@@ -250,12 +262,12 @@
                                 </configuration>
                             </execution>
                         </executions>
-                    </plugin>        
+                    </plugin>
                 </plugins>
             </build>
         </profile>
-                
-        <!-- Enforce dependency rules -->
+
+        <!-- Enforce dependency & Maven-central rules -->
         <profile>
             <id>enforce-dependency-rules</id>
             <activation>
@@ -269,9 +281,19 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-enforcer-plugin</artifactId>
                         <version>3.0.0-M3</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.kordamp.maven</groupId>
+                                <artifactId>pomchecker-enforcer-rules</artifactId>
+                                <version>1.1.0</version>
+                            </dependency>
+                        </dependencies>
                         <executions>
                             <execution>
                                 <id>enforce</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
                                 <configuration>
                                     <rules>
                                         <requireMavenVersion>
@@ -281,18 +303,20 @@
                                         <requireReleaseDeps>
                                             <onlyWhenRelease>true</onlyWhenRelease>
                                         </requireReleaseDeps>
+                                        <CheckMavenCentral
+                                                implementation="org.kordamp.maven.enforcer.checker.CheckMavenCentral">
+                                            <release>false</release>
+                                            <strict>false</strict>
+                                        </CheckMavenCentral>
                                     </rules>
                                 </configuration>
-                                <goals>
-                                    <goal>enforce</goal>
-                                </goals>
                             </execution>
                         </executions>
                     </plugin>
                 </plugins>
             </build>
         </profile>
-                
+
         <!-- Enforce modern API -->
         <profile>
             <id>enforce-modern-api</id>
@@ -323,7 +347,7 @@
                 </plugins>
             </build>
         </profile>
-        
+
         <!-- Enforce code coverage -->
         <profile>
             <id>enforce-code-coverage</id>
@@ -331,26 +355,26 @@
                 <property>
                     <name>!skipEnforceCodeCoverage</name>
                 </property>
-		<jdk>(,11]</jdk>
+                <jdk>(,11]</jdk>
             </activation>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId> 
-                        <version>0.8.6</version> 
-                        <executions> 
-                            <execution> 
-                                <goals> 
-                                    <goal>prepare-agent</goal> 
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.6</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>prepare-agent</goal>
                                 </goals>
                             </execution>
-                            <execution> 
-                                <id>report</id> 
-                                <phase>prepare-package</phase> 
-                                <goals> 
-                                    <goal>report</goal> 
-                                </goals> 
+                            <execution>
+                                <id>report</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
@@ -424,7 +448,7 @@
             </build>
         </profile>
     </profiles>
-    
+
     <repositories>
         <repository>
             <id>oss-jfrog-artifactory-releases</id>
