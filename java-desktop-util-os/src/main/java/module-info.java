@@ -20,11 +20,9 @@ module nbbrd.desktop.os {
     requires static org.checkerframework.checker.qual;
     requires static nbbrd.service;
 
-    requires static com.sun.jna;
-    requires static com.sun.jna.platform;
-
     requires java.desktop;
     requires java.logging;
+    requires nbbrd.io.win;
 
     exports ec.util.desktop;
 

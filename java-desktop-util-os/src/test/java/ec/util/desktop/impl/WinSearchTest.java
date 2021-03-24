@@ -29,17 +29,6 @@ import org.junit.Test;
 public class WinSearchTest {
 
     @Test
-    public void testJnaSearch() throws IOException {
-        Assume.assumeTrue(Util.is64bit() && isWindows());
-
-        WinSearch winSearch = new JnaSearch();
-
-        assertThat(winSearch.search("java"))
-                .extracting(File::getPath)
-                .noneMatch(item -> item.startsWith("mapi"));
-    }
-
-    @Test
     public void testVbsSearch() throws IOException {
         Assume.assumeTrue(Util.is64bit() && isWindows());
 

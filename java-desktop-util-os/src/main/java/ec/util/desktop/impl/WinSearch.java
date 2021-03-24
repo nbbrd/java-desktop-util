@@ -67,10 +67,6 @@ abstract class WinSearch {
         private static final WinSearch INSTANCE = createInstance();
 
         private static WinSearch createInstance() {
-            if (Util.is64bit() && Util.isClassAvailable("com.sun.jna.platform.win32.COM.util.Factory")) {
-                log.log(Level.INFO, "Using JnaSearch");
-                return new JnaSearch();
-            }
             File searchScript = extractSearchScript();
             if (searchScript != null) {
                 log.log(Level.INFO, "Using VbsSearch");
