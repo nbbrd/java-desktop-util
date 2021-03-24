@@ -11,6 +11,10 @@
     <artifactId>java-desktop-util-chart</artifactId>
     <packaging>jar</packaging>
 
+    <name>java-desktop-util-chart</name>
+    <description>Desktop utilities for Java - Chart</description>
+    <url>https://github.com/nbbrd/java-desktop-util</url>
+
     <properties>
         <!-- dependencies -->
         <jfreechart.version>1.0.19</jfreechart.version>

@@ -10,7 +10,11 @@
     
     <artifactId>java-desktop-util-swing</artifactId>
     <packaging>jar</packaging>
-    
+
+    <name>java-desktop-util-swing</name>
+    <description>Desktop utilities for Java - Swing</description>
+    <url>https://github.com/nbbrd/java-desktop-util</url>
+
     <dependencies>
         <!-- compile only -->
         <dependency>

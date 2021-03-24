@@ -10,7 +10,11 @@
     
     <artifactId>java-desktop-util-os</artifactId>
     <packaging>jar</packaging>
-        
+
+    <name>java-desktop-util-os</name>
+    <description>Desktop utilities for Java - OS</description>
+    <url>https://github.com/nbbrd/java-desktop-util</url>
+
     <dependencies>
         <!-- compile only -->
         <dependency>

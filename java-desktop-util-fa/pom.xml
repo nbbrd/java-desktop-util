@@ -10,7 +10,11 @@
 
     <artifactId>java-desktop-util-fa</artifactId>
     <packaging>jar</packaging>
-    
+
+    <name>java-desktop-util-fa</name>
+    <description>Desktop utilities for Java - FA</description>
+    <url>https://github.com/nbbrd/java-desktop-util</url>
+
     <dependencies>
         <!-- compile only -->
         <dependency>
