@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     
     <parent>
-        <groupId>be.nbb.rd</groupId>
+        <groupId>com.github.nbbrd.java-desktop-util</groupId>
         <artifactId>java-desktop-util-parent</artifactId>
         <version>2.2.5-SNAPSHOT</version>
     </parent>
@@ -19,7 +19,7 @@
             <scope>provided</scope>
         </dependency>   
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-design-util</groupId>
             <artifactId>java-design-processor</artifactId>
             <scope>provided</scope>
         </dependency>		
