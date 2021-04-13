@@ -167,7 +167,7 @@ public class XTable extends JTable {
                 Rectangle cellRect = getCellRect(hitRowIndex, hitColumnIndex, false);
                 p.translate(-cellRect.x, -cellRect.y);
                 MouseEvent newEvent = new MouseEvent(component, event.getID(),
-                        event.getWhen(), event.getModifiers(),
+                        event.getWhen(), event.getModifiersEx(),
                         p.x, p.y,
                         event.getXOnScreen(),
                         event.getYOnScreen(),
