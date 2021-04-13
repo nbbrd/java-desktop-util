@@ -36,7 +36,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @author Philippe Charles
  */
-@lombok.experimental.Wither
+@lombok.With
 @lombok.RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FontIcon implements Icon {
 
