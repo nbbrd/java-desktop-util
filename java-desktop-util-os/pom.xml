@@ -37,7 +37,7 @@
         <dependency>
             <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-win</artifactId>
-            <version>0.0.13</version>
+            <version>0.0.14</version>
         </dependency>
         
         <!-- test only -->
