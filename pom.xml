@@ -227,6 +227,7 @@
                                 <id>default-compile</id>
                                 <configuration>
                                     <release>9</release>
+                                    <createMissingPackageInfoClass>false</createMissingPackageInfoClass>
                                 </configuration>
                             </execution>
                             <!-- Second: recompile all but module-info as Java8 -->
