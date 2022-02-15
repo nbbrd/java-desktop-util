@@ -110,7 +110,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.9.0</version>
+                        <version>3.10.0</version>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -227,6 +227,7 @@
                                 <id>default-compile</id>
                                 <configuration>
                                     <release>9</release>
+                                    <createMissingPackageInfoClass>false</createMissingPackageInfoClass>
                                 </configuration>
                             </execution>
                             <!-- Second: recompile all but module-info as Java8 -->
