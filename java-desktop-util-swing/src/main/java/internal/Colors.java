@@ -17,7 +17,7 @@
 package internal;
 
 import java.awt.Color;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  *

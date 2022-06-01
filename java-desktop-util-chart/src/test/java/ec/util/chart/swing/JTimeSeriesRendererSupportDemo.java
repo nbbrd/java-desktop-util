@@ -48,6 +48,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+
+import lombok.NonNull;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -480,7 +482,7 @@ public final class JTimeSeriesRendererSupportDemo extends JPanel {
         final Calendar cal = Calendar.getInstance();
 
         @Override
-        public void execute(JFreeChart chart) {
+        public void execute(@NonNull JFreeChart chart) {
             cal.set(Calendar.YEAR, 2012);
             cal.set(Calendar.MONTH, 02);
             cal.set(Calendar.DAY_OF_MONTH, 1);

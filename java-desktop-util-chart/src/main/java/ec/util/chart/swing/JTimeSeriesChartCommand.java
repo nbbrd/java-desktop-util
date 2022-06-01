@@ -35,7 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Random;
 import javax.swing.JOptionPane;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jfree.data.time.Month;
 import org.jfree.data.time.TimePeriodAnchor;
@@ -51,7 +51,7 @@ import org.jfree.data.xy.IntervalXYDataset;
 public abstract class JTimeSeriesChartCommand extends JCommand<JTimeSeriesChart> {
 
     @Override
-    public ActionAdapter toAction(JTimeSeriesChart chart) {
+    public @NonNull ActionAdapter toAction(@NonNull JTimeSeriesChart chart) {
         return super.toAction(chart)
                 .withWeakPropertyChangeListener(chart)
                 .withWeakListSelectionListener(chart.getSeriesSelectionModel());
@@ -61,7 +61,7 @@ public abstract class JTimeSeriesChartCommand extends JCommand<JTimeSeriesChart>
     public static JTimeSeriesChartCommand reset() {
         return new Adapter(TimeSeriesChartCommand.reset()) {
             @Override
-            public void execute(JTimeSeriesChart chart) {
+            public void execute(@NonNull JTimeSeriesChart chart) {
                 chart.getSeriesSelectionModel().clearSelection();
                 super.execute(chart);
             }
@@ -71,7 +71,7 @@ public abstract class JTimeSeriesChartCommand extends JCommand<JTimeSeriesChart>
     public static JTimeSeriesChartCommand clearDataset() {
         return new Adapter(TimeSeriesChartCommand.clearDataset()) {
             @Override
-            public boolean isEnabled(JTimeSeriesChart chart) {
+            public boolean isEnabled(@NonNull JTimeSeriesChart chart) {
                 return !Charts.isNullOrEmpty(chart.getDataset());
             }
         };
@@ -244,12 +244,12 @@ public abstract class JTimeSeriesChartCommand extends JCommand<JTimeSeriesChart>
     public static JTimeSeriesChartCommand applyColorSchemeSupport(final ColorSchemeSupport<? extends Color> colorSchemeSupport) {
         return new JTimeSeriesChartCommand() {
             @Override
-            public void execute(JTimeSeriesChart chart) {
+            public void execute(@NonNull JTimeSeriesChart chart) {
                 chart.setColorSchemeSupport(colorSchemeSupport);
             }
 
             @Override
-            public boolean isSelected(JTimeSeriesChart chart) {
+            public boolean isSelected(@NonNull JTimeSeriesChart chart) {
                 return chart.getColorSchemeSupport().equals(colorSchemeSupport);
             }
         };
@@ -262,12 +262,12 @@ public abstract class JTimeSeriesChartCommand extends JCommand<JTimeSeriesChart>
     public static JTimeSeriesChartCommand applyDataset(final IntervalXYDataset dataset) {
         return new JTimeSeriesChartCommand() {
             @Override
-            public void execute(JTimeSeriesChart component) throws Exception {
+            public void execute(@NonNull JTimeSeriesChart component) throws Exception {
                 component.setDataset(dataset);
             }
 
             @Override
-            public boolean isEnabled(JTimeSeriesChart component) {
+            public boolean isEnabled(@NonNull JTimeSeriesChart component) {
                 return component.getDataset() != dataset;
             }
         };
@@ -280,7 +280,7 @@ public abstract class JTimeSeriesChartCommand extends JCommand<JTimeSeriesChart>
     public static JTimeSeriesChartCommand applySelection(final int... selection) {
         return new JTimeSeriesChartCommand() {
             @Override
-            public void execute(JTimeSeriesChart chart) {
+            public void execute(@NonNull JTimeSeriesChart chart) {
                 chart.getSeriesSelectionModel().clearSelection();
                 for (int index : selection) {
                     chart.getSeriesSelectionModel().addSelectionInterval(index, index);
@@ -300,17 +300,17 @@ public abstract class JTimeSeriesChartCommand extends JCommand<JTimeSeriesChart>
         }
 
         @Override
-        public void execute(JTimeSeriesChart chart) {
+        public void execute(@NonNull JTimeSeriesChart chart) {
             delegate.execute(chart);
         }
 
         @Override
-        public boolean isEnabled(JTimeSeriesChart chart) {
+        public boolean isEnabled(@NonNull JTimeSeriesChart chart) {
             return delegate.isEnabled(chart);
         }
 
         @Override
-        public boolean isSelected(JTimeSeriesChart chart) {
+        public boolean isSelected(@NonNull JTimeSeriesChart chart) {
             return delegate.isSelected(chart);
         }
     }
@@ -324,7 +324,7 @@ public abstract class JTimeSeriesChartCommand extends JCommand<JTimeSeriesChart>
         }
 
         @Override
-        public void execute(JTimeSeriesChart chart) {
+        public void execute(@NonNull JTimeSeriesChart chart) {
             String result = JOptionPane.showInputDialog(label, getValueAsString(chart));
             if (result != null) {
                 setValueAsString(chart, result);
@@ -338,18 +338,18 @@ public abstract class JTimeSeriesChartCommand extends JCommand<JTimeSeriesChart>
     //
     private static final JTimeSeriesChartCommand RESET_ZOOM = new JTimeSeriesChartCommand() {
         @Override
-        public void execute(JTimeSeriesChart chart) {
+        public void execute(@NonNull JTimeSeriesChart chart) {
             chart.resetZoom();
         }
     };
     private static final JTimeSeriesChartCommand SELECT_ALL = new JTimeSeriesChartCommand() {
         @Override
-        public void execute(JTimeSeriesChart chart) {
+        public void execute(@NonNull JTimeSeriesChart chart) {
             chart.getSeriesSelectionModel().setSelectionInterval(0, chart.getDataset().getSeriesCount());
         }
 
         @Override
-        public boolean isEnabled(JTimeSeriesChart chart) {
+        public boolean isEnabled(@NonNull JTimeSeriesChart chart) {
             return !Charts.isNullOrEmpty(chart.getDataset()) && chart.getSeriesSelectionModel().getMaxSelectionIndex() - chart.getSeriesSelectionModel().getMinSelectionIndex() != chart.getDataset().getSeriesCount();
         }
     };
@@ -358,9 +358,9 @@ public abstract class JTimeSeriesChartCommand extends JCommand<JTimeSeriesChart>
         final Calendar cal = Calendar.getInstance();
 
         @Override
-        public void execute(JTimeSeriesChart chart) {
+        public void execute(@NonNull JTimeSeriesChart chart) {
             cal.set(Calendar.YEAR, 2012);
-            cal.set(Calendar.MONTH, 02);
+            cal.set(Calendar.MONTH, 2);
             cal.set(Calendar.DAY_OF_MONTH, 1);
             cal.set(Calendar.HOUR_OF_DAY, 0);
             cal.set(Calendar.MINUTE, 0);

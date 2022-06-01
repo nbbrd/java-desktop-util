@@ -24,7 +24,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.Level;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  *
@@ -37,7 +37,7 @@ public final class DataTransfers {
     public <T> Optional<T> getTransferData(@NonNull Transferable t, @NonNull DataFlavor flavor) {
         if (t.isDataFlavorSupported(flavor)) {
             try {
-                return Optional.ofNullable((T) t.getTransferData(flavor));
+                return Optional.of((T) t.getTransferData(flavor));
             } catch (UnsupportedFlavorException | ClassCastException ex) {
                 throw new RuntimeException(ex);
             } catch (IOException ex) {

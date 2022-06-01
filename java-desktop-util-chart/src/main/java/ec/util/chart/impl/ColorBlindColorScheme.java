@@ -20,6 +20,8 @@ import ec.util.chart.ColorScheme;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import lombok.NonNull;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -31,22 +33,22 @@ import nbbrd.service.ServiceProvider;
 @ServiceProvider(ColorScheme.class)
 public final class ColorBlindColorScheme extends AbstractColorScheme {
 
-    private final int ORANGE = 0xE69F00;
-    private final int SKY_BLUE = 0x56B4E9;
-    private final int BLUISH_GREEN = 0x009E73;
-    private final int BLUE = 0x0072B2;
-    private final int VERMILION = 0xD55E00;
-    private final int REDDISH_PURPLE = 0xCC79A7;
-    private final int BLACK = 0x000000;
-    private final int YELLOW = 0xF0E442;
+    private static final int ORANGE = 0xE69F00;
+    private static final int SKY_BLUE = 0x56B4E9;
+    private static final int BLUISH_GREEN = 0x009E73;
+    private static final int BLUE = 0x0072B2;
+    private static final int VERMILION = 0xD55E00;
+    private static final int REDDISH_PURPLE = 0xCC79A7;
+    private static final int BLACK = 0x000000;
+    private static final int YELLOW = 0xF0E442;
 
     @Override
-    public String getName() {
+    public @NonNull String getName() {
         return "Color Blindness";
     }
 
     @Override
-    public List<Integer> getAreaColors() {
+    public @NonNull List<Integer> getAreaColors() {
         return Arrays.asList(ORANGE,
                 SKY_BLUE,
                 BLUISH_GREEN,
@@ -59,7 +61,7 @@ public final class ColorBlindColorScheme extends AbstractColorScheme {
     }
 
     @Override
-    public Map<KnownColor, Integer> getAreaKnownColors() {
+    public @NonNull Map<KnownColor, Integer> getAreaKnownColors() {
         return knownColors(BLUE, VERMILION, BLACK, BLUISH_GREEN, ORANGE, REDDISH_PURPLE, YELLOW);
     }
 

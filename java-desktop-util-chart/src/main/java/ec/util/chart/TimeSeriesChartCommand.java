@@ -1,25 +1,28 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.util.chart;
 
 import ec.util.chart.TimeSeriesChart.CrosshairOrientation;
 import ec.util.chart.TimeSeriesChart.DisplayTrigger;
-import ec.util.chart.TimeSeriesChart.RendererType;
 import ec.util.chart.TimeSeriesChart.Element;
+import ec.util.chart.TimeSeriesChart.RendererType;
+import lombok.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -33,8 +36,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Defines a command pattern on a time series chart.
@@ -48,7 +49,7 @@ public abstract class TimeSeriesChartCommand {
      *
      * @param chart the input chart
      */
-    abstract public void execute(@NonNull TimeSeriesChart chart);
+    abstract public void execute(@NonNull TimeSeriesChart<?, ?> chart);
 
     /**
      * Checks if this command should be enabled with the specified time series
@@ -57,7 +58,7 @@ public abstract class TimeSeriesChartCommand {
      * @param chart the input chart
      * @return true if enabled; false otherwise
      */
-    public boolean isEnabled(@NonNull TimeSeriesChart chart) {
+    public boolean isEnabled(@NonNull TimeSeriesChart<?, ?> chart) {
         return true;
     }
 
@@ -68,7 +69,7 @@ public abstract class TimeSeriesChartCommand {
      * @param chart the input chart
      * @return true if selected; false otherwise
      */
-    public boolean isSelected(@NonNull TimeSeriesChart chart) {
+    public boolean isSelected(@NonNull TimeSeriesChart<?, ?> chart) {
         return false;
     }
 
@@ -81,7 +82,7 @@ public abstract class TimeSeriesChartCommand {
     public static TimeSeriesChartCommand reset() {
         return new TimeSeriesChartCommand() {
             @Override
-            public void execute(TimeSeriesChart chart) {
+            public void execute(@NonNull TimeSeriesChart<?, ?> chart) {
                 chart.setDataset(null);
                 chart.setColorSchemeSupport(null);
                 chart.setTitle(null);
@@ -208,12 +209,12 @@ public abstract class TimeSeriesChartCommand {
     public static TimeSeriesChartCommand applyWeights(@NonNull final int... weights) {
         return new TimeSeriesChartCommand() {
             @Override
-            public void execute(TimeSeriesChart chart) {
+            public void execute(@NonNull TimeSeriesChart<?, ?> chart) {
                 chart.setPlotWeights(weights);
             }
 
             @Override
-            public boolean isSelected(TimeSeriesChart chart) {
+            public boolean isSelected(@NonNull TimeSeriesChart<?, ?> chart) {
                 return Arrays.equals(weights, chart.getPlotWeights());
             }
         };
@@ -284,7 +285,7 @@ public abstract class TimeSeriesChartCommand {
         }
 
         @Override
-        public void execute(TimeSeriesChart chart) {
+        public void execute(@NonNull TimeSeriesChart<?, ?> chart) {
             try {
                 property.getWriteMethod().invoke(chart, value);
             } catch (IllegalAccessException | InvocationTargetException ex) {
@@ -293,7 +294,7 @@ public abstract class TimeSeriesChartCommand {
         }
 
         @Override
-        public boolean isSelected(TimeSeriesChart chart) {
+        public boolean isSelected(@NonNull TimeSeriesChart<?, ?> chart) {
             try {
                 return Objects.equals(property.getReadMethod().invoke(chart), value);
             } catch (IllegalAccessException | InvocationTargetException ex) {
@@ -304,7 +305,7 @@ public abstract class TimeSeriesChartCommand {
 
     private static final TimeSeriesChartCommand CLEAR = new TimeSeriesChartCommand() {
         @Override
-        public void execute(TimeSeriesChart chart) {
+        public void execute(@NonNull TimeSeriesChart<?, ?> chart) {
             chart.setDataset(null);
         }
     };
@@ -316,12 +317,12 @@ public abstract class TimeSeriesChartCommand {
         for (final Element o : Element.values()) {
             result.put(o, new TimeSeriesChartCommand() {
                 @Override
-                public void execute(TimeSeriesChart chart) {
+                public void execute(@NonNull TimeSeriesChart<?, ?> chart) {
                     chart.setElementVisible(o, !chart.isElementVisible(o));
                 }
 
                 @Override
-                public boolean isSelected(TimeSeriesChart chart) {
+                public boolean isSelected(@NonNull TimeSeriesChart<?, ?> chart) {
                     return chart.isElementVisible(o);
                 }
             });
@@ -345,7 +346,7 @@ public abstract class TimeSeriesChartCommand {
 
     private static final TimeSeriesChartCommand COPY_IMAGE = new TimeSeriesChartCommand() {
         @Override
-        public void execute(TimeSeriesChart chart) {
+        public void execute(@NonNull TimeSeriesChart<?, ?> chart) {
             try {
                 chart.copyImage();
             } catch (IOException ex) {
@@ -356,7 +357,7 @@ public abstract class TimeSeriesChartCommand {
 
     private static final TimeSeriesChartCommand SAVE_IMAGE = new TimeSeriesChartCommand() {
         @Override
-        public void execute(TimeSeriesChart chart) {
+        public void execute(@NonNull TimeSeriesChart<?, ?> chart) {
             try {
                 chart.saveImage();
             } catch (IOException ex) {
@@ -367,7 +368,7 @@ public abstract class TimeSeriesChartCommand {
 
     private static final TimeSeriesChartCommand PRINT_IMAGE = new TimeSeriesChartCommand() {
         @Override
-        public void execute(TimeSeriesChart chart) {
+        public void execute(@NonNull TimeSeriesChart<?, ?> chart) {
             try {
                 chart.printImage();
             } catch (IOException ex) {

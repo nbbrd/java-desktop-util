@@ -6,6 +6,8 @@ package ec.util.chart.swing;
 
 import ec.util.various.swing.JCommand;
 import java.io.IOException;
+
+import lombok.NonNull;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.event.ChartChangeEvent;
@@ -18,7 +20,7 @@ import org.jfree.chart.event.ChartChangeListener;
 public abstract class ChartCommand extends JCommand<ChartPanel> {
 
     @Override
-    public ActionAdapter toAction(ChartPanel chartPanel) {
+    public @NonNull ActionAdapter toAction(@NonNull ChartPanel chartPanel) {
         ChartActionAdapter result = new ChartActionAdapter(chartPanel);
         result.registerChartChange(chartPanel.getChart());
         return result;
@@ -46,12 +48,12 @@ public abstract class ChartCommand extends JCommand<ChartPanel> {
         static final CopyImage INSTANCE = new CopyImage();
 
         @Override
-        public void execute(ChartPanel chartPanel) {
+        public void execute(@NonNull ChartPanel chartPanel) {
             Charts.copyChart(chartPanel);
         }
 
         @Override
-        public ActionAdapter toAction(ChartPanel chartPanel) {
+        public @NonNull ActionAdapter toAction(@NonNull ChartPanel chartPanel) {
             // don't need to register changes
             return new ChartActionAdapter(chartPanel);
         }
@@ -62,12 +64,12 @@ public abstract class ChartCommand extends JCommand<ChartPanel> {
         static final SaveImage INSTANCE = new SaveImage();
 
         @Override
-        public void execute(ChartPanel chartPanel) throws IOException {
+        public void execute(@NonNull ChartPanel chartPanel) throws IOException {
             Charts.saveChart(chartPanel);
         }
 
         @Override
-        public ActionAdapter toAction(ChartPanel chartPanel) {
+        public @NonNull ActionAdapter toAction(@NonNull ChartPanel chartPanel) {
             // don't need to register changes
             return new ChartActionAdapter(chartPanel);
         }
@@ -78,12 +80,12 @@ public abstract class ChartCommand extends JCommand<ChartPanel> {
         static final PrintImage INSTANCE = new PrintImage();
 
         @Override
-        public void execute(ChartPanel chartPanel) {
+        public void execute(@NonNull ChartPanel chartPanel) {
             chartPanel.createChartPrintJob();
         }
 
         @Override
-        public ActionAdapter toAction(ChartPanel chartPanel) {
+        public @NonNull ActionAdapter toAction(@NonNull ChartPanel chartPanel) {
             // don't need to register changes
             return new ChartActionAdapter(chartPanel);
         }
@@ -94,12 +96,12 @@ public abstract class ChartCommand extends JCommand<ChartPanel> {
         static final ResetZoom INSTANCE = new ResetZoom();
 
         @Override
-        public void execute(ChartPanel chartPanel) {
+        public void execute(@NonNull ChartPanel chartPanel) {
             chartPanel.restoreAutoBounds();
         }
 
         @Override
-        public ActionAdapter toAction(ChartPanel chartPanel) {
+        public @NonNull ActionAdapter toAction(@NonNull ChartPanel chartPanel) {
             // don't need to register changes
             return new ChartActionAdapter(chartPanel);
         }
@@ -117,7 +119,7 @@ public abstract class ChartCommand extends JCommand<ChartPanel> {
             putValue("ChartChangeListener", realListener);
             source.addChangeListener(new WeakChartChangeListener(realListener) {
                 @Override
-                protected void unregister(Object source) {
+                protected void unregister(@NonNull Object source) {
                     ((JFreeChart) source).removeChangeListener(this);
                 }
             });

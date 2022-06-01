@@ -57,6 +57,8 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
+
+import lombok.NonNull;
 import org.jfree.data.time.Month;
 import org.jfree.data.time.TimePeriodAnchor;
 import org.jfree.data.time.TimeSeries;
@@ -298,12 +300,12 @@ public final class JGridDemo extends JPanel {
         }
 
         @Override
-        public void execute(X component) throws Exception {
+        public void execute(@NonNull X component) throws Exception {
             property.getWriteMethod().invoke(component, value);
         }
 
         @Override
-        public boolean isSelected(X component) {
+        public boolean isSelected(@NonNull X component) {
             try {
                 return Objects.equals(property.getReadMethod().invoke(component), value);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
@@ -312,7 +314,7 @@ public final class JGridDemo extends JPanel {
         }
 
         @Override
-        public JCommand.ActionAdapter toAction(X component) {
+        public JCommand.@NonNull ActionAdapter toAction(@NonNull X component) {
             return super.toAction(component).withWeakPropertyChangeListener(component, property.getName());
         }
     }
@@ -329,13 +331,13 @@ public final class JGridDemo extends JPanel {
         }
 
         @Override
-        public void execute(X component) throws Exception {
+        public void execute(@NonNull X component) throws Exception {
             Boolean value = (Boolean) property.getReadMethod().invoke(component);
             property.getWriteMethod().invoke(component, !value);
         }
 
         @Override
-        public boolean isSelected(X component) {
+        public boolean isSelected(@NonNull X component) {
             try {
                 return (Boolean) property.getReadMethod().invoke(component);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
@@ -344,7 +346,7 @@ public final class JGridDemo extends JPanel {
         }
 
         @Override
-        public JCommand.ActionAdapter toAction(X component) {
+        public JCommand.@NonNull ActionAdapter toAction(@NonNull X component) {
             return super.toAction(component).withWeakPropertyChangeListener(component, property.getName());
         }
     }

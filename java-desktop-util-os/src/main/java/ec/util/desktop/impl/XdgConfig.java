@@ -16,17 +16,14 @@
  */
 package ec.util.desktop.impl;
 
+import lombok.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import java.nio.file.Files;
+import java.util.*;
 
 /**
  *
@@ -44,7 +41,7 @@ abstract class XdgConfig {
     public static XdgConfig getInstance(ZSystem system) throws IOException {
         File configFile = getConfigFile(system);
         if (configFile != null) {
-            try (InputStream stream = new FileInputStream(configFile)) {
+            try (InputStream stream = Files.newInputStream(configFile.toPath())) {
                 return parseConfig(stream, system.getEnv());
             }
         }
@@ -125,12 +122,12 @@ abstract class XdgConfig {
         }
 
         @Override
-        public String get(String name) {
+        public String get(@NonNull String name) {
             return map.get(name);
         }
 
         @Override
-        public Set<String> keySet() {
+        public @NonNull Set<String> keySet() {
             return map.keySet();
         }
     }
@@ -140,12 +137,12 @@ abstract class XdgConfig {
         public static final NoOpConfig INSTANCE = new NoOpConfig();
 
         @Override
-        public String get(String name) {
+        public String get(@NonNull String name) {
             return null;
         }
 
         @Override
-        public Set<String> keySet() {
+        public @NonNull Set<String> keySet() {
             return Collections.emptySet();
         }
     }

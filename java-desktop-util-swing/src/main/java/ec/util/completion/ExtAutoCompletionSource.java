@@ -24,7 +24,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  *
@@ -166,12 +166,12 @@ public abstract class ExtAutoCompletionSource implements AutoCompletionSource {
         }
 
         @Override
-        public String getTerm() {
+        public @NonNull String getTerm() {
             return term;
         }
 
         @Override
-        public Behavior getBehavior() {
+        public @NonNull Behavior getBehavior() {
             return behavior.get();
         }
 
@@ -202,28 +202,28 @@ public abstract class ExtAutoCompletionSource implements AutoCompletionSource {
         }
 
         @Override
-        public Builder<T> postProcessor(BiFunction<List<T>, String, List<T>> processor) {
+        public @NonNull Builder<T> postProcessor(@NonNull BiFunction<List<T>, String, List<T>> processor) {
             this.processor = Objects.requireNonNull(processor);
             return this;
         }
 
         @Override
-        public Builder<T> behavior(Function<? super String, Behavior> behavior) {
+        public @NonNull Builder<T> behavior(@NonNull Function<? super String, Behavior> behavior) {
             this.behavior = Objects.requireNonNull(behavior);
             return this;
         }
 
         @Override
-        public Builder<T> valueToString(Function<T, String> toString) {
+        public @NonNull Builder<T> valueToString(@NonNull Function<T, String> toString) {
             this.toString = Objects.requireNonNull(toString);
             return this;
         }
 
         @Override
-        public Builder<T> cache(
-                ConcurrentMap cache,
-                Function<? super String, Object> toKey,
-                Function<? super String, Behavior> behavior) {
+        public @NonNull Builder<T> cache(
+                @NonNull ConcurrentMap cache,
+                @NonNull Function<? super String, Object> toKey,
+                @NonNull Function<? super String, Behavior> behavior) {
             this.cache = Objects.requireNonNull(cache);
             this.toKey = Objects.requireNonNull(toKey);
             this.cacheBehavior = Objects.requireNonNull(behavior);
@@ -231,7 +231,7 @@ public abstract class ExtAutoCompletionSource implements AutoCompletionSource {
         }
 
         @Override
-        public ExtAutoCompletionSource build() {
+        public @NonNull ExtAutoCompletionSource build() {
             return cache != null
                     ? new CachedExtAutoCompletionSource<>(loader, processor, behavior, toString, cache, toKey, cacheBehavior)
                     : new DefaultExtAutoCompletionSource<>(loader, processor, behavior, toString);
@@ -257,22 +257,22 @@ public abstract class ExtAutoCompletionSource implements AutoCompletionSource {
         }
 
         @Override
-        public Request getRequest(String term) {
+        public @NonNull Request getRequest(@NonNull String term) {
             return new BasicRequest(term, () -> behavior.apply(term), () -> processor.apply(loader.load(term), term));
         }
 
         @Override
-        public Behavior getBehavior(String term) {
+        public @NonNull Behavior getBehavior(@NonNull String term) {
             return behavior.apply(term);
         }
 
         @Override
-        public String toString(Object value) {
+        public @NonNull String toString(@NonNull Object value) {
             return toString.apply((T) value);
         }
 
         @Override
-        public List<?> getValues(String term) throws Exception {
+        public @NonNull List<?> getValues(@NonNull String term) throws Exception {
             return processor.apply(loader.load(term), term);
         }
     }
@@ -300,7 +300,7 @@ public abstract class ExtAutoCompletionSource implements AutoCompletionSource {
         }
 
         @Override
-        public Request getRequest(String term) {
+        public @NonNull Request getRequest(@NonNull String term) {
             Object key = toKey.apply(term);
             List<T> values = (List<T>) cache.get(key);
             if (values == null) {
@@ -315,17 +315,17 @@ public abstract class ExtAutoCompletionSource implements AutoCompletionSource {
         }
 
         @Override
-        public Behavior getBehavior(String term) {
+        public @NonNull Behavior getBehavior(@NonNull String term) {
             return behavior.apply(term);
         }
 
         @Override
-        public String toString(Object value) {
+        public @NonNull String toString(@NonNull Object value) {
             return toString.apply((T) value);
         }
 
         @Override
-        public List<?> getValues(String term) throws Exception {
+        public @NonNull List<?> getValues(@NonNull String term) throws Exception {
             Object key = toKey.apply(term);
             List<T> values = (List<T>) cache.get(key);
             if (values == null) {

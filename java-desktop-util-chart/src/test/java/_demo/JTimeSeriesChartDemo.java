@@ -61,7 +61,7 @@ import javax.swing.JSeparator;
 import javax.swing.ListSelectionModel;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.kordamp.ikonli.swing.FontIcon;
@@ -416,7 +416,7 @@ public final class JTimeSeriesChartDemo extends JPanel {
         }
 
         @Override
-        public void execute(JTimeSeriesChart chart) throws Exception {
+        public void execute(@NonNull JTimeSeriesChart chart) throws Exception {
             ListSelectionModel selectionModel = chart.getSeriesSelectionModel();
             for (int series = 0; series < chart.getDataset().getSeriesCount(); series++) {
                 if (selectionModel.isSelectedIndex(series)) {
@@ -427,7 +427,7 @@ public final class JTimeSeriesChartDemo extends JPanel {
         }
 
         @Override
-        public boolean isEnabled(JTimeSeriesChart chart) {
+        public boolean isEnabled(@NonNull JTimeSeriesChart chart) {
             return !chart.getSeriesSelectionModel().isSelectionEmpty();
         }
     }
@@ -585,18 +585,18 @@ public final class JTimeSeriesChartDemo extends JPanel {
         }
 
         @Override
-        public void execute(CustomTooltip component) throws Exception {
+        public void execute(@NonNull CustomTooltip component) throws Exception {
             component.setEnabled(!component.isEnabled());
             chart.setElementVisible(Element.TOOLTIP, !component.isEnabled());
         }
 
         @Override
-        public boolean isSelected(CustomTooltip component) {
+        public boolean isSelected(@NonNull CustomTooltip component) {
             return component.isEnabled();
         }
 
         @Override
-        public ActionAdapter toAction(CustomTooltip component) {
+        public @NonNull ActionAdapter toAction(@NonNull CustomTooltip component) {
             return super.toAction(component).withWeakPropertyChangeListener(component);
         }
     }

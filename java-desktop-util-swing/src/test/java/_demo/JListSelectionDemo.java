@@ -29,6 +29,8 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
+
+import lombok.NonNull;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 
 /**
@@ -71,7 +73,7 @@ public final class JListSelectionDemo {
         public static final ToggleHeadersCommand INSTANCE = new ToggleHeadersCommand();
 
         @Override
-        public void execute(JListSelection<MaterialDesign> c) throws Exception {
+        public void execute(@NonNull JListSelection<MaterialDesign> c) throws Exception {
             if (c.getSourceHeader() == null) {
                 c.setSourceHeader(newLabel("Source header:", SwingConstants.LEADING));
                 c.setSourceFooter(newLabel("Source footer", SwingConstants.CENTER));
@@ -86,12 +88,12 @@ public final class JListSelectionDemo {
         }
 
         @Override
-        public boolean isSelected(JListSelection<MaterialDesign> c) {
+        public boolean isSelected(@NonNull JListSelection<MaterialDesign> c) {
             return c.getSourceHeader() != null;
         }
 
         @Override
-        public ActionAdapter toAction(JListSelection<MaterialDesign> component) {
+        public @NonNull ActionAdapter toAction(@NonNull JListSelection<MaterialDesign> component) {
             return super.toAction(component)
                     .withWeakPropertyChangeListener(component, SOURCE_HEADER_PROPERTY);
         }
@@ -102,7 +104,7 @@ public final class JListSelectionDemo {
         public static final EmptyCommand INSTANCE = new EmptyCommand();
 
         @Override
-        public void execute(JListSelection<MaterialDesign> c) throws Exception {
+        public void execute(@NonNull JListSelection<MaterialDesign> c) throws Exception {
             if (isSelected(c)) {
                 Stream.of(MaterialDesign.values()).limit(10).forEach(c.getSourceModel()::addElement);
             } else {
@@ -112,7 +114,7 @@ public final class JListSelectionDemo {
         }
 
         @Override
-        public boolean isSelected(JListSelection<MaterialDesign> c) {
+        public boolean isSelected(@NonNull JListSelection<MaterialDesign> c) {
             return c.getSourceModel().isEmpty() && c.getTargetModel().isEmpty();
         }
     }

@@ -31,7 +31,7 @@ import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -96,7 +96,7 @@ final class Util {
     @NonNull
     public static File[] toFiles(@NonNull Process p, @NonNull Charset charset) throws IOException {
         List<File> result = toList(p, charset, File::new);
-        return result.toArray(new File[result.size()]);
+        return result.toArray(new File[0]);
     }
 
     @NonNull

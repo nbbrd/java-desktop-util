@@ -18,7 +18,7 @@ package ec.util.desktop.impl;
 
 import java.io.IOException;
 import java.util.Map;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -63,12 +63,12 @@ abstract class ZSystem {
         public static final DefaultSystem INSTANCE = new DefaultSystem();
 
         @Override
-        public String getProperty(String key) {
+        public String getProperty(@NonNull String key) {
             return System.getProperty(key);
         }
 
         @Override
-        public Process exec(String... cmdarray) throws IOException {
+        public @NonNull Process exec(String... cmdarray) throws IOException {
             return Runtime.getRuntime().exec(cmdarray);
         }
     }
@@ -78,12 +78,12 @@ abstract class ZSystem {
         public static final NoOpSystem INSTANCE = new NoOpSystem();
 
         @Override
-        public String getProperty(String key) {
+        public String getProperty(@NonNull String key) {
             return null;
         }
 
         @Override
-        public Process exec(String... cmdarray) throws IOException {
+        public @NonNull Process exec(String... cmdarray) throws IOException {
             return Processes.noOp();
         }
     }
@@ -93,12 +93,12 @@ abstract class ZSystem {
         public static final FailingSystem INSTANCE = new FailingSystem();
 
         @Override
-        public String getProperty(String key) {
+        public String getProperty(@NonNull String key) {
             return "";
         }
 
         @Override
-        public Process exec(String... cmdarray) throws IOException {
+        public @NonNull Process exec(String... cmdarray) throws IOException {
             throw new IOException();
         }
     }

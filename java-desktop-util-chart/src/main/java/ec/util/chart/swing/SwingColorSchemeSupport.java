@@ -20,7 +20,7 @@ import ec.util.chart.ColorScheme;
 import ec.util.chart.ColorSchemeSupport;
 import internal.Colors;
 import java.awt.Color;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  * An helper class that simplifies the use of a color scheme in the Swing
@@ -107,7 +107,7 @@ public abstract class SwingColorSchemeSupport extends ColorSchemeSupport<Color> 
     //</editor-fold>
 
     @Override
-    public Color toColor(int value) {
+    public @NonNull Color toColor(int value) {
         return rgbToColor(value);
     }
 
@@ -115,7 +115,7 @@ public abstract class SwingColorSchemeSupport extends ColorSchemeSupport<Color> 
     public static SwingColorSchemeSupport from(final ColorScheme colorScheme) {
         return new SwingColorSchemeSupport() {
             @Override
-            public ColorScheme getColorScheme() {
+            public @NonNull ColorScheme getColorScheme() {
                 return colorScheme;
             }
 

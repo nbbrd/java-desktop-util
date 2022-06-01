@@ -52,7 +52,7 @@ public final class XPopupDemo {
         for (final XPopup.Anchor o : XPopup.Anchor.values()) {
             final JButton button = new JButton(o.name());
             button.addActionListener(new ActionListener() {
-                XPopup popup = new XPopup();
+                final XPopup popup = new XPopup();
                 boolean visible = false;
 
                 @Override

@@ -16,13 +16,14 @@
  */
 package ec.util.various.swing;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -169,8 +170,8 @@ public final class BasicSwingLauncher {
     @NonNull
     private static Callable<List<? extends Image>> newImageList(@NonNull final String... iconsPaths) {
         return () -> Arrays.stream(iconsPaths)
-                .map(o -> BasicSwingLauncher.class.getResource(o))
-                .filter(o -> o != null)
+                .map(BasicSwingLauncher.class::getResource)
+                .filter(Objects::nonNull)
                 .map(o -> new ImageIcon(o).getImage())
                 .collect(Collectors.toList());
     }

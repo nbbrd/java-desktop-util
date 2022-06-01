@@ -19,7 +19,7 @@ package ec.util.desktop.impl;
 import java.io.IOException;
 import java.util.SortedMap;
 import java.util.logging.Level;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -30,7 +30,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 @lombok.extern.java.Log
 public abstract class WinRegistry {
 
-    public static enum Root {
+    public enum Root {
 
         HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER
     }
@@ -78,17 +78,17 @@ public abstract class WinRegistry {
         public static final NoOpRegistry INSTANCE = new NoOpRegistry();
 
         @Override
-        public boolean keyExists(Root root, String key) throws IOException {
+        public boolean keyExists(@NonNull Root root, @NonNull String key) throws IOException {
             return false;
         }
 
         @Override
-        public Object getValue(Root root, String key, String name) throws IOException {
+        public Object getValue(@NonNull Root root, @NonNull String key, @NonNull String name) throws IOException {
             return null;
         }
 
         @Override
-        public SortedMap<String, Object> getValues(Root root, String key) throws IOException {
+        public @NonNull SortedMap<String, Object> getValues(@NonNull Root root, @NonNull String key) throws IOException {
             return Util.EMPTY_SORTED_MAP;
         }
     }
@@ -98,17 +98,17 @@ public abstract class WinRegistry {
         public static final FailingRegistry INSTANCE = new FailingRegistry();
 
         @Override
-        public boolean keyExists(Root root, String key) throws IOException {
+        public boolean keyExists(@NonNull Root root, @NonNull String key) throws IOException {
             throw new IOException();
         }
 
         @Override
-        public Object getValue(Root root, String key, String name) throws IOException {
+        public Object getValue(@NonNull Root root, @NonNull String key, @NonNull String name) throws IOException {
             throw new IOException();
         }
 
         @Override
-        public SortedMap<String, Object> getValues(Root root, String key) throws IOException {
+        public @NonNull SortedMap<String, Object> getValues(@NonNull Root root, @NonNull String key) throws IOException {
             throw new IOException();
         }
     }

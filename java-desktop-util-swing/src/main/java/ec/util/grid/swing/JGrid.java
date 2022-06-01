@@ -72,7 +72,7 @@ import javax.swing.table.TableColumnModel;
 import static ec.util.various.swing.ModernUI.withEmptyBorders;
 import internal.Colors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -806,7 +806,7 @@ public final class JGrid extends AGrid {
     private static final class GridCellRenderer implements TableCellRenderer {
 
         private final JGrid grid;
-        protected final JLabel renderer;
+        private final JLabel renderer;
         private final GridUIResource gridResource;
 
         public GridCellRenderer(@NonNull JGrid grid) {
@@ -887,12 +887,12 @@ public final class JGrid extends AGrid {
             }
 
             @Override
-            public CellUIResource getHeader(boolean selected, boolean hovered) {
+            public @NonNull CellUIResource getHeader(boolean selected, boolean hovered) {
                 return selected ? (hovered ? headerBoth : headerSelection) : (hovered ? headerFocus : header);
             }
 
             @Override
-            public CellUIResource getCell(boolean selected, boolean hovered) {
+            public @NonNull CellUIResource getCell(boolean selected, boolean hovered) {
                 return selected ? (hovered ? cellBoth : cellSelection) : (hovered ? cellFocus : cell);
             }
         }
@@ -914,17 +914,17 @@ public final class JGrid extends AGrid {
         public static CellUIResource of(final Color background, final Color foreground, final Border border) {
             return new CellUIResource() {
                 @Override
-                public Color getBackground() {
+                public @NonNull Color getBackground() {
                     return background;
                 }
 
                 @Override
-                public Color getForeground() {
+                public @NonNull Color getForeground() {
                     return foreground;
                 }
 
                 @Override
-                public Border getBorder() {
+                public @NonNull Border getBorder() {
                     return border;
                 }
             };

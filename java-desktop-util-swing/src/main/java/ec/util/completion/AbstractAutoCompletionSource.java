@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -37,22 +37,22 @@ public abstract class AbstractAutoCompletionSource<T> extends ExtAutoCompletionS
 
     //<editor-fold defaultstate="collapsed" desc="AutoCompletionSource">
     @Override
-    public final String toString(Object value) {
+    public final @NonNull String toString(@NonNull Object value) {
         return getValueAsString((T) value);
     }
 
     @Override
-    public Behavior getBehavior(String term) {
+    public @NonNull Behavior getBehavior(@NonNull String term) {
         return Behavior.SYNC;
     }
 
     @Override
-    public List<?> getValues(String term) throws Exception {
+    public @NonNull List<?> getValues(@NonNull String term) throws Exception {
         return getValues(term, getAllValues());
     }
 
     @Override
-    public Request getRequest(String term) {
+    public @NonNull Request getRequest(@NonNull String term) {
         return wrap(this, term);
     }
     //</editor-fold>
@@ -153,12 +153,12 @@ public abstract class AbstractAutoCompletionSource<T> extends ExtAutoCompletionS
     protected Request createCachedRequest(@NonNull final String term, @NonNull final Iterable<T> allValues) {
         return new Request() {
             @Override
-            public String getTerm() {
+            public @NonNull String getTerm() {
                 return term;
             }
 
             @Override
-            public Behavior getBehavior() {
+            public @NonNull Behavior getBehavior() {
                 return Behavior.SYNC;
             }
 

@@ -18,45 +18,10 @@ package ec.util.chart.swing;
 
 import ec.util.chart.ObsIndex;
 import ec.util.chart.SeriesFunction;
-import static ec.util.chart.TimeSeriesChart.Element.AXIS;
-import static ec.util.chart.TimeSeriesChart.Element.LEGEND;
-import static ec.util.chart.TimeSeriesChart.Element.TITLE;
-import static ec.util.chart.TimeSeriesChart.Element.TOOLTIP;
-import static ec.util.chart.TimeSeriesChart.RendererType.AREA;
-import static ec.util.chart.TimeSeriesChart.RendererType.COLUMN;
-import static ec.util.chart.TimeSeriesChart.RendererType.LINE;
-import static ec.util.chart.TimeSeriesChart.RendererType.MARKER;
-import static ec.util.chart.TimeSeriesChart.RendererType.SPLINE;
-import static ec.util.chart.TimeSeriesChart.RendererType.STACKED_AREA;
-import static ec.util.chart.TimeSeriesChart.RendererType.STACKED_COLUMN;
-import static ec.util.chart.swing.SwingColorSchemeSupport.withAlpha;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Stroke;
-import java.awt.dnd.DropTarget;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.beans.Beans;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
-import javax.swing.DefaultListSelectionModel;
-import javax.swing.JComponent;
-import javax.swing.JPopupMenu;
-import javax.swing.ListSelectionModel;
-import javax.swing.TransferHandler;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
-import static org.jfree.chart.ChartPanel.*;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.Axis;
 import org.jfree.chart.axis.DateAxis;
@@ -69,6 +34,25 @@ import org.jfree.chart.plot.CombinedDomainXYPlot;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.Range;
 import org.jfree.ui.RectangleInsets;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.dnd.DropTarget;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.beans.Beans;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
+
+import static ec.util.chart.TimeSeriesChart.Element.TOOLTIP;
+import static ec.util.chart.TimeSeriesChart.RendererType.*;
+import static ec.util.chart.swing.SwingColorSchemeSupport.withAlpha;
+import static org.jfree.chart.ChartPanel.*;
 
 /**
  * Component used to display time series in a chart. Supports drag and drop,
@@ -179,7 +163,7 @@ public final class JTimeSeriesChart extends ATimeSeriesChart {
         chartPanel.getChart().getTitle().setPaint(colorSchemeSupport.getTextColor());
         chartPanel.getChart().setBackgroundPaint(colorSchemeSupport.getBackColor());
         onColorSchemeSupportChange(mainPlot.getDomainAxis());
-        roSubPlots.forEach(o -> onColorSchemeSupportChange(o));
+        roSubPlots.forEach(this::onColorSchemeSupportChange);
     }
 
     private void onColorSchemeSupportChange(XYPlot plot) {
@@ -208,7 +192,7 @@ public final class JTimeSeriesChart extends ATimeSeriesChart {
     }
 
     private void onValueFormatChange() {
-        roSubPlots.forEach(o -> onValueFormatChange(o));
+        roSubPlots.forEach(this::onValueFormatChange);
     }
 
     private void onValueFormatChange(XYPlot plot) {
@@ -249,7 +233,7 @@ public final class JTimeSeriesChart extends ATimeSeriesChart {
 
     private void onDatasetChange() {
         seriesMapFactory.update(dataset.getSeriesCount(), seriesRenderer, plotDispatcher);
-        roSubPlots.forEach(o -> onDatasetChange(o));
+        roSubPlots.forEach(this::onDatasetChange);
     }
 
     private void onDatasetChange(final XYPlot plot) {
@@ -266,7 +250,7 @@ public final class JTimeSeriesChart extends ATimeSeriesChart {
     }
 
     private void onNoDataMessageChange() {
-        roSubPlots.forEach(o -> onNoDataMessageChange(o));
+        roSubPlots.forEach(this::onNoDataMessageChange);
     }
 
     private void onNoDataMessageChange(XYPlot plot) {
@@ -275,9 +259,8 @@ public final class JTimeSeriesChart extends ATimeSeriesChart {
 
     private void onPlotWeightsChange() {
         adjustSubPlots();
-        List<XYPlot> plots = roSubPlots;
         for (int i = 0; i < plotWeights.length; i++) {
-            plots.get(i).setWeight(plotWeights[i]);
+            roSubPlots.get(i).setWeight(plotWeights[i]);
         }
     }
 
@@ -287,7 +270,7 @@ public final class JTimeSeriesChart extends ATimeSeriesChart {
                 case AXIS:
                     boolean visible = elementVisible[element.ordinal()];
                     mainPlot.getDomainAxis().setVisible(visible);
-                    roSubPlots.forEach(o -> onElementVisibleChange(o));
+                    roSubPlots.forEach(this::onElementVisibleChange);
                     break;
                 case LEGEND:
                     chartPanel.getChart().getLegend().setVisible(elementVisible[element.ordinal()]);
@@ -310,7 +293,7 @@ public final class JTimeSeriesChart extends ATimeSeriesChart {
     private void onFontSupportChange() {
         chartPanel.getChart().getTitle().setFont(fontSupport.getTitleFont());
         onFontSupportChange(mainPlot.getDomainAxis());
-        roSubPlots.forEach(o -> onFontSupportChange(o));
+        roSubPlots.forEach(this::onFontSupportChange);
     }
 
     private void onFontSupportChange(XYPlot plot) {
@@ -435,7 +418,7 @@ public final class JTimeSeriesChart extends ATimeSeriesChart {
     }
 
     @Override
-    public void writeImage(String mediaType, OutputStream stream) throws IOException {
+    public void writeImage(@NonNull String mediaType, @NonNull OutputStream stream) throws IOException {
         Charts.writeChart(mediaType, stream, chartPanel.getChart(), chartPanel.getWidth(), chartPanel.getHeight());
     }
     //</editor-fold>

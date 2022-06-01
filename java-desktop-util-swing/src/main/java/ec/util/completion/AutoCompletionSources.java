@@ -24,7 +24,7 @@ import java.util.Comparator;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 public final class AutoCompletionSources {
 
@@ -32,7 +32,7 @@ public final class AutoCompletionSources {
         // static class
     }
 
-    private static final AutoCompletionSource NONE = ExtAutoCompletionSource.builder(() -> Collections.emptyList()).behavior(Behavior.NONE).build();
+    private static final AutoCompletionSource NONE = ExtAutoCompletionSource.builder(Collections::emptyList).behavior(Behavior.NONE).build();
 
     @NonNull
     public static AutoCompletionSource empty() {

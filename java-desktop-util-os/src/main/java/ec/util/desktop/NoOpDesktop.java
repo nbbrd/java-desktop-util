@@ -16,6 +16,8 @@
  */
 package ec.util.desktop;
 
+import lombok.NonNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -29,27 +31,27 @@ import java.net.URI;
 public final class NoOpDesktop implements Desktop {
 
     @Override
-    public boolean isSupported(Desktop.Action action) {
+    public boolean isSupported(Desktop.@NonNull Action action) {
         return false;
     }
 
     @Override
-    public void open(File file) throws IOException {
+    public void open(@NonNull File file) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void edit(File file) throws IOException {
+    public void edit(@NonNull File file) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void print(File file) throws IOException {
+    public void print(@NonNull File file) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void browse(URI uri) throws IOException {
+    public void browse(@NonNull URI uri) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -59,32 +61,32 @@ public final class NoOpDesktop implements Desktop {
     }
 
     @Override
-    public void mail(URI mailtoURI) throws IOException {
+    public void mail(@NonNull URI mailtoURI) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void showInFolder(File file) throws IOException {
+    public void showInFolder(@NonNull File file) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void moveToTrash(File... files) throws IOException {
+    public void moveToTrash(File @NonNull ... files) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public File getKnownFolderPath(KnownFolder knownFolder) throws IOException {
+    public File getKnownFolderPath(@NonNull KnownFolder knownFolder) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public File getKnownFolder(Desktop.KnownFolder knownFolder) {
+    public File getKnownFolder(Desktop.@NonNull KnownFolder knownFolder) {
         return null;
     }
 
     @Override
-    public File[] search(String query) throws IOException {
+    public File[] search(@NonNull String query) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

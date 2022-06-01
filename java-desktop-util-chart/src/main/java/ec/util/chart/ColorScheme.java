@@ -21,7 +21,7 @@ import java.util.Map;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  * Defines a color scheme for charts.
@@ -123,7 +123,7 @@ public interface ColorScheme {
      *
      * @author Demortier Jeremy
      */
-    public enum KnownColor {
+    enum KnownColor {
 
         YELLOW, GREEN, BLUE, BROWN, ORANGE, GRAY, RED
     }

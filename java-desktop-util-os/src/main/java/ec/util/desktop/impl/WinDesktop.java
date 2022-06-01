@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nbbrd.service.ServiceProvider;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -64,14 +64,14 @@ public class WinDesktop extends AwtDesktop {
     private final WinSearch search;
 
     // VisibleForTesting
-    WinDesktop(WinRegistry registry, ZSystem launcher, WinSearch search) {
+    WinDesktop(@NonNull WinRegistry registry, @NonNull ZSystem launcher, @NonNull WinSearch search) {
         this.registry = registry;
         this.search = search;
         this.system = launcher;
     }
 
     @Override
-    public boolean isSupported(Action action) {
+    public boolean isSupported(@NonNull Action action) {
         switch (action) {
             case SHOW_IN_FOLDER:
                 return true;
@@ -82,13 +82,13 @@ public class WinDesktop extends AwtDesktop {
     }
 
     @Override
-    public void showInFolder(File file) throws IOException {
+    public void showInFolder(@NonNull File file) throws IOException {
         Util.checkFileValidation(file);
         showInFolder(system, file);
     }
 
     @Override
-    public File getKnownFolderPath(KnownFolder knownFolder) throws IOException {
+    public File getKnownFolderPath(@NonNull KnownFolder knownFolder) throws IOException {
         switch (knownFolder) {
             case DESKTOP:
                 return getKnownFolderByName(registry, DESKTOP_DIR);
@@ -111,7 +111,7 @@ public class WinDesktop extends AwtDesktop {
     }
 
     @Override
-    public File getKnownFolder(KnownFolder knownFolder) {
+    public File getKnownFolder(@NonNull KnownFolder knownFolder) {
         try {
             return getKnownFolderPath(knownFolder);
         } catch (IOException ex) {
@@ -121,7 +121,7 @@ public class WinDesktop extends AwtDesktop {
     }
 
     @Override
-    public File[] search(String query) throws IOException {
+    public File[] search(@NonNull String query) throws IOException {
         if (!isSupported(Action.SEARCH)) {
             throw new UnsupportedOperationException(Action.SEARCH.name());
         }
@@ -132,12 +132,12 @@ public class WinDesktop extends AwtDesktop {
     public static class Factory implements Desktop.Factory {
 
         @Override
-        public SupportType getSupportType(String osArch, String osName, String osVersion) {
+        public @NonNull SupportType getSupportType(String osArch, String osName, String osVersion) {
             return osName.startsWith("Windows ") ? SupportType.GENERIC : SupportType.NONE;
         }
 
         @Override
-        public Desktop create(String osArch, String osName, String osVersion) {
+        public @NonNull Desktop create(String osArch, String osName, String osVersion) {
             WinRegistry registry = WinRegistry.getDefault();
             ZSystem launcher = ZSystem.getDefault();
             WinSearch search = WinSearch.getDefault();

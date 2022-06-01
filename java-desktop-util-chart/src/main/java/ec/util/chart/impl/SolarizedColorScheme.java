@@ -20,6 +20,8 @@ import ec.util.chart.ColorScheme;
 import static java.util.Arrays.asList;
 import java.util.List;
 import java.util.Map;
+
+import lombok.NonNull;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -58,12 +60,12 @@ public abstract class SolarizedColorScheme extends AbstractColorScheme {
     public static final int GREEN = 0x859900;
 
     @Override
-    public List<Integer> getAreaColors() {
+    public @NonNull List<Integer> getAreaColors() {
         return asList(GREEN, RED, BLUE, VIOLET, YELLOW, MAGENTA, CYAN, ORANGE);
     }
 
     @Override
-    public Map<KnownColor, Integer> getAreaKnownColors() {
+    public @NonNull Map<KnownColor, Integer> getAreaKnownColors() {
         return knownColors(BLUE, VIOLET, BASE1, GREEN, ORANGE, RED, YELLOW);
     }
 
@@ -95,7 +97,7 @@ public abstract class SolarizedColorScheme extends AbstractColorScheme {
     public static class SolarizedDarkColorScheme extends SolarizedColorScheme {
 
         @Override
-        public String getName() {
+        public @NonNull String getName() {
             return "Solarized - Dark";
         }
 
@@ -121,7 +123,7 @@ public abstract class SolarizedColorScheme extends AbstractColorScheme {
     public static class SolarizedLightColorScheme extends SolarizedColorScheme {
 
         @Override
-        public String getName() {
+        public @NonNull String getName() {
             return "Solarized - Light";
         }
 

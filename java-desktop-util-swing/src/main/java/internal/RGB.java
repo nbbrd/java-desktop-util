@@ -16,7 +16,7 @@
  */
 package internal;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 
 /**

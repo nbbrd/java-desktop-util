@@ -24,7 +24,7 @@ import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
 import nbbrd.service.ServiceProvider;
 import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 
@@ -51,12 +51,12 @@ public abstract class JFreeChartWriter {
     public static final class SvgWriter extends JFreeChartWriter {
 
         @Override
-        public String getMediaType() {
+        public @NonNull String getMediaType() {
             return "image/svg+xml";
         }
 
         @Override
-        public void writeChart(OutputStream stream, JFreeChart chart, int width, int height) throws IOException {
+        public void writeChart(@NonNull OutputStream stream, @NonNull JFreeChart chart, int width, int height) throws IOException {
             Charts.writeChartAsSVG(stream, chart, width, height);
         }
     }
@@ -65,12 +65,12 @@ public abstract class JFreeChartWriter {
     public static final class SvgzWriter extends JFreeChartWriter {
 
         @Override
-        public String getMediaType() {
+        public @NonNull String getMediaType() {
             return "image/svg+xml-compressed";
         }
 
         @Override
-        public void writeChart(OutputStream stream, JFreeChart chart, int width, int height) throws IOException {
+        public void writeChart(@NonNull OutputStream stream, @NonNull JFreeChart chart, int width, int height) throws IOException {
             try (GZIPOutputStream gzip = new GZIPOutputStream(stream)) {
                 Charts.writeChartAsSVG(gzip, chart, width, height);
             }
@@ -81,12 +81,12 @@ public abstract class JFreeChartWriter {
     public static final class PngWriter extends JFreeChartWriter {
 
         @Override
-        public String getMediaType() {
+        public @NonNull String getMediaType() {
             return "image/png";
         }
 
         @Override
-        public void writeChart(OutputStream stream, JFreeChart chart, int width, int height) throws IOException {
+        public void writeChart(@NonNull OutputStream stream, @NonNull JFreeChart chart, int width, int height) throws IOException {
             ChartUtilities.writeChartAsPNG(stream, chart, width, height);
         }
     }
@@ -95,12 +95,12 @@ public abstract class JFreeChartWriter {
     public static final class JpegWriter extends JFreeChartWriter {
 
         @Override
-        public String getMediaType() {
+        public @NonNull String getMediaType() {
             return "image/jpeg";
         }
 
         @Override
-        public void writeChart(OutputStream stream, JFreeChart chart, int width, int height) throws IOException {
+        public void writeChart(@NonNull OutputStream stream, @NonNull JFreeChart chart, int width, int height) throws IOException {
             ChartUtilities.writeChartAsJPEG(stream, chart, width, height);
         }
     }

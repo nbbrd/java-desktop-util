@@ -52,6 +52,8 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import lombok.NonNull;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 
 /**
@@ -94,7 +96,7 @@ public final class JAutoCompletionDemo extends javax.swing.JPanel {
             protected String toString(String term, JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 if (value instanceof Locale) {
                     Locale locale = (Locale) value;
-                    String newValue = locale.toString() + " - " + locale.getDisplayName();
+                    String newValue = locale + " - " + locale.getDisplayName();
                     return super.toString(term, list, newValue, index, isSelected, cellHasFocus);
                 }
                 return super.toString(term, list, value, index, isSelected, cellHasFocus);
@@ -187,17 +189,17 @@ public final class JAutoCompletionDemo extends javax.swing.JPanel {
         JAutoCompletion ac = new JAutoCompletion(exception);
         ac.setSource(new AutoCompletionSource() {
             @Override
-            public Behavior getBehavior(String term) {
+            public @NonNull Behavior getBehavior(@NonNull String term) {
                 return Behavior.ASYNC;
             }
 
             @Override
-            public String toString(Object value) {
+            public @NonNull String toString(@NonNull Object value) {
                 return value.toString();
             }
 
             @Override
-            public List<?> getValues(String term) throws Exception {
+            public @NonNull List<?> getValues(@NonNull String term) throws Exception {
                 TimeUnit.SECONDS.sleep(1);
                 throw new IOException("boooooooom!");
             }

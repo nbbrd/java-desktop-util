@@ -38,6 +38,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.junit.Assert.*;
+
+import lombok.NonNull;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -160,17 +162,17 @@ public class WinDesktopTest {
         }
 
         @Override
-        public boolean keyExists(Root root, String key) throws IOException {
+        public boolean keyExists(@NonNull Root root, @NonNull String key) throws IOException {
             return data.get(root).containsKey(key);
         }
 
         @Override
-        public Object getValue(Root root, String key, String value) throws IOException {
+        public Object getValue(@NonNull Root root, @NonNull String key, @NonNull String value) throws IOException {
             return data.get(root).get(key).get(value);
         }
 
         @Override
-        public SortedMap<String, Object> getValues(Root root, String key) throws IOException {
+        public @NonNull SortedMap<String, Object> getValues(@NonNull Root root, @NonNull String key) throws IOException {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }
@@ -178,12 +180,12 @@ public class WinDesktopTest {
     private static final class FakeLauncher extends ZSystem {
 
         @Override
-        public String getProperty(String key) throws SecurityException, IllegalArgumentException, NullPointerException {
+        public String getProperty(@NonNull String key) throws SecurityException, IllegalArgumentException, NullPointerException {
             return null;
         }
 
         @Override
-        public Process exec(String... cmdArray) throws IOException {
+        public @NonNull Process exec(String... cmdArray) throws IOException {
             return new Process() {
 
                 @Override
@@ -221,7 +223,7 @@ public class WinDesktopTest {
     private static final class FakeSearch extends WinSearch {
 
         @Override
-        public List<File> getFilesByName(String query) throws IOException {
+        public @NonNull List<File> getFilesByName(@NonNull String query) throws IOException {
             return Collections.singletonList(new File("hello.html"));
         }
     }

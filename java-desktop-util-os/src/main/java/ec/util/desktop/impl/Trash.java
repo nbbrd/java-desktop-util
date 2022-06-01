@@ -19,7 +19,7 @@ package ec.util.desktop.impl;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  *

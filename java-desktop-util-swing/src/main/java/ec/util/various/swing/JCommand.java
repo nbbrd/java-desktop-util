@@ -31,7 +31,7 @@ import javax.swing.Action;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -47,7 +47,7 @@ public abstract class JCommand<C> {
     public static <X> JCommand<X> of(@NonNull Consumer<X> consumer) {
         return new JCommand<X>() {
             @Override
-            public void execute(X component) throws Exception {
+            public void execute(@NonNull X component) throws Exception {
                 consumer.accept(component);
             }
         };
@@ -166,7 +166,7 @@ public abstract class JCommand<C> {
                 for (final String property : properties) {
                     source.addPropertyChangeListener(property, new WeakPropertyChangeListener(realListener) {
                         @Override
-                        protected void unregister(Object source) {
+                        protected void unregister(@NonNull Object source) {
                             ((Component) source).removePropertyChangeListener(property, this);
                         }
                     });
@@ -174,7 +174,7 @@ public abstract class JCommand<C> {
             } else {
                 source.addPropertyChangeListener(new WeakPropertyChangeListener(realListener) {
                     @Override
-                    protected void unregister(Object source) {
+                    protected void unregister(@NonNull Object source) {
                         ((Component) source).removePropertyChangeListener(this);
                     }
                 });
@@ -195,7 +195,7 @@ public abstract class JCommand<C> {
             putValue("ListSelectionListener", realListener);
             source.addListSelectionListener(new WeakListSelectionListener(realListener) {
                 @Override
-                protected void unregister(Object source) {
+                protected void unregister(@NonNull Object source) {
                     ((ListSelectionModel) source).removeListSelectionListener(this);
                 }
             });

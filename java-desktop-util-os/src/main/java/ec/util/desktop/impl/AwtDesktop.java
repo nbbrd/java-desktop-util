@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
 import nbbrd.service.ServiceProvider;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  * A basic {@link Desktop} implementation based on
@@ -42,7 +42,7 @@ public class AwtDesktop implements Desktop {
     }
 
     @Override
-    public boolean isSupported(Desktop.Action action) {
+    public boolean isSupported(Desktop.@NonNull Action action) {
         switch (action) {
             case BROWSE:
                 return awt.isSupported(java.awt.Desktop.Action.BROWSE);
@@ -67,22 +67,22 @@ public class AwtDesktop implements Desktop {
     }
 
     @Override
-    public void open(File file) throws IOException {
+    public void open(@NonNull File file) throws IOException {
         awt.open(file);
     }
 
     @Override
-    public void edit(File file) throws IOException {
+    public void edit(@NonNull File file) throws IOException {
         awt.edit(file);
     }
 
     @Override
-    public void print(File file) throws IOException {
+    public void print(@NonNull File file) throws IOException {
         awt.print(file);
     }
 
     @Override
-    public void browse(URI uri) throws IOException {
+    public void browse(@NonNull URI uri) throws IOException {
         awt.browse(uri);
     }
 
@@ -92,32 +92,32 @@ public class AwtDesktop implements Desktop {
     }
 
     @Override
-    public void mail(URI mailtoURI) throws IOException {
+    public void mail(@NonNull URI mailtoURI) throws IOException {
         awt.mail(mailtoURI);
     }
 
     @Override
-    public void showInFolder(File file) throws IOException {
+    public void showInFolder(@NonNull File file) throws IOException {
         awt.open(file.isDirectory() ? file : file.getParentFile());
     }
 
     @Override
-    public void moveToTrash(File... files) throws IOException {
+    public void moveToTrash(@NonNull File... files) throws IOException {
         trash.moveToTrash(files);
     }
 
     @Override
-    public File getKnownFolderPath(KnownFolder knownFolder) throws IOException {
+    public File getKnownFolderPath(@NonNull KnownFolder knownFolder) throws IOException {
         return getKnownFolder(knownFolder);
     }
 
     @Override
-    public File getKnownFolder(Desktop.KnownFolder userDir) {
+    public File getKnownFolder(Desktop.@NonNull KnownFolder userDir) {
         return null;
     }
 
     @Override
-    public File[] search(String query) throws IOException {
+    public File[] search(@NonNull String query) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -125,12 +125,12 @@ public class AwtDesktop implements Desktop {
     public static class Factory implements Desktop.Factory {
 
         @Override
-        public Desktop.Factory.SupportType getSupportType(String osArch, String osName, String osVersion) {
+        public Desktop.Factory.@NonNull SupportType getSupportType(String osArch, String osName, String osVersion) {
             return Desktop.Factory.SupportType.BASIC;
         }
 
         @Override
-        public Desktop create(String osArch, String osName, String osVersion) {
+        public @NonNull Desktop create(String osArch, String osName, String osVersion) {
             return new AwtDesktop();
         }
     }

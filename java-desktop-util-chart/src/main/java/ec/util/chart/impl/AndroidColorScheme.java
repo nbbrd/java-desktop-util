@@ -21,6 +21,8 @@ import ec.util.chart.ColorSchemeSupport;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import lombok.NonNull;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -45,7 +47,7 @@ public abstract class AndroidColorScheme extends AbstractColorScheme {
     public static final int DARK_RED = 0xCC0000;
 
     @Override
-    public List<Integer> getAreaColors() {
+    public @NonNull List<Integer> getAreaColors() {
         return Arrays.asList(BLUE,
                 PURPLE,
                 GREEN,
@@ -59,7 +61,7 @@ public abstract class AndroidColorScheme extends AbstractColorScheme {
     }
 
     @Override
-    public Map<KnownColor, Integer> getAreaKnownColors() {
+    public @NonNull Map<KnownColor, Integer> getAreaKnownColors() {
         return knownColors(BLUE,
                 DARK_RED,
                 BasicColor.GRAY,
@@ -80,12 +82,12 @@ public abstract class AndroidColorScheme extends AbstractColorScheme {
     public static class AndroidDarkColorScheme extends AndroidColorScheme {
 
         @Override
-        public String getName() {
+        public @NonNull String getName() {
             return "Android - Dark";
         }
 
         @Override
-        public String getDisplayName() {
+        public @NonNull String getDisplayName() {
             return "Ice Cream Sandwich - Dark";
         }
 
@@ -116,12 +118,12 @@ public abstract class AndroidColorScheme extends AbstractColorScheme {
     public static class AndroidLightColorScheme extends AndroidColorScheme {
 
         @Override
-        public String getName() {
+        public @NonNull String getName() {
             return "Android - Light";
         }
 
         @Override
-        public String getDisplayName() {
+        public @NonNull String getDisplayName() {
             return "Ice Cream Sandwich - Light";
         }
 

@@ -18,7 +18,7 @@ package ec.util.chart;
 
 import java.util.Arrays;
 import java.util.Objects;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -46,7 +46,7 @@ public abstract class SeriesFunction<T> {
 
     @NonNull
     public static <X> SeriesFunction<X> array(@NonNull X... values) throws NullPointerException {
-        return new FromArray(values);
+        return new FromArray<>(values);
     }
 
     /**

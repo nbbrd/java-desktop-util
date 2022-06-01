@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import nbbrd.service.ServiceProvider;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -49,12 +49,12 @@ public class MacDesktop extends AwtDesktop {
     private final ZSystem system;
 
     // VisibleForTesting
-    MacDesktop(ZSystem system) {
+    MacDesktop(@NonNull ZSystem system) {
         this.system = system;
     }
 
     @Override
-    public boolean isSupported(Action action) {
+    public boolean isSupported(@NonNull Action action) {
         switch (action) {
             case SHOW_IN_FOLDER:
                 return true;
@@ -65,14 +65,14 @@ public class MacDesktop extends AwtDesktop {
     }
 
     @Override
-    public void showInFolder(File file) throws IOException {
+    public void showInFolder(@NonNull File file) throws IOException {
         Util.checkFileValidation(file);
         // https://developer.apple.com/library/mac/#documentation/Darwin/Reference/ManPages/man1/open.1.html
         system.exec("open", "-R", file.getAbsolutePath());
     }
 
     @Override
-    public File getKnownFolder(Desktop.KnownFolder userDir) {
+    public File getKnownFolder(Desktop.@NonNull KnownFolder userDir) {
         switch (userDir) {
             case DESKTOP:
                 return getKnownFolderByName(system, DESKTOP_DIR);
@@ -95,7 +95,7 @@ public class MacDesktop extends AwtDesktop {
     }
 
     @Override
-    public File[] search(String query) throws IOException {
+    public File[] search(@NonNull String query) throws IOException {
         // http://macdevcenter.com/pub/a/mac/2006/01/04/mdfind.html
         // https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/mdfind.1.html
         String quotedQuery = "\"" + query.replace("\"", "") + "\"";
@@ -107,12 +107,12 @@ public class MacDesktop extends AwtDesktop {
     public static class Factory implements Desktop.Factory {
 
         @Override
-        public Desktop.Factory.SupportType getSupportType(String osArch, String osName, String osVersion) {
+        public Desktop.Factory.@NonNull SupportType getSupportType(String osArch, String osName, String osVersion) {
             return osName.equals("Mac OS X") || osName.startsWith("Darwin") ? Desktop.Factory.SupportType.GENERIC : Desktop.Factory.SupportType.NONE;
         }
 
         @Override
-        public Desktop create(String osArch, String osName, String osVersion) {
+        public @NonNull Desktop create(String osArch, String osName, String osVersion) {
             return new MacDesktop(ZSystem.getDefault());
         }
     }

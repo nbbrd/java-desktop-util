@@ -6,6 +6,8 @@ package ec.util.completion;
 
 import java.util.Arrays;
 import java.util.List;
+
+import lombok.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,12 +17,12 @@ import org.junit.Test;
  */
 public class AbstractAutoCompletionSourceTest {
 
-    static final List<Class<?>> VALUES = Arrays.<Class<?>>asList(Integer.class, Double.class);
+    static final List<Class<?>> VALUES = Arrays.asList(Integer.class, Double.class);
 
     static class TestSource extends AbstractAutoCompletionSource<Class<?>> {
 
         @Override
-        protected Iterable<Class<?>> getAllValues() throws Exception {
+        protected @NonNull Iterable<Class<?>> getAllValues() throws Exception {
             return VALUES;
         }
     }
@@ -32,7 +34,7 @@ public class AbstractAutoCompletionSourceTest {
 
         AutoCompletionSource s2 = new TestSource() {
             @Override
-            protected String getValueAsString(Class<?> value) {
+            protected @NonNull String getValueAsString(@NonNull Class<?> value) {
                 return value.getSimpleName();
             }
         };
@@ -51,7 +53,7 @@ public class AbstractAutoCompletionSourceTest {
     public void testGetValueAsString() throws Exception {
         AutoCompletionSource s2 = new TestSource() {
             @Override
-            protected String getValueAsString(Class<?> value) {
+            protected @NonNull String getValueAsString(@NonNull Class<?> value) {
                 return value.getSimpleName();
             }
         };
@@ -64,7 +66,7 @@ public class AbstractAutoCompletionSourceTest {
     public void testGetNormalizedString() throws Exception {
         AutoCompletionSource s3 = new TestSource() {
             @Override
-            protected String getNormalizedString(String input) {
+            protected @NonNull String getNormalizedString(@NonNull String input) {
                 return input;
             }
         };
@@ -99,7 +101,7 @@ public class AbstractAutoCompletionSourceTest {
     public void testMatches() throws Exception {
         AutoCompletionSource s3 = new TestSource() {
             @Override
-            protected boolean matches(String normalizedTerm, String normalizedInput) {
+            protected boolean matches(@NonNull String normalizedTerm, @NonNull String normalizedInput) {
                 return normalizedTerm.equals(normalizedInput);
             }
         };
@@ -112,7 +114,7 @@ public class AbstractAutoCompletionSourceTest {
     public void testMatches2() throws Exception {
         AutoCompletionSource s3 = new TestSource() {
             @Override
-            protected boolean matches(TermMatcher termMatcher, Class<?> input) {
+            protected boolean matches(@NonNull TermMatcher termMatcher, @NonNull Class<?> input) {
                 return termMatcher.matches("" + input.getSimpleName().length());
             }
         };

@@ -26,7 +26,7 @@ import static java.util.Optional.ofNullable;
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.table.TableCellRenderer;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -206,7 +206,7 @@ public class XTable extends JTable {
     @Override
     public boolean getScrollableTracksViewportHeight() {
         if (getParent() instanceof JViewport) {
-            return (((JViewport) getParent()).getHeight() > getPreferredSize().height);
+            return (getParent().getHeight() > getPreferredSize().height);
         }
         return super.getScrollableTracksViewportHeight();
     }

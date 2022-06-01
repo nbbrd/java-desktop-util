@@ -32,6 +32,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import lombok.NonNull;
 import org.junit.Test;
 
 /**
@@ -50,17 +52,17 @@ public class ExtAutoCompletionSourceTest {
 
     private static final AutoCompletionSource DATA = new AutoCompletionSource() {
         @Override
-        public Behavior getBehavior(String term) {
+        public @NonNull Behavior getBehavior(@NonNull String term) {
             return Behavior.SYNC;
         }
 
         @Override
-        public String toString(Object value) {
+        public @NonNull String toString(@NonNull Object value) {
             return value.toString();
         }
 
         @Override
-        public List<?> getValues(String term) throws Exception {
+        public @NonNull List<?> getValues(@NonNull String term) throws Exception {
             return Stream.of("Hello", "World")
                     .filter(o -> o.contains(term))
                     .sorted()

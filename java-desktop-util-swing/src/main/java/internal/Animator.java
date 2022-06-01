@@ -37,11 +37,11 @@ enum Animator {
     private final Timer timer;
     private final List<WeakReference<Animation>> animations;
 
-    private Animator() {
+    Animator() {
         this(DEFAULT_FPS, Clock.systemDefaultZone());
     }
 
-    private Animator(int fps, Clock clock) {
+    Animator(int fps, Clock clock) {
         this.clock = clock;
         this.timer = new Timer(1000 / fps, event -> broadcast(clock.millis()));
         this.animations = new ArrayList<>();
@@ -61,7 +61,7 @@ enum Animator {
     @OnEDT
     public void register(Animation animation) {
         if (animation.refresh(clock.millis())) {
-            animations.add(new WeakReference(animation));
+            animations.add(new WeakReference<>(animation));
         }
     }
 }

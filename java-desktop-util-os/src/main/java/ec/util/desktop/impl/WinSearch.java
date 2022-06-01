@@ -22,7 +22,7 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -37,7 +37,7 @@ abstract class WinSearch {
     @NonNull
     public File[] search(@NonNull String query) throws IOException {
         List<File> result = getFilesByName(query);
-        return result.toArray(new File[result.size()]);
+        return result.toArray(new File[0]);
     }
 
     @NonNull
@@ -93,7 +93,7 @@ abstract class WinSearch {
         private static final WinSearch INSTANCE = new NoOpSearch();
 
         @Override
-        public List<File> getFilesByName(String query) throws IOException {
+        public @NonNull List<File> getFilesByName(@NonNull String query) throws IOException {
             return Collections.emptyList();
         }
     }
@@ -103,7 +103,7 @@ abstract class WinSearch {
         public static final FailingSearch INSTANCE = new FailingSearch();
 
         @Override
-        public List<File> getFilesByName(String query) throws IOException {
+        public @NonNull List<File> getFilesByName(@NonNull String query) throws IOException {
             throw new IOException();
         }
     }
@@ -121,7 +121,7 @@ abstract class WinSearch {
         }
 
         @Override
-        public List<File> getFilesByName(String query) throws IOException {
+        public @NonNull List<File> getFilesByName(@NonNull String query) throws IOException {
             String quotedQuery = quote(query.replace(QUOTE, ""));
             Process p = wsh.exec(searchScript, quotedQuery);
             return Util.toList(p, Charset.defaultCharset(), File::new);
