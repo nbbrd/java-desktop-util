@@ -1,40 +1,37 @@
 /*
  * Copyright 2016 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package _demo;
 
+import _demo.ext.Ikons;
 import ec.util.list.swing.JListSelection;
-import static ec.util.list.swing.JListSelection.APPLY_HORIZONTAL_ACTION;
 import ec.util.list.swing.JLists;
-import static ec.util.list.swing.JListSelection.SOURCE_HEADER_PROPERTY;
 import ec.util.various.swing.BasicSwingLauncher;
 import ec.util.various.swing.JCommand;
-import java.awt.Component;
-import java.util.stream.Stream;
-import javax.swing.BorderFactory;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JLabel;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingConstants;
-
 import lombok.NonNull;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 
+import javax.swing.*;
+import java.awt.*;
+import java.util.stream.Stream;
+
+import static ec.util.list.swing.JListSelection.APPLY_HORIZONTAL_ACTION;
+import static ec.util.list.swing.JListSelection.SOURCE_HEADER_PROPERTY;
+
 /**
- *
  * @author Philippe Charles
  */
 public final class JListSelectionDemo {
@@ -45,7 +42,7 @@ public final class JListSelectionDemo {
                 .launch();
     }
 
-    private static Component create() {
+    public static Component create() {
         JListSelection<MaterialDesign> result = new JListSelection<>();
         result.setCellRenderer(JLists.cellRendererOf(JListSelectionDemo::applyIcon));
         result.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));

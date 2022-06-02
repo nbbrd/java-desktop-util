@@ -16,6 +16,7 @@
  */
 package _demo;
 
+import _demo.ext.Ikons;
 import ec.util.completion.AutoCompletionSource;
 import ec.util.completion.AutoCompletionSource.Behavior;
 import ec.util.completion.AutoCompletionSources;

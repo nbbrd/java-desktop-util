@@ -46,7 +46,7 @@ public final class XPopupDemo {
                 .launch();
     }
 
-    private static Component create() {
+    public static Component create() {
         JPanel result = new JPanel();
         result.setLayout(new FlowLayout());
         for (final XPopup.Anchor o : XPopup.Anchor.values()) {
