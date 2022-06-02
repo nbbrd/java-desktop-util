@@ -1,79 +1,45 @@
 /*
  * Copyright 2013 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.util.grid.swing;
 
 import ec.util.grid.CellIndex;
-import static ec.util.grid.swing.AGrid.HOVERED_CELL_PROPERTY;
 import ec.util.various.swing.LineBorder2;
-import static ec.util.various.swing.StandardSwingColor.TABLE_BACKGROUND;
-import static ec.util.various.swing.StandardSwingColor.TABLE_FOREGROUND;
-import static ec.util.various.swing.StandardSwingColor.TABLE_HEADER_BACKGROUND;
-import static ec.util.various.swing.StandardSwingColor.TABLE_HEADER_FOREGROUND;
-import static ec.util.various.swing.StandardSwingColor.TABLE_SELECTION_BACKGROUND;
-import static ec.util.various.swing.StandardSwingColor.TABLE_SELECTION_FOREGROUND;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseMotionListener;
-import java.beans.PropertyChangeEvent;
-import java.util.Enumeration;
-import javax.swing.BorderFactory;
-import javax.swing.CellRendererPane;
-import javax.swing.JComponent;
-import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
-import javax.swing.JLabel;
-import javax.swing.JLayer;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.TransferHandler;
+import ec.util.various.swing.OnEDT;
+import internal.Colors;
+import lombok.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.plaf.LayerUI;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import static ec.util.various.swing.ModernUI.withEmptyBorders;
-import internal.Colors;
+import javax.swing.table.*;
+import java.awt.*;
+import java.awt.dnd.*;
+import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicBoolean;
-import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+
+import static ec.util.various.swing.ModernUI.withEmptyBorders;
+import static ec.util.various.swing.StandardSwingColor.*;
 
 /**
  * A grid component for Swing that differs from a JTable by adding a row header.
@@ -712,11 +678,9 @@ public final class JGrid extends AGrid {
     private abstract static class HeaderRenderer implements TableCellRenderer {
 
         protected final JLabel renderer;
-        protected final GridUIResource gridResource;
 
         public HeaderRenderer() {
             this.renderer = new DefaultTableCellRenderer();
-            this.gridResource = GridUIResource.getDefault();
             renderer.setOpaque(true);
         }
 
@@ -738,7 +702,7 @@ public final class JGrid extends AGrid {
                 renderer.setToolTipText(text);
             }
             renderer.setFont(table.getFont());
-            CellUIResource cellResource = gridResource.getHeader(isHeaderSelected(table, row, column), isHeaderHovered(table, row, column));
+            CellUIResource cellResource = GridUIResource.getDefault().getHeader(isHeaderSelected(table, row, column), isHeaderHovered(table, row, column));
             renderer.setBackground(cellResource.getBackground());
             renderer.setForeground(cellResource.getForeground());
             renderer.setBorder(cellResource.getBorder());
@@ -807,12 +771,10 @@ public final class JGrid extends AGrid {
 
         private final JGrid grid;
         private final JLabel renderer;
-        private final GridUIResource gridResource;
 
         public GridCellRenderer(@NonNull JGrid grid) {
             this.grid = grid;
             this.renderer = new DefaultTableCellRenderer();
-            this.gridResource = GridUIResource.getDefault();
         }
 
         @Override
@@ -824,7 +786,7 @@ public final class JGrid extends AGrid {
                     ? hoveredCell.equals(row, column)
                     : (hoveredCell.getRow() == row || hoveredCell.getColumn() == column);
 
-            CellUIResource resource = gridResource.getCell(isSelected, focused);
+            CellUIResource resource = GridUIResource.getDefault().getCell(isSelected, focused);
             renderer.setBorder(resource.getBorder());
 
             renderer.setBackground(resource.getBackground());
@@ -843,15 +805,23 @@ public final class JGrid extends AGrid {
         @NonNull
         abstract public CellUIResource getCell(boolean selected, boolean hovered);
 
+        @OnEDT
         @NonNull
         public static GridUIResource getDefault() {
+            if (GridColorsImpl.INSTANCE == null) {
+                GridColorsImpl.INSTANCE = new GridColorsImpl();
+            }
             return GridColorsImpl.INSTANCE;
         }
 
         //<editor-fold defaultstate="collapsed" desc="Implementation details">
         private static final class GridColorsImpl extends GridUIResource {
 
-            private static final GridColorsImpl INSTANCE = new GridColorsImpl();
+            private static GridColorsImpl INSTANCE = null;
+
+            static {
+                UIManager.addPropertyChangeListener(evt -> INSTANCE = null);
+            }
 
             private final CellUIResource header;
             private final CellUIResource headerSelection;
@@ -871,7 +841,7 @@ public final class JGrid extends AGrid {
                 Color selectionForeground = TABLE_SELECTION_FOREGROUND.lookup().orElseGet(() -> new Color(255, 255, 255));
 
                 Border headerBorder = BorderFactory.createCompoundBorder(
-                        new LineBorder2(headerBackground.brighter(), 0, 0, 1, 1),
+                        new LineBorder2(Colors.isDark(headerBackground) ? headerBackground.brighter() : headerBackground.darker(), 0, 0, 1, 1),
                         BorderFactory.createEmptyBorder(0, 4, 0, 4));
                 Border noBorder = BorderFactory.createEmptyBorder();
 

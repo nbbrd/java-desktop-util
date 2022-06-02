@@ -25,6 +25,7 @@ public final class MainDemo {
         result.add("ToolBarIcon", ToolBarIconDemo.create());
         result.add("XPopup", XPopupDemo.create());
         result.add("XTable", new XTableDemo());
+        result.add("JGrid", new JGridDemo());
         return JDemoPane.of(result);
     }
 }
