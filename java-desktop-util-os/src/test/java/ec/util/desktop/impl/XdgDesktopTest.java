@@ -8,7 +8,7 @@ import ec.util.desktop.Desktop;
 import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

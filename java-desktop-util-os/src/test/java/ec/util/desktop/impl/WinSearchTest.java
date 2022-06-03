@@ -19,8 +19,9 @@ package ec.util.desktop.impl;
 import java.io.File;
 import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Assume;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -30,7 +31,7 @@ public class WinSearchTest {
 
     @Test
     public void testVbsSearch() throws IOException {
-        Assume.assumeTrue(Util.is64bit() && isWindows());
+        Assumptions.assumeTrue(Util.is64bit() && isWindows());
 
         WinSearch winSearch = new WinSearch.VbsSearch(
                 WinScriptHost.getDefault(),

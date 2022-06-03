@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import lombok.NonNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *
