@@ -9,9 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Fixed
-- Fix colors on look&feel update
 
 ### Changed
+
+## [2.2.6] - 2022-06-03
+
+This is a bugfix release of **java-desktop-util**.   
+java-desktop-util follows [semantic versioning](http://semver.org/).
+
+### Fixed
+- Fix colors on look&feel update
 
 ## [2.2.5] - 2021-03-24
 
@@ -56,7 +63,8 @@ java-desktop-util follows [semantic versioning](http://semver.org/).
 ### Fixed
 - JDK11 cleanup
 
-[Unreleased]: https://github.com/nbbrd/java-desktop-util/compare/v2.2.5...HEAD
+[Unreleased]: https://github.com/nbbrd/java-desktop-util/compare/v2.2.6...HEAD
+[2.2.6]: https://github.com/nbbrd/java-desktop-util/compare/v2.2.5...v2.2.6
 [2.2.5]: https://github.com/nbbrd/java-desktop-util/compare/v2.2.4...v2.2.5
 [2.2.4]: https://github.com/nbbrd/java-desktop-util/compare/v2.2.3...v2.2.4
 [2.2.3]: https://github.com/nbbrd/java-desktop-util/compare/v2.2.2...v2.2.3
