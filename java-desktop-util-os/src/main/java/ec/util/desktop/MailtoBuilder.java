@@ -21,7 +21,7 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.util.EnumMap;
 import java.util.Map.Entry;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  * A utility class that eases the creation of a mailto URI.
@@ -37,7 +37,8 @@ public class MailtoBuilder {
     protected enum HName {
 
         TO, CC, BCC, SUBJECT, BODY
-    };
+    }
+
     //
     protected final EnumMap<HName, String> map;
 
@@ -112,7 +113,7 @@ public class MailtoBuilder {
 
     static String encodex(String text) {
         try {
-            return URLEncoder.encode(text, "UTF-8").replaceAll("\\+", "%20").replaceAll("\\%0A", "%0D%0A");
+            return URLEncoder.encode(text, "UTF-8").replaceAll("\\+", "%20").replaceAll("%0A", "%0D%0A");
         } catch (UnsupportedEncodingException ex) {
             throw new RuntimeException(ex);
         }

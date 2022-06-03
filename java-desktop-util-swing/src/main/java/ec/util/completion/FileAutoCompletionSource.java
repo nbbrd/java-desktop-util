@@ -16,6 +16,8 @@
  */
 package ec.util.completion;
 
+import lombok.NonNull;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -40,17 +42,17 @@ public class FileAutoCompletionSource implements AutoCompletionSource {
     }
 
     @Override
-    public Behavior getBehavior(String term) {
+    public @NonNull Behavior getBehavior(@NonNull String term) {
         return Behavior.ASYNC;
     }
 
     @Override
-    public String toString(Object value) {
+    public @NonNull String toString(@NonNull Object value) {
         return ((File) value).getPath();
     }
 
     @Override
-    public List<File> getValues(final String term) throws IOException {
+    public @NonNull List<File> getValues(final @NonNull String term) throws IOException {
         // case 1: absolute path
         {
             File file = new File(term);
@@ -83,10 +85,7 @@ public class FileAutoCompletionSource implements AutoCompletionSource {
     }
 
     List<File> toRelativeFiles(List<File> files, File path) {
-        for (int i = 0; i < files.size(); i++) {
-            String tmp = files.get(i).getPath().substring(path.getPath().length() + 1);
-            files.set(i, new File(tmp));
-        }
+        files.replaceAll(file -> new File(file.getPath().substring(path.getPath().length() + 1)));
         return files;
     }
 
@@ -102,6 +101,6 @@ public class FileAutoCompletionSource implements AutoCompletionSource {
     static List<File> children(File folder, FileFilter fileFilter) {
         File[] result = folder.listFiles(fileFilter);
         // result == null => An I/O exception occured
-        return result != null ? Arrays.asList(result) : Collections.<File>emptyList();
+        return result != null ? Arrays.asList(result) : Collections.emptyList();
     }
 }

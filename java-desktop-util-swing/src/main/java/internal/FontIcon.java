@@ -29,14 +29,14 @@ import java.awt.geom.Point2D;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import lombok.AccessLevel;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.experimental.Wither
+@lombok.With
 @lombok.RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FontIcon implements Icon {
 

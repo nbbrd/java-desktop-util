@@ -17,6 +17,8 @@
 package ec.util.chart.impl;
 
 import ec.util.chart.ColorScheme;
+import lombok.NonNull;
+
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -40,17 +42,17 @@ public abstract class AbstractColorScheme implements ColorScheme {
     }
 
     @Override
-    public List<Integer> getLineColors() {
+    public @NonNull List<Integer> getLineColors() {
         return getAreaColors();
     }
 
     @Override
-    public Map<KnownColor, Integer> getLineKnownColors() {
+    public @NonNull Map<KnownColor, Integer> getLineKnownColors() {
         return getAreaKnownColors();
     }
 
     @Override
-    public String getDisplayName() {
+    public @NonNull String getDisplayName() {
         return getName();
     }
 

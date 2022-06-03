@@ -29,7 +29,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /*
  * Prevent the specified number of columns from scrolling horizontally in the

@@ -19,6 +19,8 @@ package _demo;
 import ec.util.grid.swing.XTable;
 import ec.util.table.swing.JTables;
 import ec.util.various.swing.JCommand;
+import lombok.NonNull;
+
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
@@ -29,7 +31,7 @@ import javax.swing.table.TableModel;
 abstract class XTableCommand extends JCommand<XTable> {
 
     @Override
-    public ActionAdapter toAction(XTable table) {
+    public @NonNull ActionAdapter toAction(@NonNull XTable table) {
         return super.toAction(table)
                 .withWeakPropertyChangeListener(table)
                 .withWeakListSelectionListener(table.getSelectionModel());
@@ -38,12 +40,12 @@ abstract class XTableCommand extends JCommand<XTable> {
     public static XTableCommand applyModel(final TableModel model) {
         return new XTableCommand() {
             @Override
-            public void execute(XTable table) {
+            public void execute(@NonNull XTable table) {
                 table.setModel(model);
             }
 
             @Override
-            public boolean isSelected(XTable table) {
+            public boolean isSelected(@NonNull XTable table) {
                 return table.getModel().equals(model);
             }
         };
@@ -52,18 +54,18 @@ abstract class XTableCommand extends JCommand<XTable> {
     public static XTableCommand applyDefaultRenderer(final Class<?> columnClass, final TableCellRenderer renderer) {
         return new XTableCommand() {
             @Override
-            public void execute(XTable table) {
+            public void execute(@NonNull XTable table) {
                 table.setDefaultRenderer(columnClass, renderer);
                 table.repaint();
             }
 
             @Override
-            public boolean isEnabled(XTable component) {
+            public boolean isEnabled(@NonNull XTable component) {
                 return component.getModel().getRowCount() > 0;
             }
 
             @Override
-            public boolean isSelected(XTable table) {
+            public boolean isSelected(@NonNull XTable table) {
                 return table.getDefaultRenderer(columnClass).equals(renderer);
             }
         };
@@ -72,13 +74,13 @@ abstract class XTableCommand extends JCommand<XTable> {
     public static XTableCommand applyNoDataRenderer(final XTable.NoDataRenderer renderer) {
         return new XTableCommand() {
             @Override
-            public void execute(XTable table) {
+            public void execute(@NonNull XTable table) {
                 table.setNoDataRenderer(renderer);
                 table.repaint();
             }
 
             @Override
-            public boolean isSelected(XTable component) {
+            public boolean isSelected(@NonNull XTable component) {
                 return component.getNoDataRenderer().equals(renderer);
             }
         };
@@ -91,7 +93,7 @@ abstract class XTableCommand extends JCommand<XTable> {
     public static XTableCommand applyColumnWidthAsPercentages(final double... percentages) {
         return new XTableCommand() {
             @Override
-            public void execute(XTable component) {
+            public void execute(@NonNull XTable component) {
                 JTables.setWidthAsPercentages(component, percentages);
             }
         };

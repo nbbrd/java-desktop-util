@@ -20,10 +20,8 @@ import ec.util.desktop.impl.DesktopFactoryProc;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import nbbrd.service.Mutability;
-import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -45,7 +43,7 @@ public interface Desktop {
      *
      * @see Desktop#isSupported(Desktop.Action)
      */
-    public enum Action {
+    enum Action {
 
         /**
          * Represents an "open" action.
@@ -101,13 +99,13 @@ public interface Desktop {
          *
          * @see Desktop#getKnownFolderPath(ec.util.desktop.Desktop.KnownFolder)
          */
-        KNOWN_FOLDER_LOOKUP;
+        KNOWN_FOLDER_LOOKUP
     }
 
     /**
      * Well-known folders
      */
-    public enum KnownFolder {
+    enum KnownFolder {
 
         DESKTOP,
         DOWNLOAD,
@@ -229,7 +227,6 @@ public interface Desktop {
      * available and the URI can not be converted to a {@code URL}
      * @see java.net.URI
      * @see java.awt.AWTPermission
-     * @see java.applet.AppletContext
      */
     void browse(@NonNull URI uri) throws IOException;
 
@@ -338,12 +335,12 @@ public interface Desktop {
             loaderName = "ec.util.desktop.impl.DesktopFactoryLoader",
             preprocessor = DesktopFactoryProc.class
     )
-    public interface Factory {
+    interface Factory {
 
         /**
          * Defines the type of support that a Desktop offers.
          */
-        public enum SupportType {
+        enum SupportType {
 
             NONE,
             BASIC,

@@ -41,7 +41,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.TransferHandler;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -92,7 +92,7 @@ public final class BasicFileViewer extends JPanel {
 
     public interface LoadRenderer {
 
-        static final int NO_PROGRESS = -1;
+        int NO_PROGRESS = -1;
 
         Component getLoadComponent(File file, int progress);
     }
@@ -393,7 +393,7 @@ public final class BasicFileViewer extends JPanel {
 
         public XLabel() {
             setOpaque(true);
-            JList resource = new JList();
+            JList<?> resource = new JList<>();
             setBackground(resource.getSelectionForeground());
             setForeground(resource.getSelectionBackground());
             setFont(resource.getFont().deriveFont(resource.getFont().getSize2D() * 2));
@@ -409,7 +409,7 @@ public final class BasicFileViewer extends JPanel {
 
         private DefaultStartRenderer() {
             this.component = new JLabel();
-            JList resource = new JList();
+            JList<?> resource = new JList<>();
             component.setOpaque(true);
             component.setHorizontalAlignment(SwingConstants.CENTER);
             component.setFont(resource.getFont().deriveFont(resource.getFont().getSize2D() * 2));
@@ -432,7 +432,7 @@ public final class BasicFileViewer extends JPanel {
 
         private DefaultDragRenderer() {
             this.component = new JLabel();
-            JList resource = new JList();
+            JList<?> resource = new JList<>();
             component.setOpaque(true);
             component.setHorizontalAlignment(SwingConstants.CENTER);
             component.setFont(resource.getFont().deriveFont(resource.getFont().getSize2D() * 2));

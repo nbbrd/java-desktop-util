@@ -25,10 +25,10 @@ public final class TextPrompt extends JLabel {
 
         ALWAYS,
         FOCUS_GAINED,
-        FOCUS_LOST;
+        FOCUS_LOST
     }
-    private JTextComponent component;
-    private Document document;
+    private final JTextComponent component;
+    private final Document document;
     private Show show;
     private boolean showPromptOnce;
     private int focusLost;
@@ -98,7 +98,7 @@ public final class TextPrompt extends JLabel {
      * @param alpha value in the range of 0 - 255.
      */
     public void changeAlpha(int alpha) {
-        alpha = alpha > 255 ? 255 : alpha < 0 ? 0 : alpha;
+        alpha = alpha > 255 ? 255 : Math.max(alpha, 0);
 
         Color foreground = getForeground();
         int red = foreground.getRed();
@@ -140,7 +140,7 @@ public final class TextPrompt extends JLabel {
      *
      * @param show a valid Show enum
      */
-    final public void setShow(Show show) {
+    public void setShow(Show show) {
         this.show = show;
     }
 
@@ -187,19 +187,11 @@ public final class TextPrompt extends JLabel {
         //  prompt should be displayed.
 
         if (component.hasFocus()) {
-            if (show == Show.ALWAYS
-                    || show == Show.FOCUS_GAINED) {
-                setVisible(true);
-            } else {
-                setVisible(false);
-            }
+            setVisible(show == Show.ALWAYS
+                    || show == Show.FOCUS_GAINED);
         } else {
-            if (show == Show.ALWAYS
-                    || show == Show.FOCUS_LOST) {
-                setVisible(true);
-            } else {
-                setVisible(false);
-            }
+            setVisible(show == Show.ALWAYS
+                    || show == Show.FOCUS_LOST);
         }
     }
 }

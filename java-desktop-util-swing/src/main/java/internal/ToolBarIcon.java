@@ -22,6 +22,8 @@ import java.util.function.Supplier;
 import javax.swing.Icon;
 import javax.swing.JToolBar;
 import javax.swing.UIManager;
+
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -45,7 +47,7 @@ public enum ToolBarIcon implements UIItem<Icon> {
     private final String key;
 
     @Override
-    public String key() {
+    public @NonNull String key() {
         return key;
     }
 

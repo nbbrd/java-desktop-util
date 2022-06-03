@@ -23,7 +23,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Objects;
 import javax.swing.Icon;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  * Displays a color scheme as an icon.

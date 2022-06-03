@@ -17,11 +17,11 @@
 package ec.util.completion;
 
 import java.util.List;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 public interface AutoCompletionSource {
 
-    public enum Behavior {
+    enum Behavior {
 
         NONE,
         SYNC,

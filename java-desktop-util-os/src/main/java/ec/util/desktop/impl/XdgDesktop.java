@@ -24,7 +24,7 @@ import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nbbrd.service.ServiceProvider;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -63,13 +63,13 @@ public class XdgDesktop extends AwtDesktop {
      * https://wiki.archlinux.org/index.php/Xdg-open
      */
     // VisibleForTesting
-    XdgDesktop(ZSystem system, XdgConfig config) {
+    XdgDesktop(@NonNull ZSystem system, @NonNull XdgConfig config) {
         this.system = system;
         this.config = config;
     }
 
     @Override
-    public boolean isSupported(Desktop.Action action) {
+    public boolean isSupported(Desktop.@NonNull Action action) {
         switch (action) {
             case SHOW_IN_FOLDER:
                 return super.isSupported(action);
@@ -80,7 +80,7 @@ public class XdgDesktop extends AwtDesktop {
     }
 
     @Override
-    public File getKnownFolder(KnownFolder userDir) {
+    public File getKnownFolder(@NonNull KnownFolder userDir) {
         switch (userDir) {
             case DESKTOP:
                 return getKnownFolderByName(DESKTOP_DIR);
@@ -109,7 +109,7 @@ public class XdgDesktop extends AwtDesktop {
     }
 
     @Override
-    public File[] search(String query) throws IOException {
+    public File[] search(@NonNull String query) throws IOException {
         // http://projects.gnome.org/tracker/
         // https://live.gnome.org/Tracker/Documentation
         // http://zeitgeist-project.com/
@@ -123,12 +123,12 @@ public class XdgDesktop extends AwtDesktop {
     public static class Factory implements Desktop.Factory {
 
         @Override
-        public Desktop.Factory.SupportType getSupportType(String osArch, String osName, String osVersion) {
+        public Desktop.Factory.@NonNull SupportType getSupportType(String osArch, String osName, String osVersion) {
             return osName.endsWith("Linux") ? Desktop.Factory.SupportType.GENERIC : Desktop.Factory.SupportType.NONE;
         }
 
         @Override
-        public Desktop create(String osArch, String osName, String osVersion) {
+        public @NonNull Desktop create(String osArch, String osName, String osVersion) {
             ZSystem system = ZSystem.getDefault();
             return new XdgDesktop(system, parseConfigFile(system));
         }

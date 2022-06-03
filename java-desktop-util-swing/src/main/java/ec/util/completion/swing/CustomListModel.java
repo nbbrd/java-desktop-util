@@ -19,7 +19,7 @@ package ec.util.completion.swing;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.AbstractListModel;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 @SuppressWarnings("serial")
 public class CustomListModel extends AbstractListModel {

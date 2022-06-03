@@ -35,7 +35,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
 import static javax.swing.TransferHandler.MOVE;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -216,7 +216,6 @@ public final class JListOrdering<T> extends JComponent {
             return MOVE;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public boolean importData(TransferHandler.TransferSupport support) {
             if (!canImport(support)) {
@@ -244,7 +243,7 @@ public final class JListOrdering<T> extends JComponent {
         private static final MoveUp INSTANCE = new MoveUp();
 
         @Override
-        public void execute(JListOrdering<?> c) {
+        public void execute(@NonNull JListOrdering<?> c) {
             ListSelectionModel selectionModel = c.getSelectionModel();
             int index = selectionModel.getMinSelectionIndex();
             JLists.move(c.model, c.model, new int[]{index}, index - 1);
@@ -253,7 +252,7 @@ public final class JListOrdering<T> extends JComponent {
         }
 
         @Override
-        public boolean isEnabled(JListOrdering<?> c) {
+        public boolean isEnabled(@NonNull JListOrdering<?> c) {
             if (!c.isEnabled()) {
                 return false;
             }
@@ -267,7 +266,7 @@ public final class JListOrdering<T> extends JComponent {
         }
 
         @Override
-        public JCommand.ActionAdapter toAction(JListOrdering<?> c) {
+        public JCommand.@NonNull ActionAdapter toAction(@NonNull JListOrdering<?> c) {
             return super.toAction(c)
                     .withWeakListSelectionListener(c.getSelectionModel())
                     .withWeakPropertyChangeListener(c);
@@ -279,7 +278,7 @@ public final class JListOrdering<T> extends JComponent {
         private static final MoveDown INSTANCE = new MoveDown();
 
         @Override
-        public void execute(JListOrdering<?> c) {
+        public void execute(@NonNull JListOrdering<?> c) {
             ListSelectionModel selectionModel = c.getSelectionModel();
             int index = selectionModel.getMinSelectionIndex();
             JLists.move(c.model, c.model, new int[]{index}, index + 1);
@@ -288,7 +287,7 @@ public final class JListOrdering<T> extends JComponent {
         }
 
         @Override
-        public boolean isEnabled(JListOrdering<?> c) {
+        public boolean isEnabled(@NonNull JListOrdering<?> c) {
             if (!c.isEnabled()) {
                 return false;
             }
@@ -302,7 +301,7 @@ public final class JListOrdering<T> extends JComponent {
         }
 
         @Override
-        public JCommand.ActionAdapter toAction(JListOrdering<?> c) {
+        public JCommand.@NonNull ActionAdapter toAction(@NonNull JListOrdering<?> c) {
             return super.toAction(c)
                     .withWeakListSelectionListener(c.getSelectionModel())
                     .withWeakPropertyChangeListener(c);

@@ -55,7 +55,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -281,7 +281,7 @@ public final class Charts {
         return result != null ? ((SeriesDataset) result.getDataset()).indexOf(result.getSeriesKey()) : NO_SERIES_FOUND_INDEX;
     }
 
-    public static boolean USE_CHART_PANEL_BUFFER = isChartPanelBufferValid();
+    public static final boolean USE_CHART_PANEL_BUFFER = isChartPanelBufferValid();
 
     private static boolean isChartPanelBufferValid() {
         AffineTransform o = GraphicsEnvironment
@@ -385,8 +385,8 @@ public final class Charts {
      */
     @NonNull
     public static ItemLabelPosition computeItemLabelPosition(@NonNull Rectangle bounds, double x, double y) {
-        boolean left = x < bounds.x + bounds.width / 2;
-        boolean top = y < bounds.y + bounds.height / 2;
+        boolean left = x < bounds.x + bounds.width / 2d;
+        boolean top = y < bounds.y + bounds.height / 2d;
         return left ? (top ? TOP_LEFT : BOTTOM_LEFT) : (top ? TOP_RIGHT : BOTTOM_RIGHT);
     }
 

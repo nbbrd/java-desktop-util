@@ -20,7 +20,7 @@ import static ec.util.datatransfer.DataTransfers.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

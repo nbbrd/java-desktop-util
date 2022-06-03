@@ -17,7 +17,7 @@
 package ec.util.chart;
 
 import java.util.Objects;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**

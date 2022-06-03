@@ -20,6 +20,8 @@ import ec.util.chart.ColorScheme;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import lombok.NonNull;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -62,12 +64,12 @@ public class TangoColorScheme extends AbstractColorScheme {
     public static final int ALUMINIUM6 = 0x2e3436;
 
     @Override
-    public String getName() {
+    public @NonNull String getName() {
         return "Tango";
     }
 
     @Override
-    public List<Integer> getAreaColors() {
+    public @NonNull List<Integer> getAreaColors() {
         return Arrays.asList(
                 LIGHT_ORANGE,
                 LIGHT_SKY_BLUE,
@@ -93,7 +95,7 @@ public class TangoColorScheme extends AbstractColorScheme {
     }
 
     @Override
-    public Map<KnownColor, Integer> getAreaKnownColors() {
+    public @NonNull Map<KnownColor, Integer> getAreaKnownColors() {
         return knownColors(
                 LIGHT_SKY_BLUE,
                 LIGHT_CHAMELEON,
@@ -105,7 +107,7 @@ public class TangoColorScheme extends AbstractColorScheme {
     }
 
     @Override
-    public Map<KnownColor, Integer> getLineKnownColors() {
+    public @NonNull Map<KnownColor, Integer> getLineKnownColors() {
         return knownColors(
                 DARK_SKY_BLUE,
                 DARK_CHAMELEON,

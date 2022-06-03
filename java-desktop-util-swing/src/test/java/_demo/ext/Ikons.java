@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package _demo;
+package _demo.ext;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -27,7 +27,7 @@ import org.kordamp.ikonli.swing.IkonResolver;
  * @author Philippe Charles
  */
 @lombok.experimental.UtilityClass
-class Ikons {
+public class Ikons {
 
     public internal.FontIcon of(Ikon icon, float size) {
         return of(icon, size, null);

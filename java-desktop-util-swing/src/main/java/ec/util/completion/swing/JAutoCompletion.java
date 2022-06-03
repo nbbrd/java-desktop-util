@@ -53,7 +53,7 @@ import javax.swing.event.AncestorListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 @SuppressWarnings("serial")
 public class JAutoCompletion extends AbstractAutoCompletion<JComponent> {
@@ -139,7 +139,7 @@ public class JAutoCompletion extends AbstractAutoCompletion<JComponent> {
     }
 
     @Override
-    public void search(String term) {
+    public void search(@NonNull String term) {
         if (!enabled || term.length() < minLength) {
             close();
             return;
@@ -200,12 +200,12 @@ public class JAutoCompletion extends AbstractAutoCompletion<JComponent> {
     }
 
     @Override
-    protected InputView<JTextComponent> getInputView() {
+    protected @NonNull InputView<JTextComponent> getInputView() {
         return inputView;
     }
 
     @Override
-    protected SearchView<JList> getSearchView() {
+    protected @NonNull SearchView<JList> getSearchView() {
         return searchView;
     }
 
@@ -266,7 +266,7 @@ public class JAutoCompletion extends AbstractAutoCompletion<JComponent> {
         }
 
         @Override
-        public JTextComponent getComponent() {
+        public @NonNull JTextComponent getComponent() {
             return input;
         }
         //
@@ -288,7 +288,7 @@ public class JAutoCompletion extends AbstractAutoCompletion<JComponent> {
         }
 
         @Override
-        public String getTerm() {
+        public @NonNull String getTerm() {
             String all = input.getText();
             if (separator.isEmpty()) {
                 beginIdx = 0;
@@ -304,7 +304,7 @@ public class JAutoCompletion extends AbstractAutoCompletion<JComponent> {
         }
 
         @Override
-        public void setTerm(String value) {
+        public void setTerm(@NonNull String value) {
             String oldValue = input.getText();
             String newValue = oldValue.substring(0, beginIdx) + value + oldValue.substring(endIdx);
             listening = false;
@@ -358,14 +358,14 @@ public class JAutoCompletion extends AbstractAutoCompletion<JComponent> {
 
         private void onExceptionDetails(Exception ex) {
             StringWriter errors = new StringWriter();
-            ((Exception) ex).printStackTrace(new PrintWriter(errors));
+            ex.printStackTrace(new PrintWriter(errors));
             JComponent component = new JScrollPane(new JTextArea(errors.toString()));
             component.setPreferredSize(new Dimension(500, 300));
             JOptionPane.showMessageDialog(message, component, "Exception details", JOptionPane.ERROR_MESSAGE);
         }
 
         @Override
-        public JList getComponent() {
+        public @NonNull JList getComponent() {
             return list;
         }
 
@@ -375,7 +375,7 @@ public class JAutoCompletion extends AbstractAutoCompletion<JComponent> {
         }
 
         @Override
-        public void onSearchStarted(String term) {
+        public void onSearchStarted(@NonNull String term) {
             hidePopup();
             message.setText("<html><i>Searching ...");
             message.setToolTipText("");
@@ -384,7 +384,7 @@ public class JAutoCompletion extends AbstractAutoCompletion<JComponent> {
         }
 
         @Override
-        public void onSearchFailed(String term, Exception ex) {
+        public void onSearchFailed(@NonNull String term, @NonNull Exception ex) {
             hidePopup();
             message.setText("<html><i>Error (click for details)");
             message.setToolTipText(ex.getMessage());
@@ -393,7 +393,7 @@ public class JAutoCompletion extends AbstractAutoCompletion<JComponent> {
         }
 
         @Override
-        public void onSearchDone(String term, List<?> values) {
+        public void onSearchDone(@NonNull String term, @NonNull List<?> values) {
             // force resize
             hidePopup();
             // set data

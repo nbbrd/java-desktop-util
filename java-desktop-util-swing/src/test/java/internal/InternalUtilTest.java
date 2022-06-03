@@ -19,7 +19,7 @@ package internal;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

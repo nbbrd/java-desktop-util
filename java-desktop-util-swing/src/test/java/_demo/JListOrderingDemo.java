@@ -16,6 +16,7 @@
  */
 package _demo;
 
+import _demo.ext.Ikons;
 import ec.util.list.swing.JListOrdering;
 import ec.util.list.swing.JLists;
 import ec.util.various.swing.BasicSwingLauncher;
@@ -43,7 +44,7 @@ final class JListOrderingDemo {
                 .launch();
     }
 
-    private static Component create() throws Exception {
+    public static Component create() {
         overrideDefaultIcons();
 
         JListOrdering<MaterialDesign> list = new JListOrdering<>();

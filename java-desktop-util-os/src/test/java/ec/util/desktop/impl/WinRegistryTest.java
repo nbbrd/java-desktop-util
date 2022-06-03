@@ -16,11 +16,12 @@
  */
 package ec.util.desktop.impl;
 
+import org.junit.jupiter.api.Assumptions;
+
 import static ec.util.desktop.impl.WinRegistry.Root.HKEY_LOCAL_MACHINE;
 import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
-import org.junit.Assume;
 
 /**
  *
@@ -37,7 +38,7 @@ public class WinRegistryTest {
     private static final String MISSING_NODE = "XYZ";
 
     static void testKeyExists(WinRegistry reg) throws IOException {
-        Assume.assumeTrue(isWindows());
+        Assumptions.assumeTrue(isWindows());
 
         assertThatNullPointerException()
                 .isThrownBy(() -> reg.keyExists(null, CURRENT_VERSION_NODE));
@@ -56,7 +57,7 @@ public class WinRegistryTest {
     }
 
     static void testGetValue(WinRegistry reg) throws IOException {
-        Assume.assumeTrue(isWindows());
+        Assumptions.assumeTrue(isWindows());
 
         assertThatNullPointerException()
                 .isThrownBy(() -> reg.getValue(null, CURRENT_VERSION_NODE, SYSTEM_ROOT_LEAF));
@@ -78,7 +79,7 @@ public class WinRegistryTest {
     }
 
     static void testGetValues(WinRegistry reg) throws IOException {
-        Assume.assumeTrue(isWindows());
+        Assumptions.assumeTrue(isWindows());
 
         assertThatNullPointerException()
                 .isThrownBy(() -> reg.getValues(null, CURRENT_VERSION_NODE));

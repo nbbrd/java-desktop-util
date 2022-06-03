@@ -41,7 +41,7 @@ public final class ToolBarIconDemo {
                 .launch();
     }
 
-    private static Component create() {
+    public static Component create() {
         ToolBarIcon[] values = ToolBarIcon.values();
         Arrays.sort(values, Comparator.comparing(UIItem::key));
 

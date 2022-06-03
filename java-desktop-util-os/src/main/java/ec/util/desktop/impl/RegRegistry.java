@@ -16,6 +16,7 @@
  */
 package ec.util.desktop.impl;
 
+import lombok.NonNull;
 import nbbrd.io.win.RegWrapper;
 
 import java.io.IOException;
@@ -44,24 +45,24 @@ final class RegRegistry extends WinRegistry {
     }
 
     @Override
-    public boolean keyExists(WinRegistry.Root root, String key) throws IOException {
+    public boolean keyExists(WinRegistry.@NonNull Root root, @NonNull String key) throws IOException {
         return !getValuesOrEmpty(root, key).isEmpty();
     }
 
     @Override
-    public Object getValue(WinRegistry.Root root, String key, String name) throws IOException {
+    public Object getValue(WinRegistry.@NonNull Root root, @NonNull String key, @NonNull String name) throws IOException {
         List<RegWrapper.RegValue> data = getValuesOrEmpty(root, key);
         Objects.requireNonNull(name);
         return data
                 .stream()
                 .filter(regValue -> regValue.getName().equals(name))
-                .map(regValue -> regValue.getValue())
+                .map(RegWrapper.RegValue::getValue)
                 .findFirst()
                 .orElse(null);
     }
 
     @Override
-    public SortedMap<String, Object> getValues(WinRegistry.Root root, String key) throws IOException {
+    public @NonNull SortedMap<String, Object> getValues(WinRegistry.@NonNull Root root, @NonNull String key) throws IOException {
         List<RegWrapper.RegValue> data = getValuesOrEmpty(root, key);
         return data.stream().collect(Collectors.toMap(RegWrapper.RegValue::getName, RegWrapper.RegValue::getValue, (l, r) -> l, TreeMap::new));
     }

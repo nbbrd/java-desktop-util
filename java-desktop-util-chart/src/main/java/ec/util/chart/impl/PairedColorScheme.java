@@ -20,6 +20,8 @@ import ec.util.chart.ColorScheme;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import lombok.NonNull;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -44,27 +46,27 @@ public class PairedColorScheme extends AbstractColorScheme {
     public static final int C9 = 0x6A3D9A; // PURPLE
 
     @Override
-    public String getName() {
+    public @NonNull String getName() {
         return "Paired";
     }
 
     @Override
-    public List<Integer> getAreaColors() {
+    public @NonNull List<Integer> getAreaColors() {
         return Arrays.asList(C0, C2, C4, C6, C8);
     }
 
     @Override
-    public List<Integer> getLineColors() {
+    public @NonNull List<Integer> getLineColors() {
         return Arrays.asList(C1, C3, C5, C7, C9);
     }
 
     @Override
-    public Map<KnownColor, Integer> getAreaKnownColors() {
+    public @NonNull Map<KnownColor, Integer> getAreaKnownColors() {
         return knownColors(C0, C8, BasicColor.GRAY, C2, C6, C4, BasicColor.YELLOW);
     }
 
     @Override
-    public Map<KnownColor, Integer> getLineKnownColors() {
+    public @NonNull Map<KnownColor, Integer> getLineKnownColors() {
         return knownColors(C1, C9, BasicColor.DARK_GRAY, C3, C7, C5, BasicColor.YELLOW);
     }
 

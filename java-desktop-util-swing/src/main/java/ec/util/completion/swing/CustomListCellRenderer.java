@@ -23,7 +23,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -38,7 +38,7 @@ public class CustomListCellRenderer<T> extends DefaultListCellRenderer {
     public static <T> DefaultListCellRenderer of(@NonNull Function<T, String> toValueAsString, @NonNull Function<T, String> toToolTipText) {
         return new CustomListCellRenderer<T>() {
             @Override
-            protected String getValueAsString(T value) {
+            protected @NonNull String getValueAsString(@NonNull T value) {
                 return toValueAsString.apply(value);
             }
 

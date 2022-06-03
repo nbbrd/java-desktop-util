@@ -52,7 +52,7 @@ import javax.swing.ListModel;
 import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
 import javax.swing.event.ListDataListener;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -118,11 +118,11 @@ public final class JListSelection<E> extends JComponent {
     //<editor-fold defaultstate="collapsed" desc="Initialization">
     private void initComponents() {
         ActionMap am = getActionMap();
-        am.put(SELECT_ACTION, new SelectCommand().toAction(this));
-        am.put(UNSELECT_ACTION, new UnselectCommand().toAction(this));
-        am.put(SELECT_ALL_ACTION, new SelectAllCommand().toAction(this));
-        am.put(UNSELECT_ALL_ACTION, new UnselectAllCommand().toAction(this));
-        am.put(INVERT_ACTION, new InvertCommand().toAction(this));
+        am.put(SELECT_ACTION, new SelectCommand<E>().toAction(this));
+        am.put(UNSELECT_ACTION, new UnselectCommand<E>().toAction(this));
+        am.put(SELECT_ALL_ACTION, new SelectAllCommand<E>().toAction(this));
+        am.put(UNSELECT_ALL_ACTION, new UnselectAllCommand<E>().toAction(this));
+        am.put(INVERT_ACTION, new InvertCommand<E>().toAction(this));
         am.put(APPLY_HORIZONTAL_ACTION, new ApplyHorizontalCommand().toAction(this));
         am.put(APPLY_VERTICAL_ACTION, new ApplyVerticalCommand().toAction(this));
 
@@ -447,13 +447,13 @@ public final class JListSelection<E> extends JComponent {
                 dropIndex = dropIndex - selection.length;
             }
 
-            JLists.move((DefaultListModel) from.getModel(), (DefaultListModel) to.getModel(), selection, dropIndex);
+            JLists.move((DefaultListModel<?>) from.getModel(), (DefaultListModel<?>) to.getModel(), selection, dropIndex);
             to.getSelectionModel().setSelectionInterval(dropIndex, dropIndex + selection.length - 1);
         }
 
         @Override
         protected Transferable createTransferable(JComponent c) {
-            return LIST.createTransferable((JList) c);
+            return LIST.createTransferable((JList<?>) c);
         }
     }
     //</editor-fold>
@@ -462,7 +462,7 @@ public final class JListSelection<E> extends JComponent {
     private static final class SelectCommand<T> extends JCommand<JListSelection<T>> {
 
         @Override
-        public void execute(JListSelection<T> c) throws Exception {
+        public void execute(@NonNull JListSelection<T> c) throws Exception {
             int[] selection = JLists.getSelectionIndexStream(c.sourceList.getSelectionModel()).toArray();
             c.sourceList.getSelectionModel().clearSelection();
             c.targetList.getSelectionModel().clearSelection();
@@ -474,12 +474,12 @@ public final class JListSelection<E> extends JComponent {
         }
 
         @Override
-        public boolean isEnabled(JListSelection<T> c) {
+        public boolean isEnabled(@NonNull JListSelection<T> c) {
             return !c.sourceList.getSelectionModel().isSelectionEmpty();
         }
 
         @Override
-        public ActionAdapter toAction(JListSelection<T> c) {
+        public @NonNull ActionAdapter toAction(@NonNull JListSelection<T> c) {
             return super.toAction(c).withWeakListSelectionListener(c.sourceList.getSelectionModel());
         }
     }
@@ -487,7 +487,7 @@ public final class JListSelection<E> extends JComponent {
     private static final class UnselectCommand<T> extends JCommand<JListSelection<T>> {
 
         @Override
-        public void execute(JListSelection<T> c) throws Exception {
+        public void execute(@NonNull JListSelection<T> c) throws Exception {
             int[] selection = JLists.getSelectionIndexStream(c.targetList.getSelectionModel()).toArray();
             c.sourceList.getSelectionModel().clearSelection();
             c.targetList.getSelectionModel().clearSelection();
@@ -499,22 +499,22 @@ public final class JListSelection<E> extends JComponent {
         }
 
         @Override
-        public boolean isEnabled(JListSelection<T> c) {
+        public boolean isEnabled(@NonNull JListSelection<T> c) {
             return !c.targetList.getSelectionModel().isSelectionEmpty();
         }
 
         @Override
-        public ActionAdapter toAction(JListSelection<T> c) {
+        public @NonNull ActionAdapter toAction(@NonNull JListSelection<T> c) {
             return super.toAction(c).withWeakListSelectionListener(c.targetList.getSelectionModel());
         }
     }
 
-    private static void addListDataListener(JCommand.ActionAdapter action, JList<?> list) {
+    private static void addListDataListener(JCommand<?>.ActionAdapter action, JList<?> list) {
         ListDataListener listener = JLists.dataListenerOf(o -> action.refreshActionState());
         list.getModel().addListDataListener(listener);
         list.addPropertyChangeListener("model", evt -> {
-            ((ListModel) evt.getOldValue()).removeListDataListener(listener);
-            ((ListModel) evt.getNewValue()).addListDataListener(listener);
+            ((ListModel<?>) evt.getOldValue()).removeListDataListener(listener);
+            ((ListModel<?>) evt.getNewValue()).addListDataListener(listener);
             action.refreshActionState();
         });
     }
@@ -522,7 +522,7 @@ public final class JListSelection<E> extends JComponent {
     private static final class SelectAllCommand<T> extends JCommand<JListSelection<T>> {
 
         @Override
-        public void execute(JListSelection<T> c) throws Exception {
+        public void execute(@NonNull JListSelection<T> c) throws Exception {
             c.sourceList.getSelectionModel().clearSelection();
             c.targetList.getSelectionModel().clearSelection();
             while (!c.sourceModel.isEmpty()) {
@@ -531,12 +531,12 @@ public final class JListSelection<E> extends JComponent {
         }
 
         @Override
-        public boolean isEnabled(JListSelection<T> c) {
+        public boolean isEnabled(@NonNull JListSelection<T> c) {
             return !c.sourceModel.isEmpty();
         }
 
         @Override
-        public ActionAdapter toAction(JListSelection<T> c) {
+        public @NonNull ActionAdapter toAction(@NonNull JListSelection<T> c) {
             ActionAdapter result = super.toAction(c);
             addListDataListener(result, c.sourceList);
             return result;
@@ -546,7 +546,7 @@ public final class JListSelection<E> extends JComponent {
     private static final class UnselectAllCommand<T> extends JCommand<JListSelection<T>> {
 
         @Override
-        public void execute(JListSelection<T> c) throws Exception {
+        public void execute(@NonNull JListSelection<T> c) throws Exception {
             c.sourceList.getSelectionModel().clearSelection();
             c.targetList.getSelectionModel().clearSelection();
             while (!c.targetModel.isEmpty()) {
@@ -555,12 +555,12 @@ public final class JListSelection<E> extends JComponent {
         }
 
         @Override
-        public boolean isEnabled(JListSelection<T> c) {
+        public boolean isEnabled(@NonNull JListSelection<T> c) {
             return !c.targetModel.isEmpty();
         }
 
         @Override
-        public ActionAdapter toAction(JListSelection<T> c) {
+        public @NonNull ActionAdapter toAction(@NonNull JListSelection<T> c) {
             ActionAdapter result = super.toAction(c);
             addListDataListener(result, c.targetList);
             return result;
@@ -570,7 +570,7 @@ public final class JListSelection<E> extends JComponent {
     private static final class InvertCommand<T> extends JCommand<JListSelection<T>> {
 
         @Override
-        public void execute(JListSelection<T> c) throws Exception {
+        public void execute(@NonNull JListSelection<T> c) throws Exception {
             List<T> items = JLists.stream(c.sourceModel).collect(Collectors.toList());
             int[] sourceSelection = JLists.getSelectionIndexStream(c.sourceList.getSelectionModel()).toArray();
             int[] targetSelection = JLists.getSelectionIndexStream(c.targetList.getSelectionModel()).toArray();
@@ -590,12 +590,12 @@ public final class JListSelection<E> extends JComponent {
         }
 
         @Override
-        public boolean isEnabled(JListSelection<T> c) {
+        public boolean isEnabled(@NonNull JListSelection<T> c) {
             return !c.sourceModel.isEmpty() || !c.targetModel.isEmpty();
         }
 
         @Override
-        public ActionAdapter toAction(JListSelection<T> c) {
+        public @NonNull ActionAdapter toAction(@NonNull JListSelection<T> c) {
             ActionAdapter result = super.toAction(c);
             addListDataListener(result, c.sourceList);
             addListDataListener(result, c.targetList);
@@ -606,17 +606,17 @@ public final class JListSelection<E> extends JComponent {
     private static final class ApplyHorizontalCommand extends JCommand<JListSelection<?>> {
 
         @Override
-        public void execute(JListSelection<?> c) throws Exception {
+        public void execute(@NonNull JListSelection<?> c) throws Exception {
             c.setOrientation(c.getOrientation() != SwingConstants.HORIZONTAL ? SwingConstants.HORIZONTAL : SwingConstants.VERTICAL);
         }
 
         @Override
-        public boolean isSelected(JListSelection<?> c) {
+        public boolean isSelected(@NonNull JListSelection<?> c) {
             return c.getOrientation() == SwingConstants.HORIZONTAL;
         }
 
         @Override
-        public ActionAdapter toAction(JListSelection<?> c) {
+        public @NonNull ActionAdapter toAction(@NonNull JListSelection<?> c) {
             return super.toAction(c).withWeakPropertyChangeListener(c, ORIENTATION_PROPERTY);
         }
     }
@@ -624,17 +624,17 @@ public final class JListSelection<E> extends JComponent {
     private static final class ApplyVerticalCommand extends JCommand<JListSelection<?>> {
 
         @Override
-        public void execute(JListSelection<?> c) throws Exception {
+        public void execute(@NonNull JListSelection<?> c) throws Exception {
             c.setOrientation(c.getOrientation() != SwingConstants.VERTICAL ? SwingConstants.VERTICAL : SwingConstants.HORIZONTAL);
         }
 
         @Override
-        public boolean isSelected(JListSelection<?> c) {
+        public boolean isSelected(@NonNull JListSelection<?> c) {
             return c.getOrientation() == SwingConstants.VERTICAL;
         }
 
         @Override
-        public ActionAdapter toAction(JListSelection<?> c) {
+        public @NonNull ActionAdapter toAction(@NonNull JListSelection<?> c) {
             return super.toAction(c).withWeakPropertyChangeListener(c, ORIENTATION_PROPERTY);
         }
     }

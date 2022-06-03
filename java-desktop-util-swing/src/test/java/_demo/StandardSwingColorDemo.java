@@ -45,7 +45,7 @@ public final class StandardSwingColorDemo {
                 .launch();
     }
 
-    private static Component create() {
+    public static Component create() {
         StandardSwingColor[] values = StandardSwingColor.values();
         Arrays.sort(values, Comparator.comparing(UIItem::key));
 

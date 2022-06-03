@@ -35,7 +35,8 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import javax.swing.JComponent;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jfree.data.xy.IntervalXYDataset;
 
 /**
@@ -156,7 +157,7 @@ abstract class ATimeSeriesChart extends JComponent implements TimeSeriesChart<In
 
     //<editor-fold defaultstate="collapsed" desc="Getters/Setters">
     @Override
-    public IntervalXYDataset getDataset() {
+    public @NonNull IntervalXYDataset getDataset() {
         return dataset;
     }
 
@@ -168,7 +169,7 @@ abstract class ATimeSeriesChart extends JComponent implements TimeSeriesChart<In
     }
 
     @Override
-    public ColorSchemeSupport<? extends Color> getColorSchemeSupport() {
+    public @NonNull ColorSchemeSupport<? extends Color> getColorSchemeSupport() {
         return colorSchemeSupport;
     }
 
@@ -180,7 +181,7 @@ abstract class ATimeSeriesChart extends JComponent implements TimeSeriesChart<In
     }
 
     @Override
-    public String getTitle() {
+    public @NonNull String getTitle() {
         return title;
     }
 
@@ -192,7 +193,7 @@ abstract class ATimeSeriesChart extends JComponent implements TimeSeriesChart<In
     }
 
     @Override
-    public String getNoDataMessage() {
+    public @NonNull String getNoDataMessage() {
         return noDataMessage;
     }
 
@@ -204,12 +205,12 @@ abstract class ATimeSeriesChart extends JComponent implements TimeSeriesChart<In
     }
 
     @Override
-    public int[] getPlotWeights() {
+    public int @NonNull [] getPlotWeights() {
         return plotWeights.clone();
     }
 
     @Override
-    public void setPlotWeights(int[] weights) {
+    public void setPlotWeights(int @Nullable [] weights) {
         int[] old = this.plotWeights;
         this.plotWeights = weights != null ? weights : DEFAULT_PLOT_WEIGHTS.clone();
         if (!Arrays.equals(old, this.plotWeights)) {
@@ -218,12 +219,12 @@ abstract class ATimeSeriesChart extends JComponent implements TimeSeriesChart<In
     }
 
     @Override
-    public SeriesFunction<Integer> getPlotDispatcher() {
+    public @NonNull SeriesFunction<Integer> getPlotDispatcher() {
         return plotDispatcher;
     }
 
     @Override
-    public void setPlotDispatcher(SeriesFunction<Integer> plotDispatcher) {
+    public void setPlotDispatcher(@Nullable SeriesFunction<Integer> plotDispatcher) {
         SeriesFunction<Integer> old = this.plotDispatcher;
         this.plotDispatcher = plotDispatcher != null ? plotDispatcher : DEFAULT_PLOT_DISPATCHER;
         firePropertyChange(PLOT_DISPATCHER_PROPERTY, old, this.plotDispatcher);
@@ -242,163 +243,163 @@ abstract class ATimeSeriesChart extends JComponent implements TimeSeriesChart<In
     }
 
     @Override
-    public DateFormat getPeriodFormat() {
+    public @NonNull DateFormat getPeriodFormat() {
         return periodFormat;
     }
 
     @Override
-    public void setPeriodFormat(DateFormat periodFormat) {
+    public void setPeriodFormat(@Nullable DateFormat periodFormat) {
         DateFormat old = this.periodFormat;
         this.periodFormat = periodFormat != null ? periodFormat : new SimpleDateFormat(DEFAULT_PERIOD_FORMAT);
         firePropertyChange(PERIOD_FORMAT_PROPERTY, old, this.periodFormat);
     }
 
     @Override
-    public NumberFormat getValueFormat() {
+    public @NonNull NumberFormat getValueFormat() {
         return valueFormat;
     }
 
     @Override
-    public void setValueFormat(NumberFormat valueFormat) {
+    public void setValueFormat(@Nullable NumberFormat valueFormat) {
         NumberFormat old = this.valueFormat;
         this.valueFormat = valueFormat != null ? valueFormat : new DecimalFormat(DEFAULT_VALUE_FORMAT);
         firePropertyChange(VALUE_FORMAT_PROPERTY, old, this.valueFormat);
     }
 
     @Override
-    public SeriesFunction<RendererType> getSeriesRenderer() {
+    public @NonNull SeriesFunction<RendererType> getSeriesRenderer() {
         return seriesRenderer;
     }
 
     @Override
-    public void setSeriesRenderer(SeriesFunction<RendererType> renderer) {
+    public void setSeriesRenderer(@Nullable SeriesFunction<RendererType> renderer) {
         SeriesFunction<RendererType> old = this.seriesRenderer;
         this.seriesRenderer = renderer != null ? renderer : DEFAULT_SERIES_RENDERER;
         firePropertyChange(SERIES_RENDERER_PROPERTY, old, this.seriesRenderer);
     }
 
     @Override
-    public SeriesFunction<String> getSeriesFormatter() {
+    public @NonNull SeriesFunction<String> getSeriesFormatter() {
         return seriesFormatter;
     }
 
     @Override
-    public void setSeriesFormatter(SeriesFunction<String> seriesFormatter) {
+    public void setSeriesFormatter(@Nullable SeriesFunction<String> seriesFormatter) {
         SeriesFunction<String> old = this.seriesFormatter;
         this.seriesFormatter = seriesFormatter != null ? seriesFormatter : DEFAULT_SERIES_FORMATTER;
         firePropertyChange(SERIES_FORMATTER_PROPERTY, old, this.seriesFormatter);
     }
 
     @Override
-    public SeriesFunction<Color> getSeriesColorist() {
+    public @NonNull SeriesFunction<Color> getSeriesColorist() {
         return seriesColorist;
     }
 
     @Override
-    public void setSeriesColorist(SeriesFunction<Color> seriesColorist) {
+    public void setSeriesColorist(@Nullable SeriesFunction<Color> seriesColorist) {
         SeriesFunction<Color> old = this.seriesColorist;
         this.seriesColorist = seriesColorist != null ? seriesColorist : seriesColoristUsingColorScheme();
         firePropertyChange(SERIES_COLORIST_PROPERTY, old, this.seriesColorist);
     }
 
     @Override
-    public ObsFunction<String> getObsFormatter() {
+    public @NonNull ObsFunction<String> getObsFormatter() {
         return obsFormatter;
     }
 
     @Override
-    public void setObsFormatter(ObsFunction<String> obsFormatter) {
+    public void setObsFormatter(@Nullable ObsFunction<String> obsFormatter) {
         ObsFunction<String> old = this.obsFormatter;
         this.obsFormatter = obsFormatter != null ? obsFormatter : DEFAULT_OBS_FORMATTER;
         firePropertyChange(OBS_FORMATTER_PROPERTY, old, this.obsFormatter);
     }
 
     @Override
-    public ObsFunction<Color> getObsColorist() {
+    public @NonNull ObsFunction<Color> getObsColorist() {
         return obsColorist;
     }
 
     @Override
-    public void setObsColorist(ObsFunction<Color> obsColorist) {
+    public void setObsColorist(@Nullable ObsFunction<Color> obsColorist) {
         ObsFunction<Color> old = this.obsColorist;
         this.obsColorist = obsColorist != null ? obsColorist : obsColoristUsingSeriesColorist();
         firePropertyChange(OBS_COLORIST_PROPERTY, old, this.obsColorist);
     }
 
     @Override
-    public ObsPredicate getDashPredicate() {
+    public @NonNull ObsPredicate getDashPredicate() {
         return dashPredicate;
     }
 
     @Override
-    public void setDashPredicate(ObsPredicate predicate) {
+    public void setDashPredicate(@Nullable ObsPredicate predicate) {
         ObsPredicate old = this.dashPredicate;
         this.dashPredicate = predicate != null ? predicate : DEFAULT_DASH_PREDICATE;
         firePropertyChange(DASH_PREDICATE_PROPERTY, old, this.dashPredicate);
     }
 
     @Override
-    public SeriesPredicate getLegendVisibilityPredicate() {
+    public @NonNull SeriesPredicate getLegendVisibilityPredicate() {
         return legendVisibilityPredicate;
     }
 
     @Override
-    public void setLegendVisibilityPredicate(SeriesPredicate predicate) {
+    public void setLegendVisibilityPredicate(@Nullable SeriesPredicate predicate) {
         SeriesPredicate old = this.legendVisibilityPredicate;
         this.legendVisibilityPredicate = predicate != null ? predicate : DEFAULT_LEGEND_VISIBILITY_PREDICATE;
         firePropertyChange(LEGEND_VISIBILITY_PREDICATE_PROPERTY, old, this.legendVisibilityPredicate);
     }
 
     @Override
-    public boolean isElementVisible(Element element) {
+    public boolean isElementVisible(@NonNull Element element) {
         return elementVisible[element.ordinal()];
     }
 
     @Override
-    public void setElementVisible(Element element, boolean visible) {
+    public void setElementVisible(@NonNull Element element, boolean visible) {
         boolean old = elementVisible[element.ordinal()];
         elementVisible[element.ordinal()] = visible;
         firePropertyChange(ELEMENT_VISIBLE_PROPERTY, old, visible);
     }
 
     @Override
-    public CrosshairOrientation getCrosshairOrientation() {
+    public @NonNull CrosshairOrientation getCrosshairOrientation() {
         return crosshairOrientation;
     }
 
     @Override
-    public void setCrosshairOrientation(CrosshairOrientation crosshairOrientation) {
+    public void setCrosshairOrientation(@Nullable CrosshairOrientation crosshairOrientation) {
         CrosshairOrientation old = this.crosshairOrientation;
         this.crosshairOrientation = crosshairOrientation != null ? crosshairOrientation : DEFAULT_CROSSHAIR_ORIENTATION;
         firePropertyChange(CROSSHAIR_ORIENTATION_PROPERTY, old, this.crosshairOrientation);
     }
 
     @Override
-    public ObsIndex getHoveredObs() {
+    public @NonNull ObsIndex getHoveredObs() {
         return hoveredObs;
     }
 
     @Override
-    public void setHoveredObs(ObsIndex hoveredObs) {
+    public void setHoveredObs(@Nullable ObsIndex hoveredObs) {
         ObsIndex old = this.hoveredObs;
         this.hoveredObs = hoveredObs != null ? hoveredObs : DEFAULT_HOVERED_OBS;
         firePropertyChange(HOVERED_OBS_PROPERTY, old, this.hoveredObs);
     }
 
     @Override
-    public ObsIndex getSelectedObs() {
+    public @NonNull ObsIndex getSelectedObs() {
         return selectedObs;
     }
 
     @Override
-    public void setSelectedObs(ObsIndex selectedObs) {
+    public void setSelectedObs(@Nullable ObsIndex selectedObs) {
         ObsIndex old = this.selectedObs;
         this.selectedObs = selectedObs != null ? selectedObs : DEFAULT_SELECTED_OBS;
         firePropertyChange(SELECTED_OBS_PROPERTY, old, this.selectedObs);
     }
 
     @Override
-    public ObsPredicate getObsHighlighter() {
+    public @NonNull ObsPredicate getObsHighlighter() {
         return obsHighlighter;
     }
 
@@ -411,7 +412,7 @@ abstract class ATimeSeriesChart extends JComponent implements TimeSeriesChart<In
     }
 
     @Override
-    public DisplayTrigger getTooltipTrigger() {
+    public @NonNull DisplayTrigger getTooltipTrigger() {
         return tooltipTrigger;
     }
 
@@ -423,7 +424,7 @@ abstract class ATimeSeriesChart extends JComponent implements TimeSeriesChart<In
     }
 
     @Override
-    public DisplayTrigger getCrosshairTrigger() {
+    public @NonNull DisplayTrigger getCrosshairTrigger() {
         return crosshairTrigger;
     }
 
@@ -436,7 +437,7 @@ abstract class ATimeSeriesChart extends JComponent implements TimeSeriesChart<In
     //</editor-fold>
 
     @Override
-    public EnumSet<RendererType> getSupportedRendererTypes() {
+    public @NonNull EnumSet<RendererType> getSupportedRendererTypes() {
         return EnumSet.copyOf(supportedRendererTypes);
     }
 

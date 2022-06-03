@@ -21,7 +21,7 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.EnumSet;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -173,7 +173,7 @@ public interface TimeSeriesChart<DS, COLOR> {
 
     enum CrosshairOrientation {
 
-        HORIZONTAL, VERTICAL, BOTH;
+        HORIZONTAL, VERTICAL, BOTH
     }
 
     enum DisplayTrigger {

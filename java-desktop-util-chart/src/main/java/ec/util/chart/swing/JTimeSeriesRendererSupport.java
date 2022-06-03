@@ -38,7 +38,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 import java.util.EnumSet;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.block.LabelBlock;
 import org.jfree.chart.labels.XYItemLabelGenerator;
@@ -241,7 +241,7 @@ abstract class JTimeSeriesRendererSupport implements XYItemLabelGenerator, XYSer
         public int getPassCount() {
             return 3;
         }
-    };
+    }
 
     private static class SplineRenderer extends XYSplineRenderer {
 

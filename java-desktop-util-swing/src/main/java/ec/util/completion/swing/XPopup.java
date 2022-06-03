@@ -25,7 +25,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -39,7 +39,7 @@ public final class XPopup {
         TOP_LEADING,
         BOTTOM_LEADING,
         TOP_TRAILING,
-        BOTTOM_TRAILING;
+        BOTTOM_TRAILING
     }
 
     private Popup popup;

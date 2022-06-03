@@ -16,6 +16,7 @@
  */
 package _demo;
 
+import _demo.ext.Ikons;
 import ec.util.various.swing.BasicSwingLauncher;
 import internal.SpinningIcon;
 import java.awt.Color;

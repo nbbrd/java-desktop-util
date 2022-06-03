@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -38,8 +38,8 @@ public class XdgConfigTest {
 
         try (InputStream fis = XdgConfigTest.class.getResourceAsStream("user-dirs.dirs")) {
             XdgConfig config = XdgConfig.parseConfig(fis, env);
-            Assert.assertEquals(8, config.keySet().size());
-            Assert.assertEquals(new File(tmpDir, "Documents"), new File(config.get(XdgDesktop.DOCUMENTS_DIR)));
+            Assertions.assertEquals(8, config.keySet().size());
+            Assertions.assertEquals(new File(tmpDir, "Documents"), new File(config.get(XdgDesktop.DOCUMENTS_DIR)));
         }
     }
 

@@ -23,7 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.Locale;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  * Facade that allows executing script in Windows Script Host.
@@ -81,22 +81,22 @@ public abstract class WinScriptHost {
         public static final NoOpScriptHost INSTANCE = new NoOpScriptHost();
 
         @Override
-        public boolean canExec(File script) {
+        public boolean canExec(@NonNull File script) {
             return false;
         }
 
         @Override
-        public boolean canExec(String script, String language) {
+        public boolean canExec(@NonNull String script, @NonNull String language) {
             return false;
         }
 
         @Override
-        public Process exec(File script, String... args) throws IOException {
+        public @NonNull Process exec(@NonNull File script, String... args) throws IOException {
             return Processes.noOp();
         }
 
         @Override
-        public Process exec(String script, String language, String... args) throws IOException {
+        public @NonNull Process exec(@NonNull String script, @NonNull String language, String... args) throws IOException {
             return Processes.noOp();
         }
     }
@@ -106,22 +106,22 @@ public abstract class WinScriptHost {
         public static final FailingScriptHost INSTANCE = new FailingScriptHost();
 
         @Override
-        public boolean canExec(File script) {
+        public boolean canExec(@NonNull File script) {
             return true;
         }
 
         @Override
-        public boolean canExec(String script, String language) {
+        public boolean canExec(@NonNull String script, @NonNull String language) {
             return true;
         }
 
         @Override
-        public Process exec(File script, String... args) throws IOException {
+        public @NonNull Process exec(@NonNull File script, String... args) throws IOException {
             throw new IOException();
         }
 
         @Override
-        public Process exec(String script, String language, String... args) throws IOException {
+        public @NonNull Process exec(@NonNull String script, @NonNull String language, String... args) throws IOException {
             throw new IOException();
         }
     }
@@ -139,18 +139,18 @@ public abstract class WinScriptHost {
         }
 
         @Override
-        public boolean canExec(File script) {
+        public boolean canExec(@NonNull File script) {
             return script.exists() && script.isFile() && script.canRead()
                     && Language.getByExtension(script) != Language.UNKNOWN;
         }
 
         @Override
-        public boolean canExec(String script, String language) {
+        public boolean canExec(@NonNull String script, @NonNull String language) {
             return Language.getByName(language) != Language.UNKNOWN;
         }
 
         @Override
-        public Process exec(File script, String... args) throws IOException {
+        public @NonNull Process exec(@NonNull File script, String... args) throws IOException {
             // http://technet.microsoft.com/en-us/library/ff920171.aspx
             String[] result = new String[3 + args.length];
             result[0] = "cscript";
@@ -161,7 +161,7 @@ public abstract class WinScriptHost {
         }
 
         @Override
-        public Process exec(String script, String language, String... args) throws IOException {
+        public @NonNull Process exec(@NonNull String script, @NonNull String language, String... args) throws IOException {
             File file = File.createTempFile("script", Language.getByName(language).getExtension());
             file.deleteOnExit();
             Files.write(file.toPath(), Collections.singleton(script), StandardCharsets.UTF_8, StandardOpenOption.APPEND);

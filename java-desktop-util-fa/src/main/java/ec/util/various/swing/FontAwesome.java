@@ -31,11 +31,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  * Convenient enum that provides access to the "Font Awesome" font set (v4.2).
@@ -531,7 +532,7 @@ public enum FontAwesome {
 
     private final char iconAsChar;
 
-    private FontAwesome(char iconAsChar) {
+    FontAwesome(char iconAsChar) {
         this.iconAsChar = iconAsChar;
     }
 
@@ -599,7 +600,7 @@ public enum FontAwesome {
 
     private static Font loadFont() {
         try (InputStream stream = FontAwesome.class.getResourceAsStream("/ec/util/various/swing/fontawesome-webfont.ttf")) {
-            Font result = Font.createFont(Font.TRUETYPE_FONT, stream);
+            Font result = Font.createFont(Font.TRUETYPE_FONT, Objects.requireNonNull(stream));
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(result);
             return result;
         } catch (FontFormatException | IOException | NullPointerException ex) {

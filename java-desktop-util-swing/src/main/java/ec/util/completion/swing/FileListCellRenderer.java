@@ -28,7 +28,7 @@ import javax.swing.Icon;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.Timer;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -57,18 +57,17 @@ public class FileListCellRenderer extends CustomListCellRenderer<File> {
 
     @Override
     protected Icon toIcon(String term, JList list, File value, int index, boolean isSelected, boolean cellHasFocus) {
-        File file = (File) value;
-        if (!file.isAbsolute()) {
+        if (!value.isAbsolute()) {
             for (File path : paths) {
-                File tmp = new File(path, file.getPath());
+                File tmp = new File(path, value.getPath());
                 if (tmp.exists()) {
                     setToolTipText(tmp.getPath());
                     return iconFactory.create(new IconTask(tmp), defaultIcon);
                 }
             }
         }
-        setToolTipText(file.getPath());
-        return iconFactory.create(new IconTask(file), defaultIcon);
+        setToolTipText(value.getPath());
+        return iconFactory.create(new IconTask(value), defaultIcon);
     }
 
     interface FailSafeFactory {
@@ -92,7 +91,7 @@ public class FileListCellRenderer extends CustomListCellRenderer<File> {
 
         @Override
         public boolean equals(Object obj) {
-            return this == obj || obj instanceof IconTask ? equals((IconTask) obj) : false;
+            return (this == obj || obj instanceof IconTask) && equals((IconTask) obj);
         }
 
         protected boolean equals(IconTask other) {

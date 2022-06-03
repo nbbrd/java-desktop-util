@@ -24,7 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  * http://alvinalexander.com/java/java-uimanager-color-keys-list
@@ -48,7 +48,7 @@ public enum StandardSwingColor implements UIItem<Color> {
     private final String key;
 
     @Override
-    public String key() {
+    public @NonNull String key() {
         return key;
     }
 

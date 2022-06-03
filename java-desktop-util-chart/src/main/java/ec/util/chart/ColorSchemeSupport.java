@@ -22,7 +22,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  * An helper class that simplifies the use of a color scheme in a specific
@@ -213,7 +213,7 @@ public abstract class ColorSchemeSupport<T> {
         T gridColor = toColor(colorScheme.getGridColor());
         T textColor = toColor(colorScheme.getTextColor());
         T axisColor = toColor(colorScheme.getAxisColor());
-        return new Colors(colorScheme.getName(), areaColors, lineColors, areaKnownColors, lineKnownColors, backColor, plotColor, gridColor, textColor, axisColor);
+        return new Colors<>(colorScheme.getName(), areaColors, lineColors, areaKnownColors, lineKnownColors, backColor, plotColor, gridColor, textColor, axisColor);
     }
 
     private static final class Colors<T> {

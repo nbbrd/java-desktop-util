@@ -22,7 +22,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.Optional;
 import javax.swing.TransferHandler;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  * Tool that deals with specifics of local objects as described in
@@ -78,7 +78,7 @@ public final class LocalDataTransfer<T> {
     }
 
     @lombok.RequiredArgsConstructor
-    private final class LocalObjectTransferable<T> implements Transferable {
+    private final class LocalObjectTransferable implements Transferable {
 
         @lombok.NonNull
         private final T localObject;

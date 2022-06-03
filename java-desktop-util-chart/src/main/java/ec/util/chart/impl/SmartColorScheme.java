@@ -21,6 +21,8 @@ import static ec.util.chart.ColorSchemeSupport.rgb;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import lombok.NonNull;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -102,12 +104,12 @@ public class SmartColorScheme extends AbstractColorScheme {
     public static final int C63 = rgb(230, 0, 0); // 63
 
     @Override
-    public String getName() {
+    public @NonNull String getName() {
         return NAME;
     }
 
     @Override
-    public List<Integer> getAreaColors() {
+    public @NonNull List<Integer> getAreaColors() {
         return Arrays.asList(
                 C08, C16, C24, C32, C40, C48, C56,
                 C10, C18, C26, C34, C42, C50, C58,
@@ -117,7 +119,7 @@ public class SmartColorScheme extends AbstractColorScheme {
     }
 
     @Override
-    public List<Integer> getLineColors() {
+    public @NonNull List<Integer> getLineColors() {
         return Arrays.asList(
                 C12, C20, C28, C36, C44, C52, C60,
                 C10, C18, C26, C34, C42, C50, C58,
@@ -127,12 +129,12 @@ public class SmartColorScheme extends AbstractColorScheme {
     }
 
     @Override
-    public Map<KnownColor, Integer> getAreaKnownColors() {
+    public @NonNull Map<KnownColor, Integer> getAreaKnownColors() {
         return knownColors(C24, C32, C48, C16, C40, C56, C08);
     }
 
     @Override
-    public Map<KnownColor, Integer> getLineKnownColors() {
+    public @NonNull Map<KnownColor, Integer> getLineKnownColors() {
         return knownColors(C28, C36, C52, C20, C44, C60, C12);
     }
 
