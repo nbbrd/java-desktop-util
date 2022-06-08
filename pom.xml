@@ -40,6 +40,7 @@
         <module>java-desktop-util-chart</module>
         <module>java-desktop-util-swing</module>
         <module>java-desktop-util-os</module>
+        <module>java-desktop-util-bom</module>
     </modules>
 
     <properties>
