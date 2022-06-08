@@ -16,19 +16,6 @@
     <description>Desktop utilities for Java - OS</description>
     <url>https://github.com/nbbrd/java-desktop-util</url>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- dependencies  -->
-            <dependency>
-                <groupId>com.github.nbbrd.java-io-util</groupId>
-                <artifactId>java-io-bom</artifactId>
-                <version>0.0.19</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <!-- compile only -->
         <dependency>
@@ -62,34 +49,6 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- demo only -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>java-desktop-util-swing</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kordamp.ikonli</groupId>
-            <artifactId>ikonli-swing</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kordamp.ikonli</groupId>
-            <artifactId>ikonli-materialdesign-pack</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

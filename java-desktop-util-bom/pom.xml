@@ -12,7 +12,7 @@
     <artifactId>java-desktop-util-bom</artifactId>
     <packaging>pom</packaging>
 
-    <name>java-desktop-util</name>
+    <name>java-desktop-util-bom</name>
     <description>Desktop utilities for Java - Bill of Materials</description>
     <url>https://github.com/nbbrd/java-desktop-util</url>
 

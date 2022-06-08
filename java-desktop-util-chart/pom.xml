@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <parent>
         <groupId>com.github.nbbrd.java-desktop-util</groupId>
         <artifactId>java-desktop-util-parent</artifactId>
         <version>2.2.7-SNAPSHOT</version>
     </parent>
-    
+
     <artifactId>java-desktop-util-chart</artifactId>
     <packaging>jar</packaging>
 
@@ -20,7 +21,7 @@
         <jfreechart.version>1.0.19</jfreechart.version>
         <jfreesvg.version>3.4.2</jfreesvg.version>
     </properties>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -45,19 +46,19 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <dependencies>
         <!-- compile only -->
         <dependency>
             <groupId>org.checkerframework</groupId>
             <artifactId>checker-qual</artifactId>
             <scope>provided</scope>
-        </dependency>   
+        </dependency>
         <dependency>
             <groupId>com.github.nbbrd.java-design-util</groupId>
             <artifactId>java-design-processor</artifactId>
             <scope>provided</scope>
-        </dependency>		
+        </dependency>
         <dependency>
             <groupId>com.github.nbbrd.java-service-util</groupId>
             <artifactId>java-service-processor</artifactId>
@@ -83,18 +84,6 @@
             <groupId>org.jfree</groupId>
             <artifactId>jfreesvg</artifactId>
             <optional>true</optional>
-        </dependency>
-        
-        <!-- demo only -->
-        <dependency>
-            <groupId>org.kordamp.ikonli</groupId>
-            <artifactId>ikonli-swing</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kordamp.ikonli</groupId>
-            <artifactId>ikonli-materialdesign-pack</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

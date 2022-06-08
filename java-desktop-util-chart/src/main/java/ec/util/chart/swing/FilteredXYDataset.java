@@ -25,7 +25,7 @@ import org.jfree.data.xy.TableXYDataset;
  *
  * @author Philippe Charles
  */
-final class FilteredXYDataset extends AbstractSeriesDataset implements IntervalXYDataset, TableXYDataset {
+public final class FilteredXYDataset extends AbstractSeriesDataset implements IntervalXYDataset, TableXYDataset {
 
     private final IntervalXYDataset original;
     private final int[] map;
