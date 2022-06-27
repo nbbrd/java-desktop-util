@@ -1,73 +1,57 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.util.demo;
 
-import static ec.util.chart.swing.JTimeSeriesChartCommand.*;
-import ec.util.chart.ColorScheme;
-import ec.util.chart.ColorSchemeSupport;
-import ec.util.chart.ObsFunction;
-import ec.util.chart.ObsIndex;
-import ec.util.chart.ObsPredicate;
-import ec.util.chart.TimeSeriesChart.Element;
-import ec.util.chart.TimeSeriesChart.RendererType;
-import ec.util.chart.SeriesFunction;
+import ec.util.chart.*;
 import ec.util.chart.TimeSeriesChart.CrosshairOrientation;
 import ec.util.chart.TimeSeriesChart.DisplayTrigger;
+import ec.util.chart.TimeSeriesChart.Element;
+import ec.util.chart.TimeSeriesChart.RendererType;
 import ec.util.chart.impl.AndroidColorScheme;
 import ec.util.chart.swing.ColorSchemeIcon;
 import ec.util.chart.swing.JTimeSeriesChart;
 import ec.util.chart.swing.JTimeSeriesChartCommand;
 import ec.util.chart.swing.SwingColorSchemeSupport;
-import static ec.util.chart.swing.JTimeSeriesChart.ELEMENT_VISIBLE_PROPERTY;
-import static ec.util.chart.swing.SwingColorSchemeSupport.blend;
-import static ec.util.chart.swing.SwingColorSchemeSupport.isDark;
 import ec.util.various.swing.BasicSwingLauncher;
 import ec.util.various.swing.JCommand;
 import internal.SpinningIcon;
 import internal.chart.ColorSchemeLoader;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import javax.swing.AbstractAction;
-import static javax.swing.BorderFactory.createCompoundBorder;
-import static javax.swing.BorderFactory.createEmptyBorder;
-import static javax.swing.BorderFactory.createLineBorder;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.ListSelectionModel;
-import javax.swing.Popup;
-import javax.swing.PopupFactory;
 import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jfree.data.time.*;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.kordamp.ikonli.swing.FontIcon;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.logging.Level;
+
+import static ec.util.chart.swing.JTimeSeriesChart.ELEMENT_VISIBLE_PROPERTY;
+import static ec.util.chart.swing.JTimeSeriesChartCommand.*;
+import static ec.util.chart.swing.SwingColorSchemeSupport.blend;
+import static ec.util.chart.swing.SwingColorSchemeSupport.isDark;
+import static javax.swing.BorderFactory.*;
+
 /**
- *
  * @author Philippe Charles
  */
 public final class JTimeSeriesChartDemo extends JPanel {
@@ -124,7 +108,7 @@ public final class JTimeSeriesChartDemo extends JPanel {
 
         seriesState.withPlotIndex(0, 0, 0, 1);
         seriesState.withRendererType(0, RendererType.LINE, RendererType.LINE, RendererType.COLUMN);
-        applyRandomData().executeSafely(chart);
+        new RandomDataCommand(Freq.MONTHLY).executeSafely(chart);
         chart.setColorSchemeSupport(SwingColorSchemeSupport.from(new AndroidColorScheme.AndroidDarkColorScheme()));
         chart.setLineThickness(2);
         chart.setMouseWheelEnabled(true);
@@ -180,7 +164,8 @@ public final class JTimeSeriesChartDemo extends JPanel {
         JMenu item;
 
         item = new JMenu("Data");
-        item.add(applyRandomData().toAction(chart)).setText("Random data");
+        item.add(new RandomDataCommand(Freq.MONTHLY).toAction(chart)).setText("Monthly random data");
+        item.add(new RandomDataCommand(Freq.DAILY).toAction(chart)).setText("Daily random data");
         item.add(applyDataset(SomeTimeSeries.getCol1()).toAction(chart)).setText("AutoRangeIncludesZero?");
         result.add(item);
 
@@ -598,6 +583,68 @@ public final class JTimeSeriesChartDemo extends JPanel {
         @Override
         public @NonNull ActionAdapter toAction(@NonNull CustomTooltip component) {
             return super.toAction(component).withWeakPropertyChangeListener(component);
+        }
+    }
+
+    private enum Freq {
+        MONTHLY {
+            @Override
+            RegularTimePeriod getPeriodAt(Calendar cal, int index) {
+                cal.add(Calendar.MONTH, index);
+                return new Month(cal.getTime());
+            }
+        },
+        DAILY {
+            @Override
+            RegularTimePeriod getPeriodAt(Calendar cal, int index) {
+                cal.add(Calendar.DAY_OF_MONTH, index);
+                return new Day(cal.getTime());
+            }
+        };
+
+        abstract RegularTimePeriod getPeriodAt(Calendar cal, int index);
+    }
+
+    @lombok.RequiredArgsConstructor
+    private static final class RandomDataCommand extends JTimeSeriesChartCommand {
+        final Random random = new Random();
+        final Calendar cal = Calendar.getInstance();
+
+        final Freq freq;
+
+        @Override
+        public void execute(@NonNull JTimeSeriesChart chart) {
+            cal.set(Calendar.YEAR, 2012);
+            cal.set(Calendar.MONTH, 2);
+            cal.set(Calendar.DAY_OF_MONTH, 1);
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            long start = cal.getTimeInMillis();
+            TimeSeriesCollection dataset = new TimeSeriesCollection();
+            dataset.setXPosition(TimePeriodAnchor.MIDDLE);
+            double[][] values = getValues(3, 24, random, start);
+            for (int i = 0; i < values.length; i++) {
+                TimeSeries ts = new TimeSeries(i);
+                for (int j = 0; j < values[i].length; j++) {
+                    cal.setTimeInMillis(start);
+                    ts.add(new TimeSeriesDataItem(freq.getPeriodAt(cal, j), values[i][j]));
+                }
+                dataset.addSeries(ts);
+            }
+
+            chart.setDataset(dataset);
+        }
+
+        double[][] getValues(int series, int obs, Random rng, long startTimeMillis) {
+            double[][] result = new double[series][obs];
+            for (int i = 0; i < series; i++) {
+                for (int j = 0; j < obs; j++) {
+                    result[i][j] = Math.abs((100 * (Math.cos(startTimeMillis * i))) + (100 * (Math.sin(startTimeMillis) - Math.cos(rng.nextDouble()) + Math.tan(rng.nextDouble())))) - 50;
+                }
+            }
+            return result;
         }
     }
 }
