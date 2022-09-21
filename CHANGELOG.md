@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.2.6] - 2022-06-03
 
 This is a bugfix release of **java-desktop-util**.   
-java-desktop-util follows [semantic versioning](http://semver.org/).
+java-desktop-util follows [semantic versioning](https://semver.org/).
 
 ### Fixed
 - Fix colors on look&feel update
@@ -26,7 +26,7 @@ java-desktop-util follows [semantic versioning](http://semver.org/).
 ## [2.2.5] - 2021-03-24
 
 This is a bugfix release of **java-desktop-util**.   
-java-desktop-util follows [semantic versioning](http://semver.org/).
+java-desktop-util follows [semantic versioning](https://semver.org/).
 
 ### Changed
 - Migration to [Maven-Central](https://search.maven.org/search?q=g:com.github.nbbrd.java-desktop-util)
@@ -35,7 +35,7 @@ java-desktop-util follows [semantic versioning](http://semver.org/).
 ## [2.2.4] - 2020-05-25
 
 This is a bugfix release of **java-desktop-util**.   
-java-desktop-util follows [semantic versioning](http://semver.org/).
+java-desktop-util follows [semantic versioning](https://semver.org/).
 
 ### Fixed
 - Add fallback WinRegistry when JNA is unavailable
