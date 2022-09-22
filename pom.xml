@@ -12,6 +12,7 @@
     <name>java-desktop-util</name>
     <description>Desktop utilities for Java</description>
     <url>https://github.com/nbbrd/java-desktop-util</url>
+    <inceptionYear>2018</inceptionYear>
 
     <licenses>
         <license>
