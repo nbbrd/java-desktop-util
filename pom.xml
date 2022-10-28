@@ -6,7 +6,7 @@
 
     <groupId>com.github.nbbrd.java-desktop-util</groupId>
     <artifactId>java-desktop-util-parent</artifactId>
-    <version>2.2.7-SNAPSHOT</version>
+    <version>2.2.7</version>
     <packaging>pom</packaging>
 
     <name>java-desktop-util</name>
