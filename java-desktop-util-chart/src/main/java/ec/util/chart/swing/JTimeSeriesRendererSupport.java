@@ -64,7 +64,7 @@ import org.jfree.ui.Size2D;
  *
  * @author Philippe Charles
  */
-abstract class JTimeSeriesRendererSupport implements XYItemLabelGenerator, XYSeriesLabelGenerator {
+public abstract class JTimeSeriesRendererSupport implements XYItemLabelGenerator, XYSeriesLabelGenerator {
 
     abstract public Color getPlotColor();
 

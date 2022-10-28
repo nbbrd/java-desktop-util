@@ -273,6 +273,7 @@ public abstract class JTimeSeriesChartCommand extends JCommand<JTimeSeriesChart>
         };
     }
 
+    @Deprecated
     public static JTimeSeriesChartCommand applyRandomData() {
         return RANDOM_DATA;
     }
