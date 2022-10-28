@@ -6,14 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.7] - 2022-10-28
+
 ### Added
 
 - Add Maven BOM
 - Add demo module
-
-### Fixed
-
-### Changed
 
 ## [2.2.6] - 2022-06-03
 
@@ -66,7 +64,8 @@ java-desktop-util follows [semantic versioning](https://semver.org/).
 ### Fixed
 - JDK11 cleanup
 
-[Unreleased]: https://github.com/nbbrd/java-desktop-util/compare/v2.2.6...HEAD
+[Unreleased]: https://github.com/nbbrd/java-desktop-util/compare/v2.2.7...HEAD
+[2.2.7]: https://github.com/nbbrd/java-desktop-util/compare/v2.2.6...v2.2.7
 [2.2.6]: https://github.com/nbbrd/java-desktop-util/compare/v2.2.5...v2.2.6
 [2.2.5]: https://github.com/nbbrd/java-desktop-util/compare/v2.2.4...v2.2.5
 [2.2.4]: https://github.com/nbbrd/java-desktop-util/compare/v2.2.3...v2.2.4
