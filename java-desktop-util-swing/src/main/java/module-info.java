@@ -20,7 +20,7 @@ module nbbrd.desktop.swing {
     requires static org.checkerframework.checker.qual;
     requires static nbbrd.design;
 
-    requires java.desktop;
+    requires transitive java.desktop;
     requires java.logging;
     
     exports ec.util.completion;
