@@ -41,8 +41,9 @@
         <module>java-desktop-util-chart</module>
         <module>java-desktop-util-swing</module>
         <module>java-desktop-util-os</module>
-        <module>java-desktop-util-bom</module>
+        <module>java-desktop-util-favicon</module>
         <module>java-desktop-util-demo</module>
+        <module>java-desktop-util-bom</module>
     </modules>
 
     <dependencyManagement>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.nbbrd.java-desktop-util</groupId>
+        <artifactId>java-desktop-util-parent</artifactId>
+        <version>2.2.9-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>java-desktop-util-favicon</artifactId>
+    <packaging>jar</packaging>
+
+    <name>java-desktop-util-favicon</name>
+    <description>Desktop utilities for Java - Favicon</description>
+    <url>https://github.com/nbbrd/java-desktop-util</url>
+
+    <dependencies>
+        <!-- compile only -->
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.nbbrd.java-design-util</groupId>
+            <artifactId>java-design-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.nbbrd.java-service-util</groupId>
+            <artifactId>java-service-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- test only -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
