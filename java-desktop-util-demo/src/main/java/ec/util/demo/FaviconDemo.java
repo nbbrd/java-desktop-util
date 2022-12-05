@@ -23,6 +23,7 @@ import ec.util.various.swing.FontAwesome;
 import lombok.NonNull;
 import nbbrd.desktop.favicon.DomainName;
 import nbbrd.desktop.favicon.FaviconListener;
+import nbbrd.desktop.favicon.FaviconRef;
 import nbbrd.desktop.favicon.FaviconSupport;
 import nbbrd.desktop.favicon.spi.FaviconSupplier;
 import nbbrd.desktop.favicon.spi.FaviconSupplierLoader;
@@ -55,11 +56,11 @@ public final class FaviconDemo {
 
     @lombok.Value
     static class Favicon {
-        @NonNull DomainName domainName;
+        @NonNull FaviconRef ref;
         @NonNull FaviconSupport faviconSupport;
 
         public Icon getIcon(Component listener) {
-            return faviconSupport.get(domainName, listener);
+            return faviconSupport.get(ref, listener);
         }
     }
 
@@ -84,7 +85,7 @@ public final class FaviconDemo {
 
             @Override
             public Object getValueAt(int rowIndex, int columnIndex) {
-                return new Favicon(domainNames[rowIndex], faviconSupports[columnIndex]);
+                return new Favicon(FaviconRef.of(domainNames[rowIndex], 16), faviconSupports[columnIndex]);
             }
 
             @Override

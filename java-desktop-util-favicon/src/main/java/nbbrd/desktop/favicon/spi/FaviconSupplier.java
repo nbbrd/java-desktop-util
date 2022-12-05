@@ -1,7 +1,7 @@
 package nbbrd.desktop.favicon.spi;
 
 import lombok.NonNull;
-import nbbrd.desktop.favicon.DomainName;
+import nbbrd.desktop.favicon.FaviconRef;
 import nbbrd.desktop.favicon.URLConnectionFactory;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
@@ -21,7 +21,7 @@ public interface FaviconSupplier {
     @ServiceSorter(reverse = true)
     int getRank();
 
-    @Nullable Image getFaviconOrNull(@NonNull DomainName domainName, @NonNull URLConnectionFactory client) throws IOException;
+    @Nullable Image getFaviconOrNull(@NonNull FaviconRef ref, @NonNull URLConnectionFactory client) throws IOException;
 
     Image NO_FAVICON = null;
 }

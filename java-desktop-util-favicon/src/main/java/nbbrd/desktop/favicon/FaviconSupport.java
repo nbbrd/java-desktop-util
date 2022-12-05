@@ -7,10 +7,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -42,7 +44,7 @@ public class FaviconSupport {
     // do not put URL as key because of very-slow first lookup
     @NonNull
     @lombok.Builder.Default
-    Map<DomainName, Icon> cache = new HashMap<>();
+    Map<FaviconRef, Image> cache = new HashMap<>();
 
     @NonNull
     @lombok.Builder.Default
@@ -52,57 +54,66 @@ public class FaviconSupport {
     @lombok.Builder.Default
     FaviconListener<? super IOException> onAsyncError = FaviconListener.noOp();
 
-    public @Nullable Icon get(@NonNull DomainName domainName, @NonNull Component listener) {
-        return get(domainName, listener::repaint);
+    public @Nullable Icon get(@NonNull FaviconRef ref, @NonNull Component listener) {
+        FaviconRef scaledRef = ScaledIcon.computeScaledRef(ref, listener);
+        return toIcon(cache.computeIfAbsent(scaledRef, key -> sendRequest(key, listener::repaint)), ref);
     }
 
-    public @Nullable Icon get(@NonNull DomainName domainName, @NonNull Runnable onUpdate) {
-        return NullIcon.unwrap(cache.computeIfAbsent(domainName, key -> sendRequest(key, onUpdate)));
+    public @Nullable Icon get(@NonNull FaviconRef ref, @NonNull Runnable onUpdate) {
+        FaviconRef scaledRef = ScaledIcon.computeScaledRef(ref, null);
+        return toIcon(cache.computeIfAbsent(scaledRef, key -> sendRequest(key, onUpdate)), ref);
     }
 
-    public @Nullable Icon peek(@NonNull DomainName domainName) {
-        return NullIcon.unwrap(cache.getOrDefault(domainName, NullIcon.INSTANCE));
+    public @Nullable Icon peek(@NonNull FaviconRef ref) {
+        FaviconRef scaledRef = ScaledIcon.computeScaledRef(ref, null);
+        return toIcon(cache.getOrDefault(scaledRef, NULL_IMAGE), ref);
     }
 
-    private @NonNull NullIcon sendRequest(DomainName domainName, Runnable onUpdate) {
-        executor.execute(() -> asyncLoadIntoCache(domainName, onUpdate));
-        return NullIcon.INSTANCE;
+    private @NonNull Image sendRequest(FaviconRef ref, Runnable onUpdate) {
+        executor.execute(() -> asyncLoadIntoCache(ref, onUpdate));
+        return NULL_IMAGE;
     }
 
-    private void updateCacheAndNotify(DomainName domainName, Icon favicon, Runnable onUpdate) {
-        cache.put(domainName, favicon);
+    private void updateCacheAndNotify(FaviconRef ref, Image favicon, Runnable onUpdate) {
+        cache.put(ref, favicon);
         onUpdate.run();
     }
 
-    private void asyncLoadIntoCache(DomainName domainName, Runnable onUpdate) {
-        Icon icon = asyncLoadOrNull(domainName);
-        if (icon != null) {
-            SwingUtilities.invokeLater(() -> updateCacheAndNotify(domainName, icon, onUpdate));
+    private void asyncLoadIntoCache(FaviconRef ref, Runnable onUpdate) {
+        Image image = asyncLoadOrNull(ref);
+        if (image != null) {
+            SwingUtilities.invokeLater(() -> updateCacheAndNotify(ref, image, onUpdate));
         }
     }
 
-    private Icon asyncLoadOrNull(DomainName domainName) {
+    private Image asyncLoadOrNull(FaviconRef ref) {
         for (FaviconSupplier supplier : suppliers) {
-            Icon result = asyncLoadOrNull(domainName, supplier);
+            Image result = asyncLoadOrNull(ref, supplier);
             if (result != null) return result;
         }
-        return !ignoreParentDomain ? domainName.getParent().map(this::asyncLoadOrNull).orElse(null) : null;
+        if (!ignoreParentDomain) {
+            Optional<DomainName> parent = ref.getDomain().getParent();
+            if (parent.isPresent()) {
+                return asyncLoadOrNull(ref.withDomain(parent.get()));
+            }
+        }
+        return null;
     }
 
-    private Icon asyncLoadOrNull(DomainName domainName, FaviconSupplier supplier) {
+    private Image asyncLoadOrNull(FaviconRef ref, FaviconSupplier supplier) {
         try {
             long start = System.currentTimeMillis();
-            Image result = supplier.getFaviconOrNull(domainName, client);
+            Image result = supplier.getFaviconOrNull(ref, client);
             long stop = System.currentTimeMillis();
             if (result != FaviconSupplier.NO_FAVICON) {
-                onAsyncMessage.accept(domainName, supplier.getName(), String.format("Loaded %sx%s in %sms", result.getWidth(null), result.getHeight(null), stop - start));
-                return new ImageIcon(result);
+                onAsyncMessage.accept(ref, supplier.getName(), String.format("Loaded %sx%s in %sms", result.getWidth(null), result.getHeight(null), stop - start));
+                return result;
             } else {
-                onAsyncMessage.accept(domainName, supplier.getName(), "Missing");
+                onAsyncMessage.accept(ref, supplier.getName(), "Missing");
                 return null;
             }
         } catch (IOException ex) {
-            onAsyncError.accept(domainName, supplier.getName(), ex);
+            onAsyncError.accept(ref, supplier.getName(), ex);
             return null;
         }
     }
@@ -114,25 +125,55 @@ public class FaviconSupport {
         return result;
     }
 
-    private enum NullIcon implements Icon {
-        INSTANCE;
+    private static final Image NULL_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+
+    public static @Nullable Icon toIcon(@Nullable Image image, @NonNull FaviconRef ref) {
+        return image == NULL_IMAGE || image == null ? null : new ScaledIcon(ref, image);
+    }
+
+    @lombok.RequiredArgsConstructor
+    private static final class ScaledIcon implements Icon {
+
+        public static FaviconRef computeScaledRef(FaviconRef ref, Component c) {
+            double scale = getScale(c);
+            return scale == 1.0 ? ref : ref.withSize((int) (ref.getSize() * scale));
+        }
+
+        private static @NonNull GraphicsConfiguration getGraphicsConfiguration(@Nullable Component c) {
+            if (c != null) {
+                Window window = SwingUtilities.getWindowAncestor(c);
+                if (window != null) {
+                    window.getGraphicsConfiguration();
+                }
+            }
+            return GraphicsEnvironment
+                    .getLocalGraphicsEnvironment()
+                    .getDefaultScreenDevice()
+                    .getDefaultConfiguration();
+        }
+
+        public static double getScale(@Nullable Component c) {
+            return getGraphicsConfiguration(c)
+                    .getDefaultTransform()
+                    .getScaleX();
+        }
+
+        private final FaviconRef ref;
+        private final Image image;
 
         @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
+            g.drawImage(image, x, y, ref.getSize(), ref.getSize(), c);
         }
 
         @Override
         public int getIconWidth() {
-            return 0;
+            return ref.getSize();
         }
 
         @Override
         public int getIconHeight() {
-            return 0;
-        }
-
-        public static @Nullable Icon unwrap(@Nullable Icon icon) {
-            return icon instanceof NullIcon ? null : icon;
+            return ref.getSize();
         }
     }
 }
