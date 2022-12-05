@@ -8,6 +8,7 @@ import nbbrd.service.ServiceProvider;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -16,16 +17,16 @@ import java.net.URL;
 import java.net.URLConnection;
 
 @ServiceProvider
-public final class GoogleSupplier implements FaviconSupplier {
+public final class IconHorseSupplier implements FaviconSupplier {
 
     @Override
     public @NonNull String getName() {
-        return "Google";
+        return "IconHorse";
     }
 
     @Override
     public int getRank() {
-        return 600;
+        return 500;
     }
 
     @Override
@@ -36,34 +37,23 @@ public final class GoogleSupplier implements FaviconSupplier {
         }
         HttpURLConnection http = (HttpURLConnection) connection;
         try {
-            if (isDefaultFavicon(http)) {
-                return NO_FAVICON;
-            }
             try (InputStream stream = http.getInputStream()) {
-                return ImageIO.read(stream);
+                BufferedImage result = ImageIO.read(stream);
+                return isDefaultFavicon(http, result) ? null : result;
             }
         } finally {
             http.disconnect();
         }
     }
 
-    private URL getFaviconRequest(FaviconRef ref) throws MalformedURLException {
-        int preferredSize = getPreferredSize(ref.getSize());
-        return new URL("https://www.google.com/s2/favicons?domain=" + ref.getDomain() + "&sz=" + preferredSize);
+    private static URL getFaviconRequest(FaviconRef ref) throws MalformedURLException {
+        return new URL("https://icon.horse/icon/" + ref.getDomain());
     }
 
-    private static boolean isDefaultFavicon(HttpURLConnection http) throws IOException {
-        return http.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND;
+    private static boolean isDefaultFavicon(HttpURLConnection http, BufferedImage image) throws IllegalArgumentException {
+        return "image/png".equals(http.getContentType())
+                && image.getHeight(null) == 512
+                && image.getWidth(null) == 512
+                && image.getRGB(0, 0) == -14735049;
     }
-
-    private static int getPreferredSize(int size) {
-        for (int value : SIZES) {
-            if (size <= value) {
-                return value;
-            }
-        }
-        return size;
-    }
-
-    private static final int[] SIZES = {16, 24, 32, 64};
 }

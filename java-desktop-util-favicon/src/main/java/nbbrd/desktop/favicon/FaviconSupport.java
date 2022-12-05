@@ -64,8 +64,8 @@ public class FaviconSupport {
         return toIcon(cache.computeIfAbsent(scaledRef, key -> sendRequest(key, onUpdate)), ref);
     }
 
-    public @Nullable Icon peek(@NonNull FaviconRef ref) {
-        FaviconRef scaledRef = ScaledIcon.computeScaledRef(ref, null);
+    public @Nullable Icon peek(@NonNull FaviconRef ref, @NonNull Component anchor) {
+        FaviconRef scaledRef = ScaledIcon.computeScaledRef(ref, anchor);
         return toIcon(cache.getOrDefault(scaledRef, NULL_IMAGE), ref);
     }
 

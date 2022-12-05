@@ -25,7 +25,7 @@ public final class FaviconkitSupplier implements FaviconSupplier {
 
     @Override
     public int getRank() {
-        return 200;
+        return 700;
     }
 
     @Override

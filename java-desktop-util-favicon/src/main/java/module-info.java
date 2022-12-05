@@ -14,5 +14,6 @@ module nbbrd.desktop.favicon {
     uses nbbrd.desktop.favicon.spi.FaviconSupplier;
     provides nbbrd.desktop.favicon.spi.FaviconSupplier with
             internal.desktop.favicon.spi.FaviconkitSupplier,
-            internal.desktop.favicon.spi.GoogleSupplier;
+            internal.desktop.favicon.spi.GoogleSupplier,
+            internal.desktop.favicon.spi.IconHorseSupplier;
 }
