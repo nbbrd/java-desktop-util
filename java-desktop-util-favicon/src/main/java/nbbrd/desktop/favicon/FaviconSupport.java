@@ -32,6 +32,9 @@ public class FaviconSupport {
     @lombok.Singular
     List<FaviconSupplier> suppliers;
 
+    @lombok.Builder.Default
+    boolean ignoreParentDomain = false;
+
     @NonNull
     @lombok.Builder.Default
     ExecutorService executor = Executors.newCachedThreadPool(FaviconSupport::newLowPriorityDaemonThread);
@@ -83,7 +86,7 @@ public class FaviconSupport {
             Icon result = asyncLoadOrNull(domainName, supplier);
             if (result != null) return result;
         }
-        return null;
+        return !ignoreParentDomain ? domainName.getParent().map(this::asyncLoadOrNull).orElse(null) : null;
     }
 
     private Icon asyncLoadOrNull(DomainName domainName, FaviconSupplier supplier) {

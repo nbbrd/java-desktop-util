@@ -36,6 +36,7 @@ import java.net.URL;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Philippe Charles
@@ -97,7 +98,7 @@ public final class FaviconDemo {
                         .getSuppliers()
                         .stream()
                         .map(FaviconSupplier::getName)
-                        .collect(Collectors.joining(", "));
+                        .collect(Collectors.joining(", ", "", faviconSupports[column].isIgnoreParentDomain() ? "" : " ++"));
             }
 
             @Override
@@ -140,15 +141,17 @@ public final class FaviconDemo {
             FaviconListener<String> onMessage,
             FaviconListener<IOException> onError
     ) {
-        return FaviconSupplierLoader.load()
+        Stream<FaviconSupport> first = FaviconSupplierLoader.load()
                 .stream()
                 .map(supplier -> FaviconSupport
                         .builder()
                         .supplier(supplier)
+                        .ignoreParentDomain(true)
                         .onAsyncMessage(onMessage)
                         .onAsyncError(onError)
-                        .build())
-                .toArray(FaviconSupport[]::new);
+                        .build());
+        Stream<FaviconSupport> second = Stream.of(FaviconSupport.ofServiceLoader());
+        return Stream.concat(first, second).toArray(FaviconSupport[]::new);
     }
 
     private static DomainName[] getDomainNames() {
