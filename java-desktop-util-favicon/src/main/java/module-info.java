@@ -9,9 +9,10 @@ module nbbrd.desktop.favicon {
     requires transitive java.desktop;
 
     exports nbbrd.desktop.favicon;
+    exports nbbrd.desktop.favicon.spi;
 
-    uses nbbrd.desktop.favicon.FaviconSupplier;
-    provides nbbrd.desktop.favicon.FaviconSupplier with
-            internal.desktop.favicon.FaviconkitSupplier,
-            internal.desktop.favicon.GoogleSupplier;
+    uses nbbrd.desktop.favicon.spi.FaviconSupplier;
+    provides nbbrd.desktop.favicon.spi.FaviconSupplier with
+            internal.desktop.favicon.spi.FaviconkitSupplier,
+            internal.desktop.favicon.spi.GoogleSupplier;
 }

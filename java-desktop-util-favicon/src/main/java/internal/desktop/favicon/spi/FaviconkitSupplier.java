@@ -1,7 +1,7 @@
-package internal.desktop.favicon;
+package internal.desktop.favicon.spi;
 
 import lombok.NonNull;
-import nbbrd.desktop.favicon.FaviconSupplier;
+import nbbrd.desktop.favicon.spi.FaviconSupplier;
 import nbbrd.desktop.favicon.DomainName;
 import nbbrd.desktop.favicon.URLConnectionFactory;
 import nbbrd.service.ServiceProvider;

@@ -1,6 +1,8 @@
-package nbbrd.desktop.favicon;
+package nbbrd.desktop.favicon.spi;
 
 import lombok.NonNull;
+import nbbrd.desktop.favicon.DomainName;
+import nbbrd.desktop.favicon.URLConnectionFactory;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
 import nbbrd.service.ServiceSorter;

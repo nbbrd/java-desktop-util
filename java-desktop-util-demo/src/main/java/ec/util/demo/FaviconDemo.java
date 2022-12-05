@@ -21,7 +21,11 @@ import ec.util.grid.swing.JGrid;
 import ec.util.various.swing.BasicSwingLauncher;
 import ec.util.various.swing.FontAwesome;
 import lombok.NonNull;
-import nbbrd.desktop.favicon.*;
+import nbbrd.desktop.favicon.DomainName;
+import nbbrd.desktop.favicon.FaviconListener;
+import nbbrd.desktop.favicon.FaviconSupport;
+import nbbrd.desktop.favicon.spi.FaviconSupplier;
+import nbbrd.desktop.favicon.spi.FaviconSupplierLoader;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -29,7 +33,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -54,7 +57,7 @@ public final class FaviconDemo {
         @NonNull DomainName domainName;
         @NonNull FaviconSupport faviconSupport;
 
-        public Optional<Icon> getIcon(Component listener) {
+        public Icon getIcon(Component listener) {
             return faviconSupport.get(domainName, listener);
         }
     }
@@ -108,9 +111,14 @@ public final class FaviconDemo {
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 JLabel result = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 result.setText(null);
-                result.setIcon(((Favicon) value).getIcon(table).orElseGet(() -> getFallbackIcon(result)));
+                result.setIcon(getIcon(table, result, (Favicon) value));
                 result.setHorizontalAlignment(JLabel.CENTER);
                 return result;
+            }
+
+            private Icon getIcon(JTable table, JLabel renderer, Favicon value) {
+                Icon result = value.getIcon(table);
+                return result != null ? result : getFallbackIcon(renderer);
             }
 
             private Icon getFallbackIcon(JLabel renderer) {
