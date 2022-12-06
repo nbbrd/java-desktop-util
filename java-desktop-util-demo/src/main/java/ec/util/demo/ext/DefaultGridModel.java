@@ -40,7 +40,7 @@ public final class DefaultGridModel<R, C> extends AbstractGridModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return new DefaultGridCell<>(rows.get(rowIndex), columns.get(columnIndex));
+        return new DefaultGridCell(rows.get(rowIndex), columns.get(columnIndex));
     }
 
     @Override

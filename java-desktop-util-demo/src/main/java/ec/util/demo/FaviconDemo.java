@@ -59,8 +59,17 @@ public final class FaviconDemo {
 
     static Component create() {
         JTabbedPane result = new JTabbedPane();
+
         result.add("Local", createGrid(getLocalRefs(), getLocalSupports()));
         result.add("Remote", createGrid(getRemoteRefs(), getRemoteSupports()));
+
+        FaviconSupport tabIconSupport = FaviconSupport
+                .builder()
+                .supplier(LocalFaviconSupplier.builder().delayInMillis(3000).build())
+                .build();
+
+        result.setIconAt(0, tabIconSupport.get(ref("s16.nbb.be"), result::repaint));
+
         return result;
     }
 
@@ -101,47 +110,36 @@ public final class FaviconDemo {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel result = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if (value instanceof DefaultGridCell) {
+                DefaultGridCell cell = (DefaultGridCell) value;
+                FaviconRef ref = (FaviconRef) cell.getRowValue();
+                FaviconSupport support = (FaviconSupport) cell.getColumnValue();
                 result.setText(null);
-                result.setIcon(getIcon(table, result, (DefaultGridCell<FaviconRef, FaviconSupport>) value));
+                result.setIcon(support.getOrDefault(ref, table::repaint, getFallbackIcon(result, ref)));
                 result.setHorizontalAlignment(JLabel.CENTER);
             }
             return result;
         }
 
-        private Icon getIcon(JTable table, JLabel renderer, DefaultGridCell<FaviconRef, FaviconSupport> value) {
-            Icon result = value.getColumnValue().get(value.getRowValue(), table);
-            return result != null ? result : getFallbackIcon(renderer, value);
-        }
-
-        private Icon getFallbackIcon(JLabel renderer, DefaultGridCell<FaviconRef, FaviconSupport> value) {
-            return FontAwesome.FA_QUESTION.getIcon(renderer.getForeground(), value.getRowValue().getSize());
+        private Icon getFallbackIcon(JLabel renderer, FaviconRef value) {
+            return FontAwesome.FA_QUESTION.getIcon(renderer.getForeground(), value.getSize());
         }
     }
 
     private static List<FaviconRef> getLocalRefs() {
-        return Arrays.asList(
-                FaviconRef.of(DomainName.parse("s8.nbb.be"), 16),
-                FaviconRef.of(DomainName.parse("s16.nbb.be"), 16),
-                FaviconRef.of(DomainName.parse("s32.nbb.be"), 16),
-                FaviconRef.of(DomainName.parse("s64.nbb.be"), 16)
-        );
+        return refs("s8.nbb.be", "s16.nbb.be", "s32.nbb.be", "s64.nbb.be");
     }
 
     private static List<FaviconSupport> getLocalSupports() {
-        FaviconListener<String> onMessage = getListener(Function.identity());
-        FaviconListener<IOException> onError = getListener(IOException::getMessage);
         return Arrays.asList(
                 FaviconSupport
                         .builder()
                         .supplier(LocalFaviconSupplier.builder().name("Local").delayInMillis(0).build())
-                        .onAsyncMessage(onMessage)
-                        .onAsyncError(onError)
+                        .onAsyncMessage(getListener(Function.identity()))
+                        .onAsyncError(getListener(IOException::getMessage))
                         .build(),
                 FaviconSupport
                         .builder()
                         .supplier(LocalFaviconSupplier.builder().name("Local +2s").delayInMillis(2000).build())
-                        .onAsyncMessage(onMessage)
-                        .onAsyncError(onError)
                         .build()
         );
     }
@@ -150,9 +148,11 @@ public final class FaviconDemo {
     @lombok.Builder
     private static class LocalFaviconSupplier implements FaviconSupplier {
 
-        @NonNull String name;
+        @lombok.Builder.Default
+        @NonNull String name = "";
 
-        @NonNegative long delayInMillis;
+        @lombok.Builder.Default
+        @NonNegative long delayInMillis = 0;
 
         @Override
         public int getRank() {
@@ -174,37 +174,36 @@ public final class FaviconDemo {
     }
 
     private static List<FaviconRef> getRemoteRefs() {
-        return Stream.of(
-                        "explore.data.abs.gov.au",
-                        "www.bundesbank.de",
-                        "stats.bis.org",
-                        "camstat.nis.gov.kh",
-                        "sdw.ecb.europa.eu",
-                        "dataexplorer.unescap.org",
-                        "ec.europa.eu",
-                        "ilostat.ilo.org",
-                        "data.imf.org",
-                        "sdmx.snieg.mx",
-                        "www.insee.fr",
-                        "www.istat.it",
-                        "www.norges-bank.no",
-                        "stat.nbb.be",
-                        "stats.oecd.org",
-                        "andmebaas.stat.ee",
-                        "registry.sdmx.org",
-                        "datasimel.mtps.gob.sv",
-                        "stats.pacificdata.org",
-                        "www150.statcan.gc.ca",
-                        "lustat.statec.lu",
-                        "statfin.stat.fi",
-                        "oshub.nso.go.th",
-                        "data.uis.unesco.org",
-                        "stats2.digitalresources.jisc.ac.uk",
-                        "data.un.org",
-                        "data.worldbank.org",
-                        "wits.worldbank.org"
-                ).map(domain -> FaviconRef.of(DomainName.parse(domain), 16))
-                .collect(Collectors.toList());
+        return refs(
+                "explore.data.abs.gov.au",
+                "www.bundesbank.de",
+                "stats.bis.org",
+                "camstat.nis.gov.kh",
+                "sdw.ecb.europa.eu",
+                "dataexplorer.unescap.org",
+                "ec.europa.eu",
+                "ilostat.ilo.org",
+                "data.imf.org",
+                "sdmx.snieg.mx",
+                "www.insee.fr",
+                "www.istat.it",
+                "www.norges-bank.no",
+                "stat.nbb.be",
+                "stats.oecd.org",
+                "andmebaas.stat.ee",
+                "registry.sdmx.org",
+                "datasimel.mtps.gob.sv",
+                "stats.pacificdata.org",
+                "www150.statcan.gc.ca",
+                "lustat.statec.lu",
+                "statfin.stat.fi",
+                "oshub.nso.go.th",
+                "data.uis.unesco.org",
+                "stats2.digitalresources.jisc.ac.uk",
+                "data.un.org",
+                "data.worldbank.org",
+                "wits.worldbank.org"
+        );
     }
 
     private static List<FaviconSupport> getRemoteSupports() {
@@ -225,5 +224,13 @@ public final class FaviconDemo {
 
     private static <T> FaviconListener<T> getListener(Function<T, String> toString) {
         return (host, supplier, value) -> System.out.printf("%s(%s): %s%n", host, supplier, toString.apply(value));
+    }
+
+    private static List<FaviconRef> refs(String... domains) {
+        return Stream.of(domains).map(FaviconDemo::ref).collect(Collectors.toList());
+    }
+
+    private static FaviconRef ref(String domain) {
+        return FaviconRef.of(DomainName.parse(domain), 16);
     }
 }

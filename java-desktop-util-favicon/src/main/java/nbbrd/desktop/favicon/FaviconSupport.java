@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.BiFunction;
 
 @lombok.Value
 @lombok.Builder(toBuilder = true)
@@ -54,25 +55,33 @@ public class FaviconSupport {
     @lombok.Builder.Default
     FaviconListener<? super IOException> onAsyncError = FaviconListener.noOp();
 
-    public @Nullable Icon get(@NonNull FaviconRef ref, @NonNull Component listener) {
-        FaviconRef scaledRef = ScaledIcon.computeScaledRef(ref, listener);
-        return toIcon(cache.computeIfAbsent(scaledRef, key -> sendRequest(key, listener::repaint)), ref);
+    public @NonNull Icon get(@NonNull FaviconRef ref) {
+        return new Favicon(ref, FaviconSupport::doNothing, this::getOrLoadImage, null);
     }
 
-    public @Nullable Icon get(@NonNull FaviconRef ref, @NonNull Runnable onUpdate) {
-        FaviconRef scaledRef = ScaledIcon.computeScaledRef(ref, null);
-        return toIcon(cache.computeIfAbsent(scaledRef, key -> sendRequest(key, onUpdate)), ref);
+    public @NonNull Icon getOrDefault(@NonNull FaviconRef ref, @NonNull Icon fallback) {
+        return new Favicon(ref, FaviconSupport::doNothing, this::getOrLoadImage, fallback);
     }
 
-    public @Nullable Icon peek(@NonNull FaviconRef ref, @NonNull Component anchor) {
-        FaviconRef scaledRef = ScaledIcon.computeScaledRef(ref, anchor);
-        return toIcon(cache.getOrDefault(scaledRef, NULL_IMAGE), ref);
+    public @NonNull Icon get(@NonNull FaviconRef ref, @NonNull Runnable onUpdate) {
+        return new Favicon(ref, onUpdate, this::getOrLoadImage, null);
     }
 
-    private @NonNull Image sendRequest(FaviconRef ref, Runnable onUpdate) {
-        executor.execute(() -> asyncLoadIntoCache(ref, onUpdate));
-        return NULL_IMAGE;
+    public @NonNull Icon getOrDefault(@NonNull FaviconRef ref, @NonNull Runnable onUpdate, @NonNull Icon fallback) {
+        return new Favicon(ref, onUpdate, this::getOrLoadImage, fallback);
     }
+
+    private @Nullable Image getOrLoadImage(@NonNull FaviconRef key, @NonNull Runnable onUpdate) {
+        Image result = cache.get(key);
+        if (result != null) {
+            return result != PENDING_IMAGE ? result : null;
+        }
+        executor.execute(() -> asyncLoadIntoCache(key, onUpdate));
+        cache.put(key, PENDING_IMAGE);
+        return null;
+    }
+
+    private static final Image PENDING_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 
     private void updateCacheAndNotify(FaviconRef ref, Image favicon, Runnable onUpdate) {
         cache.put(ref, favicon);
@@ -92,9 +101,9 @@ public class FaviconSupport {
             if (result != null) return result;
         }
         if (!ignoreParentDomain) {
-            Optional<DomainName> parent = ref.getDomain().getParent();
+            Optional<FaviconRef> parent = ref.getParent();
             if (parent.isPresent()) {
-                return asyncLoadOrNull(ref.withDomain(parent.get()));
+                return asyncLoadOrNull(parent.get());
             }
         }
         return null;
@@ -125,50 +134,34 @@ public class FaviconSupport {
         return result;
     }
 
-    private static final Image NULL_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-
-    public static @Nullable Icon toIcon(@Nullable Image image, @NonNull FaviconRef ref) {
-        return image == NULL_IMAGE || image == null ? null : new ScaledIcon(ref, image);
-    }
-
     @lombok.RequiredArgsConstructor
-    private static final class ScaledIcon implements Icon {
+    private static final class Favicon implements Icon {
 
-        public static FaviconRef computeScaledRef(FaviconRef ref, Component c) {
-            double scale = getScale(c);
-            return scale == 1.0 ? ref : ref.withSize((int) (ref.getSize() * scale));
-        }
+        private final @NonNull FaviconRef ref;
 
-        private static @NonNull GraphicsConfiguration getGraphicsConfiguration(@Nullable Component c) {
-            if (c != null) {
-                Window window = SwingUtilities.getWindowAncestor(c);
-                if (window != null) {
-                    return window.getGraphicsConfiguration();
-                }
-            }
-            return GraphicsEnvironment
-                    .getLocalGraphicsEnvironment()
-                    .getDefaultScreenDevice()
-                    .getDefaultConfiguration();
-        }
+        private final @NonNull Runnable onUpdate;
 
-        public static double getScale(@Nullable Component c) {
-            return getGraphicsConfiguration(c)
-                    .getDefaultTransform()
-                    .getScaleX();
-        }
+        private final @NonNull BiFunction<FaviconRef, Runnable, Image> engine;
 
-        private final FaviconRef ref;
-        private final Image image;
+        private final @Nullable Icon fallback;
 
         @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
-            Graphics2D g2d = (Graphics2D) g.create();
-            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.drawImage(image, x, y, ref.getSize(), ref.getSize(), c);
-            g2d.dispose();
+            Image image = engine.apply(ref.scale(getScale(g)), onUpdate);
+            if (image != null) {
+                Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2d.drawImage(image, x, y, ref.getSize(), ref.getSize(), c);
+                g2d.dispose();
+            } else if (fallback != null) {
+                fallback.paintIcon(c, g, x, y);
+            }
+        }
+
+        private double getScale(Graphics g) {
+            return g instanceof Graphics2D ? ((Graphics2D) g).getTransform().getScaleX() : 1.0;
         }
 
         @Override
@@ -180,5 +173,8 @@ public class FaviconSupport {
         public int getIconHeight() {
             return ref.getSize();
         }
+    }
+
+    private static void doNothing() {
     }
 }

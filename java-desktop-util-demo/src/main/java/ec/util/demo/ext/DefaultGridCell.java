@@ -1,9 +1,9 @@
 package ec.util.demo.ext;
 
 @lombok.Value
-public class DefaultGridCell<R, C> {
+public class DefaultGridCell {
 
-    R rowValue;
+    Object rowValue;
 
-    C columnValue;
+    Object columnValue;
 }
