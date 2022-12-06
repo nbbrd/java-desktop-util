@@ -30,6 +30,10 @@ public class DomainName {
 
     private final @NonNull String[] parts;
 
+    public @NonNull String getPart(int index) {
+        return parts[index];
+    }
+
     @Override
     public String toString() {
         return String.join(".", parts);

@@ -16,24 +16,27 @@
  */
 package ec.util.demo;
 
-import ec.util.grid.swing.AbstractGridModel;
+import ec.util.demo.ext.DefaultGridCell;
+import ec.util.demo.ext.DefaultGridModel;
 import ec.util.grid.swing.JGrid;
 import ec.util.various.swing.BasicSwingLauncher;
 import ec.util.various.swing.FontAwesome;
 import lombok.NonNull;
-import nbbrd.desktop.favicon.DomainName;
-import nbbrd.desktop.favicon.FaviconListener;
-import nbbrd.desktop.favicon.FaviconRef;
-import nbbrd.desktop.favicon.FaviconSupport;
+import nbbrd.desktop.favicon.*;
 import nbbrd.desktop.favicon.spi.FaviconSupplier;
 import nbbrd.desktop.favicon.spi.FaviconSupplierLoader;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -49,84 +52,30 @@ public final class FaviconDemo {
         new BasicSwingLauncher()
                 .content(FaviconDemo::create)
                 .title("Favicon Demo")
-                .size(300, 400)
+                .size(500, 500)
                 .logLevel(Level.FINE)
                 .launch();
     }
 
-    @lombok.Value
-    static class Favicon {
-        @NonNull FaviconRef ref;
-        @NonNull FaviconSupport faviconSupport;
-
-        public Icon getIcon(Component listener) {
-            return faviconSupport.get(ref, listener);
-        }
+    static Component create() {
+        JTabbedPane result = new JTabbedPane();
+        result.add("Local", createGrid(getLocalRefs(), getLocalSupports()));
+        result.add("Remote", createGrid(getRemoteRefs(), getRemoteSupports()));
+        return result;
     }
 
-    static Component create() {
+    private static JGrid createGrid(List<FaviconRef> refs, List<FaviconSupport> supports) {
         JGrid grid = new JGrid();
 
-        grid.setModel(new AbstractGridModel() {
-            final DomainName[] domainNames = getDomainNames();
-            final FaviconSupport[] faviconSupports = getFaviconSupports(
-                    getListener(Function.identity()), getListener(IOException::getMessage)
-            );
+        grid.setModel(DefaultGridModel
+                .builder(FaviconRef.class, FaviconSupport.class)
+                .rows(refs)
+                .rowName(FaviconDemo::getRowName)
+                .columns(supports)
+                .columnName(FaviconDemo::getColumnName)
+                .build());
 
-            @Override
-            public int getRowCount() {
-                return domainNames.length;
-            }
-
-            @Override
-            public int getColumnCount() {
-                return faviconSupports.length;
-            }
-
-            @Override
-            public Object getValueAt(int rowIndex, int columnIndex) {
-                return new Favicon(FaviconRef.of(domainNames[rowIndex], 16), faviconSupports[columnIndex]);
-            }
-
-            @Override
-            public String getRowName(int rowIndex) {
-                return domainNames[rowIndex].toString();
-            }
-
-            @Override
-            public String getColumnName(int column) {
-                return faviconSupports[column]
-                        .getSuppliers()
-                        .stream()
-                        .map(FaviconSupplier::getName)
-                        .collect(Collectors.joining(", ", "", faviconSupports[column].isIgnoreParentDomain() ? "" : " ++"));
-            }
-
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                return Favicon.class;
-            }
-        });
-
-        grid.setDefaultRenderer(Favicon.class, new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                JLabel result = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                result.setText(null);
-                result.setIcon(getIcon(table, result, (Favicon) value));
-                result.setHorizontalAlignment(JLabel.CENTER);
-                return result;
-            }
-
-            private Icon getIcon(JTable table, JLabel renderer, Favicon value) {
-                Icon result = value.getIcon(table);
-                return result != null ? result : getFallbackIcon(renderer);
-            }
-
-            private Icon getFallbackIcon(JLabel renderer) {
-                return FontAwesome.FA_QUESTION.getIcon(renderer.getForeground(), renderer.getFont().getSize2D());
-            }
-        });
+        grid.setDefaultRenderer(DefaultGridCell.class, new FaviconTableCellRenderer());
 
         grid.setRowSelectionAllowed(true);
         grid.setColumnSelectionAllowed(true);
@@ -134,14 +83,133 @@ public final class FaviconDemo {
         return grid;
     }
 
-    private static <T> FaviconListener<T> getListener(Function<T, String> toString) {
-        return (host, supplier, value) -> log.info(String.format("%s(%s): %s", host, supplier, toString.apply(value)));
+    private static String getRowName(FaviconRef row) {
+        return row.getDomain().toString();
     }
 
-    private static FaviconSupport[] getFaviconSupports(
-            FaviconListener<String> onMessage,
-            FaviconListener<IOException> onError
-    ) {
+    private static String getColumnName(FaviconSupport column) {
+        return column
+                .getSuppliers()
+                .stream()
+                .map(FaviconSupplier::getName)
+                .collect(Collectors.joining(", ", "", column.isIgnoreParentDomain() ? "" : " #"));
+    }
+
+    private static final class FaviconTableCellRenderer extends DefaultTableCellRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel result = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            if (value instanceof DefaultGridCell) {
+                result.setText(null);
+                result.setIcon(getIcon(table, result, (DefaultGridCell<FaviconRef, FaviconSupport>) value));
+                result.setHorizontalAlignment(JLabel.CENTER);
+            }
+            return result;
+        }
+
+        private Icon getIcon(JTable table, JLabel renderer, DefaultGridCell<FaviconRef, FaviconSupport> value) {
+            Icon result = value.getColumnValue().get(value.getRowValue(), table);
+            return result != null ? result : getFallbackIcon(renderer, value);
+        }
+
+        private Icon getFallbackIcon(JLabel renderer, DefaultGridCell<FaviconRef, FaviconSupport> value) {
+            return FontAwesome.FA_QUESTION.getIcon(renderer.getForeground(), value.getRowValue().getSize());
+        }
+    }
+
+    private static List<FaviconRef> getLocalRefs() {
+        return Arrays.asList(
+                FaviconRef.of(DomainName.parse("s8.nbb.be"), 16),
+                FaviconRef.of(DomainName.parse("s16.nbb.be"), 16),
+                FaviconRef.of(DomainName.parse("s32.nbb.be"), 16),
+                FaviconRef.of(DomainName.parse("s64.nbb.be"), 16)
+        );
+    }
+
+    private static List<FaviconSupport> getLocalSupports() {
+        FaviconListener<String> onMessage = getListener(Function.identity());
+        FaviconListener<IOException> onError = getListener(IOException::getMessage);
+        return Arrays.asList(
+                FaviconSupport
+                        .builder()
+                        .supplier(LocalFaviconSupplier.builder().name("Local").delayInMillis(0).build())
+                        .onAsyncMessage(onMessage)
+                        .onAsyncError(onError)
+                        .build(),
+                FaviconSupport
+                        .builder()
+                        .supplier(LocalFaviconSupplier.builder().name("Local +2s").delayInMillis(2000).build())
+                        .onAsyncMessage(onMessage)
+                        .onAsyncError(onError)
+                        .build()
+        );
+    }
+
+    @lombok.Value
+    @lombok.Builder
+    private static class LocalFaviconSupplier implements FaviconSupplier {
+
+        @NonNull String name;
+
+        @NonNegative long delayInMillis;
+
+        @Override
+        public int getRank() {
+            return 0;
+        }
+
+        @Override
+        public @Nullable Image getFaviconOrNull(@NonNull FaviconRef ref, @NonNull URLConnectionFactory client) throws IOException {
+            try {
+                Thread.sleep(delayInMillis);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            String size = ref.getDomain().getPart(0);
+            try (InputStream stream = FaviconDemo.class.getResourceAsStream("nbb.be_" + size + ".png")) {
+                return ImageIO.read(Objects.requireNonNull(stream));
+            }
+        }
+    }
+
+    private static List<FaviconRef> getRemoteRefs() {
+        return Stream.of(
+                        "explore.data.abs.gov.au",
+                        "www.bundesbank.de",
+                        "stats.bis.org",
+                        "camstat.nis.gov.kh",
+                        "sdw.ecb.europa.eu",
+                        "dataexplorer.unescap.org",
+                        "ec.europa.eu",
+                        "ilostat.ilo.org",
+                        "data.imf.org",
+                        "sdmx.snieg.mx",
+                        "www.insee.fr",
+                        "www.istat.it",
+                        "www.norges-bank.no",
+                        "stat.nbb.be",
+                        "stats.oecd.org",
+                        "andmebaas.stat.ee",
+                        "registry.sdmx.org",
+                        "datasimel.mtps.gob.sv",
+                        "stats.pacificdata.org",
+                        "www150.statcan.gc.ca",
+                        "lustat.statec.lu",
+                        "statfin.stat.fi",
+                        "oshub.nso.go.th",
+                        "data.uis.unesco.org",
+                        "stats2.digitalresources.jisc.ac.uk",
+                        "data.un.org",
+                        "data.worldbank.org",
+                        "wits.worldbank.org"
+                ).map(domain -> FaviconRef.of(DomainName.parse(domain), 16))
+                .collect(Collectors.toList());
+    }
+
+    private static List<FaviconSupport> getRemoteSupports() {
+        FaviconListener<String> onMessage = getListener(Function.identity());
+        FaviconListener<IOException> onError = getListener(IOException::getMessage);
         Stream<FaviconSupport> first = FaviconSupplierLoader.load()
                 .stream()
                 .map(supplier -> FaviconSupport
@@ -152,47 +220,10 @@ public final class FaviconDemo {
                         .onAsyncError(onError)
                         .build());
         Stream<FaviconSupport> second = Stream.of(FaviconSupport.ofServiceLoader());
-        return Stream.concat(first, second).toArray(FaviconSupport[]::new);
+        return Stream.concat(first, second).collect(Collectors.toList());
     }
 
-    private static DomainName[] getDomainNames() {
-        return new DomainName[]{
-                parseHost("https://explore.data.abs.gov.au"),
-                parseHost("https://www.bundesbank.de/en/statistics/time-series-databases"),
-                parseHost("https://stats.bis.org/statx/toc/LBS.html"),
-                parseHost("http://camstat.nis.gov.kh/?locale=en&start=0"),
-                parseHost("https://sdw.ecb.europa.eu"),
-                parseHost("https://dataexplorer.unescap.org/"),
-                parseHost("https://ec.europa.eu/eurostat/data/database"),
-                parseHost("https://ilostat.ilo.org/data/"),
-                parseHost("https://data.imf.org"),
-                parseHost("https://sdmx.snieg.mx"),
-                parseHost("https://www.insee.fr/fr/statistiques"),
-                parseHost("https://www.istat.it/en/analysis-and-products"),
-                parseHost("https://www.norges-bank.no/en/topics/Statistics/"),
-                parseHost("https://stat.nbb.be"),
-                parseHost("https://stats.oecd.org"),
-                parseHost("http://andmebaas.stat.ee"),
-                parseHost("https://registry.sdmx.org/overview.html"),
-                parseHost("https://datasimel.mtps.gob.sv/"),
-                parseHost("https://stats.pacificdata.org/?locale=en"),
-                parseHost("https://www150.statcan.gc.ca/n1/en/type/data?MM=1"),
-                parseHost("https://lustat.statec.lu"),
-                parseHost("https://statfin.stat.fi/PxWeb/pxweb/en/StatFin/"),
-                parseHost("https://oshub.nso.go.th/?lc=en"),
-                parseHost("http://data.uis.unesco.org"),
-                parseHost("https://stats2.digitalresources.jisc.ac.uk/"),
-                parseHost("https://data.un.org/SdmxBrowser/start"),
-                parseHost("https://data.worldbank.org"),
-                parseHost("https://wits.worldbank.org")
-        };
-    }
-
-    private static DomainName parseHost(String text) {
-        try {
-            return DomainName.of(new URL(text));
-        } catch (MalformedURLException ex) {
-            throw new RuntimeException(ex);
-        }
+    private static <T> FaviconListener<T> getListener(Function<T, String> toString) {
+        return (host, supplier, value) -> System.out.printf("%s(%s): %s%n", host, supplier, toString.apply(value));
     }
 }

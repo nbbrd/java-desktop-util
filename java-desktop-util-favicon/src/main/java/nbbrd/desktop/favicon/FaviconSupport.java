@@ -143,7 +143,7 @@ public class FaviconSupport {
             if (c != null) {
                 Window window = SwingUtilities.getWindowAncestor(c);
                 if (window != null) {
-                    window.getGraphicsConfiguration();
+                    return window.getGraphicsConfiguration();
                 }
             }
             return GraphicsEnvironment
@@ -163,7 +163,12 @@ public class FaviconSupport {
 
         @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
-            g.drawImage(image, x, y, ref.getSize(), ref.getSize(), c);
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.drawImage(image, x, y, ref.getSize(), ref.getSize(), c);
+            g2d.dispose();
         }
 
         @Override
