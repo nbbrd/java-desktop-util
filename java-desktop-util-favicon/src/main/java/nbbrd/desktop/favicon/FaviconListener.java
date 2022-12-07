@@ -1,12 +1,14 @@
 package nbbrd.desktop.favicon;
 
+import lombok.NonNull;
+
 @FunctionalInterface
 public interface FaviconListener<T> {
 
-    void accept(FaviconRef ref, String supplier, T value);
+    void accept(@NonNull FaviconRef ref, @NonNull String supplier, @NonNull T value);
 
-    static <X> FaviconListener<X> noOp() {
-        return (host, supplier, message) -> {
+    static <X> @NonNull FaviconListener<X> noOp() {
+        return (ref, supplier, message) -> {
         };
     }
 }

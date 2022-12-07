@@ -6,14 +6,13 @@ import nbbrd.desktop.favicon.URLConnectionFactory;
 import nbbrd.desktop.favicon.spi.FaviconSupplier;
 import nbbrd.service.ServiceProvider;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+
+import static java.net.HttpURLConnection.HTTP_OK;
 
 @ServiceProvider
 public final class GoogleSupplier implements FaviconSupplier {
@@ -30,34 +29,25 @@ public final class GoogleSupplier implements FaviconSupplier {
 
     @Override
     public Image getFaviconOrNull(@NonNull FaviconRef ref, @NonNull URLConnectionFactory client) throws IOException {
-        URLConnection connection = client.openConnection(getFaviconRequest(ref));
-        if (!(connection instanceof HttpURLConnection)) {
-            throw new IOException("Invalid url");
-        }
-        HttpURLConnection http = (HttpURLConnection) connection;
-        try {
-            if (isDefaultFavicon(http)) {
-                return NO_FAVICON;
+        try (ImageConnection conn = ImageConnection.open(client, getFaviconRequest(ref))) {
+            if (conn.getResponseCode() == HTTP_OK && !isDefaultFavicon(conn.getResponseCode())) {
+                return conn.readImage();
             }
-            try (InputStream stream = http.getInputStream()) {
-                return ImageIO.read(stream);
-            }
-        } finally {
-            http.disconnect();
+            return NO_FAVICON;
         }
     }
 
     private URL getFaviconRequest(FaviconRef ref) throws MalformedURLException {
-        int preferredSize = getPreferredSize(ref.getSize());
-        return new URL("https://www.google.com/s2/favicons?domain=" + ref.getDomain() + "&sz=" + preferredSize);
+        int roundedSize = roundSize(ref.getSize());
+        return new URL("https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://" + ref.getDomain() + "&size=" + roundedSize);
     }
 
-    private static boolean isDefaultFavicon(HttpURLConnection http) throws IOException {
-        return http.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND;
+    private static boolean isDefaultFavicon(int responseCode) {
+        return responseCode == HttpURLConnection.HTTP_NOT_FOUND;
     }
 
-    private static int getPreferredSize(int size) {
-        for (int value : SIZES) {
+    private static int roundSize(int size) {
+        for (int value : COMMON_SIZES) {
             if (size <= value) {
                 return value;
             }
@@ -65,5 +55,5 @@ public final class GoogleSupplier implements FaviconSupplier {
         return size;
     }
 
-    private static final int[] SIZES = {16, 24, 32, 64};
+    private static final int[] COMMON_SIZES = {16, 24, 32, 64};
 }

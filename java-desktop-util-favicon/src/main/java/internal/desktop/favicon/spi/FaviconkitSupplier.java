@@ -5,15 +5,14 @@ import nbbrd.desktop.favicon.FaviconRef;
 import nbbrd.desktop.favicon.URLConnectionFactory;
 import nbbrd.desktop.favicon.spi.FaviconSupplier;
 import nbbrd.service.ServiceProvider;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+
+import static java.net.HttpURLConnection.HTTP_OK;
 
 @ServiceProvider
 public final class FaviconkitSupplier implements FaviconSupplier {
@@ -30,28 +29,19 @@ public final class FaviconkitSupplier implements FaviconSupplier {
 
     @Override
     public Image getFaviconOrNull(@NonNull FaviconRef ref, @NonNull URLConnectionFactory client) throws IOException {
-        URLConnection connection = client.openConnection(getFaviconRequest(ref));
-        if (!(connection instanceof HttpURLConnection)) {
-            throw new IOException("Invalid url");
-        }
-        HttpURLConnection http = (HttpURLConnection) connection;
-        try {
-            if (isDefaultFavicon(http)) {
-                return NO_FAVICON;
+        try (ImageConnection conn = ImageConnection.open(client, getFaviconRequest(ref))) {
+            if (conn.getResponseCode() == HTTP_OK && !isDefaultFavicon(conn.getContentType())) {
+                return conn.readImage();
             }
-            try (InputStream stream = http.getInputStream()) {
-                return ImageIO.read(stream);
-            }
-        } finally {
-            http.disconnect();
         }
+        return NO_FAVICON;
     }
 
     private static URL getFaviconRequest(FaviconRef ref) throws MalformedURLException {
         return new URL("https://api.faviconkit.com/" + ref.getDomain() + "/" + ref.getSize());
     }
 
-    private static boolean isDefaultFavicon(HttpURLConnection http) throws IllegalArgumentException {
-        return "image/svg+xml".equals(http.getContentType());
+    private static boolean isDefaultFavicon(@Nullable String contentType) {
+        return "image/svg+xml".equals(contentType);
     }
 }

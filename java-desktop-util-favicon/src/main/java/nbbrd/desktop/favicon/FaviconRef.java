@@ -16,7 +16,12 @@ public class FaviconRef {
         return domain.getParent().map(parent -> new FaviconRef(parent, size));
     }
 
-    @NonNull FaviconRef scale(double scale) {
-        return scale == 1.0 ? this : new FaviconRef(domain, (int) (size * scale));
+    @NonNull FaviconRef scale(double scale) throws IllegalArgumentException {
+        if (scale <= 0) {
+            throw new IllegalArgumentException("Invalid scale " + scale);
+        }
+        return scale == NO_SCALE ? this : new FaviconRef(domain, (int) (size * scale));
     }
+
+    static final double NO_SCALE = 1.0;
 }

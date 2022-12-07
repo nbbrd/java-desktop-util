@@ -5,16 +5,15 @@ import nbbrd.desktop.favicon.FaviconRef;
 import nbbrd.desktop.favicon.URLConnectionFactory;
 import nbbrd.desktop.favicon.spi.FaviconSupplier;
 import nbbrd.service.ServiceProvider;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+
+import static java.net.HttpURLConnection.HTTP_OK;
 
 @ServiceProvider
 public final class IconHorseSupplier implements FaviconSupplier {
@@ -31,27 +30,24 @@ public final class IconHorseSupplier implements FaviconSupplier {
 
     @Override
     public Image getFaviconOrNull(@NonNull FaviconRef ref, @NonNull URLConnectionFactory client) throws IOException {
-        URLConnection connection = client.openConnection(getFaviconRequest(ref));
-        if (!(connection instanceof HttpURLConnection)) {
-            throw new IOException("Invalid url");
-        }
-        HttpURLConnection http = (HttpURLConnection) connection;
-        try {
-            try (InputStream stream = http.getInputStream()) {
-                BufferedImage result = ImageIO.read(stream);
-                return isDefaultFavicon(http, result) ? null : result;
+        try (ImageConnection conn = ImageConnection.open(client, getFaviconRequest(ref))) {
+            if (conn.getResponseCode() == HTTP_OK) {
+                BufferedImage result = conn.readImage();
+                if (!isDefaultFavicon(conn.getContentType(), result)) {
+                    return result;
+                }
             }
-        } finally {
-            http.disconnect();
         }
+        return NO_FAVICON;
     }
 
     private static URL getFaviconRequest(FaviconRef ref) throws MalformedURLException {
         return new URL("https://icon.horse/icon/" + ref.getDomain());
     }
 
-    private static boolean isDefaultFavicon(HttpURLConnection http, BufferedImage image) throws IllegalArgumentException {
-        return "image/png".equals(http.getContentType())
+    private static boolean isDefaultFavicon(@Nullable String contentType, @Nullable BufferedImage image) {
+        return "image/png".equals(contentType)
+                && image != null
                 && image.getHeight(null) == 512
                 && image.getWidth(null) == 512
                 && image.getRGB(0, 0) == -14735049;

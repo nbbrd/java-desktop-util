@@ -5,19 +5,22 @@ import org.junit.jupiter.api.Test;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 
 public class DomainNameTest {
 
     @Test
     public void testOf() throws MalformedURLException {
+        assertThatNullPointerException().isThrownBy(() -> DomainName.of(null));
+
         assertThat(DomainName.of(new URL("https://www.google.com")))
                 .hasToString("www.google.com");
     }
 
     @Test
     public void testParse() {
+        assertThatNullPointerException().isThrownBy(() -> DomainName.parse(null));
+
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> DomainName.parse("https://www.google.com"));
 

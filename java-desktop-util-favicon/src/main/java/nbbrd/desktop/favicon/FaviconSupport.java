@@ -1,6 +1,7 @@
 package nbbrd.desktop.favicon;
 
 import lombok.NonNull;
+import nbbrd.design.VisibleForTesting;
 import nbbrd.desktop.favicon.spi.FaviconSupplier;
 import nbbrd.desktop.favicon.spi.FaviconSupplierLoader;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -13,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.BiFunction;
 
@@ -40,7 +41,11 @@ public class FaviconSupport {
 
     @NonNull
     @lombok.Builder.Default
-    ExecutorService executor = Executors.newCachedThreadPool(FaviconSupport::newLowPriorityDaemonThread);
+    Executor executor = Executors.newCachedThreadPool(FaviconSupport::newLowPriorityDaemonThread);
+
+    @NonNull
+    @lombok.Builder.Default
+    Executor edt = SwingUtilities::invokeLater;
 
     // do not put URL as key because of very-slow first lookup
     @NonNull
@@ -75,13 +80,15 @@ public class FaviconSupport {
         Image result = cache.get(key);
         if (result != null) {
             return result != PENDING_IMAGE ? result : null;
+        } else {
+            cache.put(key, PENDING_IMAGE);
+            executor.execute(() -> asyncLoadIntoCache(key, onUpdate));
+            return null;
         }
-        executor.execute(() -> asyncLoadIntoCache(key, onUpdate));
-        cache.put(key, PENDING_IMAGE);
-        return null;
     }
 
-    private static final Image PENDING_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+    @VisibleForTesting
+    static final Image PENDING_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 
     private void updateCacheAndNotify(FaviconRef ref, Image favicon, Runnable onUpdate) {
         cache.put(ref, favicon);
@@ -91,7 +98,7 @@ public class FaviconSupport {
     private void asyncLoadIntoCache(FaviconRef ref, Runnable onUpdate) {
         Image image = asyncLoadOrNull(ref);
         if (image != null) {
-            SwingUtilities.invokeLater(() -> updateCacheAndNotify(ref, image, onUpdate));
+            edt.execute(() -> updateCacheAndNotify(ref, image, onUpdate));
         }
     }
 
@@ -124,6 +131,9 @@ public class FaviconSupport {
         } catch (IOException ex) {
             onAsyncError.accept(ref, supplier.getName(), ex);
             return null;
+        } catch (RuntimeException ex) {
+            onAsyncError.accept(ref, supplier.getName(), new IOException("Unexpected " + ex.getClass().getName() + ": " + ex.getMessage(), ex));
+            return null;
         }
     }
 
@@ -134,8 +144,9 @@ public class FaviconSupport {
         return result;
     }
 
+    @VisibleForTesting
     @lombok.RequiredArgsConstructor
-    private static final class Favicon implements Icon {
+    static final class Favicon implements Icon {
 
         private final @NonNull FaviconRef ref;
 
@@ -153,15 +164,16 @@ public class FaviconSupport {
                 g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
                 g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2d.drawImage(image, x, y, ref.getSize(), ref.getSize(), c);
+                g2d.drawImage(image, x, y, getIconWidth(), getIconHeight(), c);
                 g2d.dispose();
             } else if (fallback != null) {
                 fallback.paintIcon(c, g, x, y);
             }
         }
 
-        private double getScale(Graphics g) {
-            return g instanceof Graphics2D ? ((Graphics2D) g).getTransform().getScaleX() : 1.0;
+        @VisibleForTesting
+        static double getScale(Graphics g) {
+            return g instanceof Graphics2D ? ((Graphics2D) g).getTransform().getScaleX() : FaviconRef.NO_SCALE;
         }
 
         @Override
