@@ -2,6 +2,8 @@ package nbbrd.desktop.favicon;
 
 import lombok.NonNull;
 import nbbrd.design.VisibleForTesting;
+import nbbrd.design.swing.OnAnyThread;
+import nbbrd.design.swing.OnEDT;
 import nbbrd.desktop.favicon.spi.FaviconSupplier;
 import nbbrd.desktop.favicon.spi.FaviconSupplierLoader;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -60,22 +62,27 @@ public class FaviconSupport {
     @lombok.Builder.Default
     FaviconListener<? super IOException> onAsyncError = FaviconListener.noOp();
 
+    @OnEDT
     public @NonNull Icon get(@NonNull FaviconRef ref) {
         return new Favicon(ref, FaviconSupport::doNothing, this::getOrLoadImage, null);
     }
 
+    @OnEDT
     public @NonNull Icon getOrDefault(@NonNull FaviconRef ref, @NonNull Icon fallback) {
         return new Favicon(ref, FaviconSupport::doNothing, this::getOrLoadImage, fallback);
     }
 
+    @OnEDT
     public @NonNull Icon get(@NonNull FaviconRef ref, @NonNull Runnable onUpdate) {
         return new Favicon(ref, onUpdate, this::getOrLoadImage, null);
     }
 
+    @OnEDT
     public @NonNull Icon getOrDefault(@NonNull FaviconRef ref, @NonNull Runnable onUpdate, @NonNull Icon fallback) {
         return new Favicon(ref, onUpdate, this::getOrLoadImage, fallback);
     }
 
+    @OnEDT
     private @Nullable Image getOrLoadImage(@NonNull FaviconRef key, @NonNull Runnable onUpdate) {
         Image result = cache.get(key);
         if (result != null) {
@@ -90,11 +97,13 @@ public class FaviconSupport {
     @VisibleForTesting
     static final Image PENDING_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 
+    @OnEDT
     private void updateCacheAndNotify(FaviconRef ref, Image favicon, Runnable onUpdate) {
         cache.put(ref, favicon);
         onUpdate.run();
     }
 
+    @OnAnyThread
     private void asyncLoadIntoCache(FaviconRef ref, Runnable onUpdate) {
         Image image = asyncLoadOrNull(ref);
         if (image != null) {
@@ -102,6 +111,7 @@ public class FaviconSupport {
         }
     }
 
+    @OnAnyThread
     private Image asyncLoadOrNull(FaviconRef ref) {
         for (FaviconSupplier supplier : suppliers) {
             Image result = asyncLoadOrNull(ref, supplier);
@@ -116,6 +126,7 @@ public class FaviconSupport {
         return null;
     }
 
+    @OnAnyThread
     private Image asyncLoadOrNull(FaviconRef ref, FaviconSupplier supplier) {
         try {
             long start = System.currentTimeMillis();
