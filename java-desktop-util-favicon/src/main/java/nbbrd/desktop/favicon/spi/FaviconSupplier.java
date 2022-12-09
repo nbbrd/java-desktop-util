@@ -11,6 +11,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.awt.*;
 import java.io.IOException;
 
+/**
+ * Extension point that retrieves a favicon from an online service.
+ */
 @ServiceDefinition(
         quantifier = Quantifier.MULTIPLE
 )

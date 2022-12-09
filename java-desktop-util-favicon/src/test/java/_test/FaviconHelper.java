@@ -27,7 +27,7 @@ public final class FaviconHelper {
         return requests::add;
     }
 
-    public Executor asEdt() {
+    public Executor asDispatcher() {
         return dispatch::add;
     }
 
@@ -48,9 +48,9 @@ public final class FaviconHelper {
         return FaviconSupport
                 .builder()
                 .executor(asExecutor())
-                .edt(asEdt())
+                .dispatcher(asDispatcher())
                 .cache(getCache())
-                .onAsyncError((ref, supplier, ex) -> errors.add(ex));
+                .onExecutorError((ref, supplier, ex) -> errors.add(ex));
     }
 
     public FaviconSupport toFaviconSupport(ImageFunction... suppliers) {

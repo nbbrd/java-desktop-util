@@ -29,8 +29,9 @@ public class FaviconSupportTest {
         assertThat(main.getCache()).isEmpty();
         assertThat(main.getClient()).isNotNull();
         assertThat(main.getExecutor()).isNotNull();
-        assertThat(main.getOnAsyncError()).isNotNull();
-        assertThat(main.getOnAsyncMessage()).isNotNull();
+        assertThat(main.getDispatcher()).isNotNull();
+        assertThat(main.getOnExecutorError()).isNotNull();
+        assertThat(main.getOnExecutorMessage()).isNotNull();
         assertThat(main.isIgnoreParentDomain()).isFalse();
     }
 
@@ -41,8 +42,9 @@ public class FaviconSupportTest {
         assertThat(main.getCache()).isEmpty();
         assertThat(main.getClient()).isNotNull();
         assertThat(main.getExecutor()).isNotNull();
-        assertThat(main.getOnAsyncError()).isNotNull();
-        assertThat(main.getOnAsyncMessage()).isNotNull();
+        assertThat(main.getDispatcher()).isNotNull();
+        assertThat(main.getOnExecutorError()).isNotNull();
+        assertThat(main.getOnExecutorMessage()).isNotNull();
         assertThat(main.isIgnoreParentDomain()).isFalse();
     }
 

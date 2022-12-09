@@ -10,16 +10,34 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+/**
+ * String that identify services on Internet such as websites.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Domain_name">wikipedia</a>
+ */
 @RepresentableAsString
 @lombok.EqualsAndHashCode
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class DomainName {
 
+    /**
+     * Creates a new instance from an {@link URL}
+     *
+     * @param url the domain name source
+     * @return a non-null domain name
+     */
     @StaticFactoryMethod
     public static @NonNull DomainName of(@NonNull URL url) {
         return new DomainName(url.getHost().split("\\.", -1));
     }
 
+    /**
+     * Creates a new instance by parsing a text.
+     *
+     * @param text the text to parse
+     * @return a non-null domain name
+     * @throws IllegalArgumentException if the text is not a valid domain name
+     */
     @StaticFactoryMethod
     public static @NonNull DomainName parse(@NonNull CharSequence text) throws IllegalArgumentException {
         if (!isValid(text)) {
@@ -45,6 +63,12 @@ public class DomainName {
                 : Optional.empty();
     }
 
+    /**
+     * Check if the input text is a valid domain name.
+     *
+     * @param text the input text to check
+     * @return true if valid, false otherwise
+     */
     public static boolean isValid(CharSequence text) {
         return MAGIC_PATTERN.matcher(text).find();
     }

@@ -20,10 +20,18 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.BiFunction;
 
+/**
+ * Tool used to retrieve favicons from any website.
+ */
 @lombok.Value
 @lombok.Builder(toBuilder = true)
 public class FaviconSupport {
 
+    /**
+     * Creates a new instance using Java's {@link java.util.ServiceLoader} to gather resources.
+     *
+     * @return a new non-null instance
+     */
     public static @NonNull FaviconSupport ofServiceLoader() {
         return FaviconSupport
                 .builder()
@@ -31,52 +39,100 @@ public class FaviconSupport {
                 .build();
     }
 
+    /**
+     * Client that deal with web requests.
+     */
     @NonNull
     @lombok.Builder.Default
     URLConnectionFactory client = URLConnectionFactory.getDefault();
 
+    /**
+     * Ordered list of favicon suppliers.
+     */
     @lombok.Singular
     List<FaviconSupplier> suppliers;
 
     @lombok.Builder.Default
     boolean ignoreParentDomain = false;
 
+    /**
+     * Background thread that retrieve favicons from suppliers.
+     */
     @NonNull
     @lombok.Builder.Default
     Executor executor = Executors.newCachedThreadPool(FaviconSupport::newLowPriorityDaemonThread);
 
+    /**
+     * Event dispatch thread that notify GUI of updates.
+     */
     @NonNull
     @lombok.Builder.Default
-    Executor edt = SwingUtilities::invokeLater;
+    Executor dispatcher = SwingUtilities::invokeLater;
 
-    // do not put URL as key because of very-slow first lookup
+    /**
+     * Cache that store favicons by domain and size.
+     */
     @NonNull
     @lombok.Builder.Default
     Map<FaviconRef, Image> cache = new HashMap<>();
 
+    /**
+     * Message event listener. Beware that events are broadcast by the background thread.
+     */
     @NonNull
     @lombok.Builder.Default
-    FaviconListener<? super String> onAsyncMessage = FaviconListener.noOp();
+    FaviconListener<? super String> onExecutorMessage = FaviconListener.noOp();
 
+    /**
+     * Error event listener. Beware that events are broadcast by the background thread.
+     */
     @NonNull
     @lombok.Builder.Default
-    FaviconListener<? super IOException> onAsyncError = FaviconListener.noOp();
+    FaviconListener<? super IOException> onExecutorError = FaviconListener.noOp();
 
+    /**
+     * Get a favicon from a domain and a size.
+     *
+     * @param ref a non-null favicon reference
+     * @return a non-null icon
+     */
     @OnEDT
     public @NonNull Icon get(@NonNull FaviconRef ref) {
         return new Favicon(ref, FaviconSupport::doNothing, this::getOrLoadImage, null);
     }
 
+    /**
+     * Get a favicon from a domain and a size with a fallback icon.
+     *
+     * @param ref      a non-null favicon reference
+     * @param fallback a non-null fallback icon
+     * @return a non-null icon
+     */
     @OnEDT
     public @NonNull Icon getOrDefault(@NonNull FaviconRef ref, @NonNull Icon fallback) {
         return new Favicon(ref, FaviconSupport::doNothing, this::getOrLoadImage, fallback);
     }
 
+    /**
+     * Get a favicon from a domain and a size.
+     *
+     * @param ref      a non-null favicon reference
+     * @param onUpdate a non-null callback to be triggered when a favicon is retrieved
+     * @return a non-null icon
+     */
     @OnEDT
     public @NonNull Icon get(@NonNull FaviconRef ref, @NonNull Runnable onUpdate) {
         return new Favicon(ref, onUpdate, this::getOrLoadImage, null);
     }
 
+    /**
+     * Get a favicon from a domain and a size with a fallback icon.
+     *
+     * @param ref      a non-null favicon reference
+     * @param onUpdate a non-null callback to be triggered when a favicon is retrieved
+     * @param fallback a non-null fallback icon
+     * @return a non-null icon
+     */
     @OnEDT
     public @NonNull Icon getOrDefault(@NonNull FaviconRef ref, @NonNull Runnable onUpdate, @NonNull Icon fallback) {
         return new Favicon(ref, onUpdate, this::getOrLoadImage, fallback);
@@ -107,7 +163,7 @@ public class FaviconSupport {
     private void asyncLoadIntoCache(FaviconRef ref, Runnable onUpdate) {
         Image image = asyncLoadOrNull(ref);
         if (image != null) {
-            edt.execute(() -> updateCacheAndNotify(ref, image, onUpdate));
+            dispatcher.execute(() -> updateCacheAndNotify(ref, image, onUpdate));
         }
     }
 
@@ -133,17 +189,17 @@ public class FaviconSupport {
             Image result = supplier.getFaviconOrNull(ref, client);
             long stop = System.currentTimeMillis();
             if (result != FaviconSupplier.NO_FAVICON) {
-                onAsyncMessage.accept(ref, supplier.getName(), String.format("Loaded %sx%s in %sms", result.getWidth(null), result.getHeight(null), stop - start));
+                onExecutorMessage.accept(ref, supplier.getName(), String.format("Loaded %sx%s in %sms", result.getWidth(null), result.getHeight(null), stop - start));
                 return result;
             } else {
-                onAsyncMessage.accept(ref, supplier.getName(), "Missing");
+                onExecutorMessage.accept(ref, supplier.getName(), "Missing");
                 return null;
             }
         } catch (IOException ex) {
-            onAsyncError.accept(ref, supplier.getName(), ex);
+            onExecutorError.accept(ref, supplier.getName(), ex);
             return null;
         } catch (RuntimeException ex) {
-            onAsyncError.accept(ref, supplier.getName(), new IOException("Unexpected " + ex.getClass().getName() + ": " + ex.getMessage(), ex));
+            onExecutorError.accept(ref, supplier.getName(), new IOException("Unexpected " + ex.getClass().getName() + ": " + ex.getMessage(), ex));
             return null;
         }
     }

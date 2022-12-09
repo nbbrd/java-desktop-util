@@ -19,6 +19,7 @@ package ec.util.demo;
 import ec.util.demo.ext.DefaultGridCell;
 import ec.util.demo.ext.DefaultGridModel;
 import ec.util.grid.swing.JGrid;
+import ec.util.list.swing.JLists;
 import ec.util.various.swing.BasicSwingLauncher;
 import ec.util.various.swing.FontAwesome;
 import lombok.NonNull;
@@ -41,6 +42,8 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Philippe Charles
@@ -69,6 +72,26 @@ public final class FaviconDemo {
                 .build();
 
         result.setIconAt(0, tabIconSupport.get(ref("s16.nbb.be"), result::repaint));
+
+        JList<FaviconRef> list = new JList<>();
+        list.setModel(JLists.modelOf(getRemoteRefs().stream().map(ref -> FaviconRef.of(ref.getDomain(), 32)).collect(toList())));
+        list.setCellRenderer(new DefaultListCellRenderer() {
+            private final FaviconSupport support = FaviconSupport.ofServiceLoader();
+
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                JLabel result = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof FaviconRef) {
+                    FaviconRef ref = (FaviconRef) value;
+                    result.setText("<html><b>" + ref.getDomain() + "</b><br>" + ref + "</html>");
+                    result.setIcon(support.get(ref, list::repaint));
+                    result.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+                }
+                return result;
+            }
+        });
+
+        result.add("List", new JScrollPane(list));
 
         return result;
     }
@@ -134,8 +157,8 @@ public final class FaviconDemo {
                 FaviconSupport
                         .builder()
                         .supplier(LocalFaviconSupplier.builder().name("Local").delayInMillis(0).build())
-                        .onAsyncMessage(getListener(Function.identity()))
-                        .onAsyncError(getListener(IOException::getMessage))
+                        .onExecutorMessage(getListener(Function.identity()))
+                        .onExecutorError(getListener(IOException::getMessage))
                         .build(),
                 FaviconSupport
                         .builder()
@@ -215,11 +238,11 @@ public final class FaviconDemo {
                         .builder()
                         .supplier(supplier)
                         .ignoreParentDomain(true)
-                        .onAsyncMessage(onMessage)
-                        .onAsyncError(onError)
+                        .onExecutorMessage(onMessage)
+                        .onExecutorError(onError)
                         .build());
         Stream<FaviconSupport> second = Stream.of(FaviconSupport.ofServiceLoader());
-        return Stream.concat(first, second).collect(Collectors.toList());
+        return Stream.concat(first, second).collect(toList());
     }
 
     private static <T> FaviconListener<T> getListener(Function<T, String> toString) {
@@ -227,7 +250,7 @@ public final class FaviconDemo {
     }
 
     private static List<FaviconRef> refs(String... domains) {
-        return Stream.of(domains).map(FaviconDemo::ref).collect(Collectors.toList());
+        return Stream.of(domains).map(FaviconDemo::ref).collect(toList());
     }
 
     private static FaviconRef ref(String domain) {
