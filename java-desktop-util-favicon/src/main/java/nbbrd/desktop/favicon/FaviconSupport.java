@@ -40,7 +40,7 @@ public class FaviconSupport {
     }
 
     /**
-     * Client that deal with web requests.
+     * Client that deals with web requests.
      */
     @NonNull
     @lombok.Builder.Default
@@ -56,21 +56,21 @@ public class FaviconSupport {
     boolean ignoreParentDomain = false;
 
     /**
-     * Background thread that retrieve favicons from suppliers.
+     * Background thread that retrieves favicons from suppliers.
      */
     @NonNull
     @lombok.Builder.Default
     Executor executor = Executors.newCachedThreadPool(FaviconSupport::newLowPriorityDaemonThread);
 
     /**
-     * Event dispatch thread that notify GUI of updates.
+     * Event dispatch thread that notifies GUI of updates.
      */
     @NonNull
     @lombok.Builder.Default
     Executor dispatcher = SwingUtilities::invokeLater;
 
     /**
-     * Cache that store favicons by domain and size.
+     * Cache that stores favicons by domain and size.
      */
     @NonNull
     @lombok.Builder.Default
