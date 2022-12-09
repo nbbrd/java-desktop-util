@@ -32,6 +32,7 @@ public final class MainDemo {
         result.add("ToolBarIcon", ToolBarIconDemo.create());
         result.add("XPopup", XPopupDemo.create());
         result.add("XTable", new XTableDemo());
+        result.add("Favicon", FaviconDemo.create());
         return JDemoPane.of(result);
     }
 }

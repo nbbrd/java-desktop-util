@@ -16,7 +16,7 @@
  */
 package internal;
 
-import ec.util.various.swing.OnEDT;
+import nbbrd.design.swing.OnEDT;
 import java.lang.ref.WeakReference;
 import java.time.Clock;
 import java.util.ArrayList;

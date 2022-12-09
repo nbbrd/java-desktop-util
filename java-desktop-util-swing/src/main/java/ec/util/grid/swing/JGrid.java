@@ -18,7 +18,7 @@ package ec.util.grid.swing;
 
 import ec.util.grid.CellIndex;
 import ec.util.various.swing.LineBorder2;
-import ec.util.various.swing.OnEDT;
+import nbbrd.design.swing.OnEDT;
 import internal.Colors;
 import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
