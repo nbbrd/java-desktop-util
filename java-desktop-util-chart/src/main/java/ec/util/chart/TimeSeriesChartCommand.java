@@ -29,11 +29,9 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -202,7 +200,7 @@ public abstract class TimeSeriesChartCommand {
 
     @NonNull
     public static TimeSeriesChartCommand applyPeriod(String format) {
-        return applyPeriod(new SimpleDateFormat(format));
+        return applyPeriod(new SimpleDateFormat(format, Locale.getDefault(Locale.Category.DISPLAY)));
     }
 
     @NonNull

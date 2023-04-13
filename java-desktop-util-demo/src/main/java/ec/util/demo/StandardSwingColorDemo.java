@@ -27,6 +27,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Locale;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -58,7 +59,7 @@ public final class StandardSwingColorDemo {
     private static void applyColor(JLabel label, StandardSwingColor value) {
         Color color = value.value();
         if (color != null) {
-            label.setText(value.key() + " (" + Colors.toHex(color).toUpperCase() + ")");
+            label.setText(value.key() + " (" + Colors.toHex(color).toUpperCase(Locale.ROOT) + ")");
             label.setIcon(ColorIcon.of(color, label.getFont().getSize()));
         } else {
             label.setText(value.key() + " (null)");

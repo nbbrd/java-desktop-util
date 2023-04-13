@@ -24,6 +24,7 @@ import ec.util.various.swing.ModernUI;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Scanner;
@@ -68,7 +69,7 @@ public final class BasicFileViewerDemo {
             }
             String lineSeparator = System.getProperty("line.separator");
             StringBuilder result = new StringBuilder();
-            try (Scanner s = new Scanner(file)) {
+            try (Scanner s = new Scanner(file, StandardCharsets.UTF_8.name())) {
                 while (s.hasNextLine()) {
                     result.append(s.nextLine()).append(lineSeparator);
                 }

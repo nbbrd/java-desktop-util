@@ -39,10 +39,7 @@ import org.kordamp.ikonli.swing.FontIcon;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Level;
 
 import static ec.util.chart.swing.JTimeSeriesChart.ELEMENT_VISIBLE_PROPERTY;
@@ -608,7 +605,7 @@ public final class JTimeSeriesChartDemo extends JPanel {
     @lombok.RequiredArgsConstructor
     private static final class RandomDataCommand extends JTimeSeriesChartCommand {
         final Random random = new Random();
-        final Calendar cal = Calendar.getInstance();
+        final Calendar cal = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault(Locale.Category.DISPLAY));
 
         final Freq freq;
 

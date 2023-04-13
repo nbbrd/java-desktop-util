@@ -12,10 +12,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.BiFunction;
@@ -189,7 +187,7 @@ public class FaviconSupport {
             Image result = supplier.getFaviconOrNull(ref, client);
             long stop = System.currentTimeMillis();
             if (result != FaviconSupplier.NO_FAVICON) {
-                onExecutorMessage.accept(ref, supplier.getName(), String.format("Loaded %sx%s in %sms", result.getWidth(null), result.getHeight(null), stop - start));
+                onExecutorMessage.accept(ref, supplier.getName(), String.format(Locale.ROOT, "Loaded %sx%s in %sms", result.getWidth(null), result.getHeight(null), stop - start));
                 return result;
             } else {
                 onExecutorMessage.accept(ref, supplier.getName(), "Missing");

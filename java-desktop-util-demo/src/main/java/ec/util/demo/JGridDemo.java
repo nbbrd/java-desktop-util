@@ -41,14 +41,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Random;
+import java.text.*;
+import java.util.*;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
@@ -192,8 +186,8 @@ public final class JGridDemo extends JPanel {
 
         public GridModel asModel() {
             return new AbstractGridModel() {
-                final Calendar cal = Calendar.getInstance();
-                final DateFormat format = new SimpleDateFormat("yyyy-MM");
+                final Calendar cal = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault(Locale.Category.DISPLAY));
+                final DateFormat format = new SimpleDateFormat("yyyy-MM", Locale.getDefault(Locale.Category.DISPLAY));
 
                 @Override
                 public String getRowName(int rowIndex) {
@@ -227,7 +221,7 @@ public final class JGridDemo extends JPanel {
         public IntervalXYDataset asDataset() {
             TimeSeriesCollection result = new TimeSeriesCollection();
             result.setXPosition(TimePeriodAnchor.MIDDLE);
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault(Locale.Category.DISPLAY));
             for (int i = 0; i < values.length; i++) {
                 TimeSeries ts = new TimeSeries(i);
                 cal.setTimeInMillis(startTimeMillis);
@@ -249,7 +243,7 @@ public final class JGridDemo extends JPanel {
         private final TableCellRenderer delegate;
 
         public CustomCellRenderer(JGrid grid) {
-            this.format = new DecimalFormat("#.00");
+            this.format = new DecimalFormat("#.00", DecimalFormatSymbols.getInstance(Locale.getDefault(Locale.Category.DISPLAY)));
             this.delegate = grid.getDefaultRenderer(Object.class);
         }
 
