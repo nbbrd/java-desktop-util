@@ -16,9 +16,11 @@
  */
 package ec.util.chart;
 
-import java.util.Objects;
 import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Defines a function to apply on an observation. An observation is identified
@@ -65,7 +67,7 @@ public abstract class ObsFunction<T> {
 
         @Override
         public String apply(int series, int obs) {
-            return String.format(value, series, obs);
+            return String.format(Locale.getDefault(Locale.Category.DISPLAY), value, series, obs);
         }
     }
 

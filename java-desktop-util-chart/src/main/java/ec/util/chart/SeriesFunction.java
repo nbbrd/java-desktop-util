@@ -17,6 +17,7 @@
 package ec.util.chart;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
 import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -70,7 +71,7 @@ public abstract class SeriesFunction<T> {
 
         @Override
         public String apply(int series) {
-            return String.format(value, series);
+            return String.format(Locale.getDefault(Locale.Category.DISPLAY), value, series);
         }
     }
 

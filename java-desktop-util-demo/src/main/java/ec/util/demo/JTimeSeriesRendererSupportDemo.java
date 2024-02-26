@@ -34,7 +34,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Stroke;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Random;
+import java.util.TimeZone;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
@@ -483,7 +485,7 @@ public final class JTimeSeriesRendererSupportDemo extends JPanel {
 
     private static final JCommand<JFreeChart> RANDOM_DATA = new JCommand<JFreeChart>() {
         final Random random = new Random();
-        final Calendar cal = Calendar.getInstance();
+        final Calendar cal = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault(Locale.Category.DISPLAY));
 
         @Override
         public void execute(@NonNull JFreeChart chart) {

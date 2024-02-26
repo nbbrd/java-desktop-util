@@ -22,6 +22,7 @@ import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
 import lombok.NonNull;
+import nbbrd.service.ServiceId;
 
 /**
  * Defines a color scheme for charts.
@@ -60,6 +61,7 @@ public interface ColorScheme {
      *
      * @return a non-null identifier
      */
+    @ServiceId
     @NonNull
     String getName();
 

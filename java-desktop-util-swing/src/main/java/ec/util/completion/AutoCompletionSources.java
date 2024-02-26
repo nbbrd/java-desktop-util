@@ -21,6 +21,7 @@ import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Locale;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -80,6 +81,6 @@ public final class AutoCompletionSources {
      */
     @NonNull
     public static String normalize(@NonNull String input) {
-        return removeDiacritics(input).toLowerCase();
+        return removeDiacritics(input).toLowerCase(Locale.ROOT);
     }
 }

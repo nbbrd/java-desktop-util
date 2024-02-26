@@ -97,7 +97,7 @@ public final class JAutoCompletionDemo extends javax.swing.JPanel {
             protected String toString(String term, JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 if (value instanceof Locale) {
                     Locale locale = (Locale) value;
-                    String newValue = locale + " - " + locale.getDisplayName();
+                    String newValue = locale + " - " + locale.getDisplayName(Locale.getDefault(Locale.Category.DISPLAY));
                     return super.toString(term, list, newValue, index, isSelected, cellHasFocus);
                 }
                 return super.toString(term, list, value, index, isSelected, cellHasFocus);

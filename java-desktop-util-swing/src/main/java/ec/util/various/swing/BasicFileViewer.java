@@ -232,13 +232,13 @@ public final class BasicFileViewer extends JPanel {
                         ((JComponent) viewer).setTransferHandler(null);
                     }
                     cause = null;
-                    setState(State.LOADED);
+                    setState(BasicFileViewer.State.LOADED);
                 } catch (InterruptedException ex) {
                     cause = ex;
-                    setState(State.FAILED);
+                    setState(BasicFileViewer.State.FAILED);
                 } catch (ExecutionException ex) {
                     cause = ex.getCause();
-                    setState(State.FAILED);
+                    setState(BasicFileViewer.State.FAILED);
                 }
             }
         }.execute();

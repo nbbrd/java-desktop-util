@@ -28,12 +28,11 @@ import ec.util.chart.TimeSeriesChart.Element;
 import ec.util.chart.TimeSeriesChartCommand;
 import ec.util.various.swing.JCommand;
 import java.awt.Color;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Random;
+import java.util.TimeZone;
 import javax.swing.JOptionPane;
 import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -214,7 +213,7 @@ public abstract class JTimeSeriesChartCommand extends JCommand<JTimeSeriesChart>
             @Override
             protected void setValueAsString(JTimeSeriesChart chart, String value) {
                 try {
-                    chart.setPeriodFormat(new SimpleDateFormat(value));
+                    chart.setPeriodFormat(new SimpleDateFormat(value, Locale.getDefault(Locale.Category.DISPLAY)));
                 } catch (IllegalArgumentException ex) {
                     // do nothing
                 }
@@ -233,7 +232,7 @@ public abstract class JTimeSeriesChartCommand extends JCommand<JTimeSeriesChart>
             @Override
             protected void setValueAsString(JTimeSeriesChart chart, String value) {
                 try {
-                    chart.setValueFormat(new DecimalFormat(value));
+                    chart.setValueFormat(new DecimalFormat(value, DecimalFormatSymbols.getInstance(Locale.getDefault(Locale.Category.DISPLAY))));
                 } catch (IllegalArgumentException ex) {
                     // do nothing
                 }
@@ -356,7 +355,7 @@ public abstract class JTimeSeriesChartCommand extends JCommand<JTimeSeriesChart>
     };
     private static final JTimeSeriesChartCommand RANDOM_DATA = new JTimeSeriesChartCommand() {
         final Random random = new Random();
-        final Calendar cal = Calendar.getInstance();
+        final Calendar cal = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault(Locale.Category.DISPLAY));
 
         @Override
         public void execute(@NonNull JTimeSeriesChart chart) {

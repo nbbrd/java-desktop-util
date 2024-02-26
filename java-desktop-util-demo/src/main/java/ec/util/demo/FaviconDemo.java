@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -246,7 +247,7 @@ public final class FaviconDemo {
     }
 
     private static <T> FaviconListener<T> getListener(Function<T, String> toString) {
-        return (host, supplier, value) -> System.out.printf("%s(%s): %s%n", host, supplier, toString.apply(value));
+        return (host, supplier, value) -> System.out.printf(Locale.ROOT, "%s(%s): %s%n", host, supplier, toString.apply(value));
     }
 
     private static List<FaviconRef> refs(String... domains) {

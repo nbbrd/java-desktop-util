@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.AbstractList;
 import java.util.AbstractMap.SimpleEntry;
@@ -465,7 +466,7 @@ public final class Charts {
 
     public static void writeChartAsSVG(@NonNull OutputStream stream, @NonNull JFreeChart chart, @NonNegative int width, @NonNegative int height) throws IOException {
         String svg = generateSVG(chart, width, height);
-        try (OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
             writer.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
             writer.write("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n");
             writer.write(svg + "\n");

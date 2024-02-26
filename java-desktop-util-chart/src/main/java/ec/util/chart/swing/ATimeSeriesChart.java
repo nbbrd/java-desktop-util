@@ -27,13 +27,11 @@ import ec.util.chart.impl.SmartColorScheme;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Stroke;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 import javax.swing.JComponent;
 import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -128,8 +126,8 @@ abstract class ATimeSeriesChart extends JComponent implements TimeSeriesChart<In
 
         this.colorSchemeSupport = DEFAULT_COLOR_SCHEME_SUPPORT;
         this.lineStrokes = DEFAULT_LINE_STROKES;
-        this.periodFormat = new SimpleDateFormat(DEFAULT_PERIOD_FORMAT);
-        this.valueFormat = new DecimalFormat(DEFAULT_VALUE_FORMAT);
+        this.periodFormat = new SimpleDateFormat(DEFAULT_PERIOD_FORMAT, Locale.getDefault(Locale.Category.DISPLAY));
+        this.valueFormat = new DecimalFormat(DEFAULT_VALUE_FORMAT, DecimalFormatSymbols.getInstance(Locale.getDefault(Locale.Category.DISPLAY)));
         this.seriesRenderer = DEFAULT_SERIES_RENDERER;
         this.seriesFormatter = DEFAULT_SERIES_FORMATTER;
         this.seriesColorist = seriesColoristUsingColorScheme();
@@ -250,7 +248,7 @@ abstract class ATimeSeriesChart extends JComponent implements TimeSeriesChart<In
     @Override
     public void setPeriodFormat(@Nullable DateFormat periodFormat) {
         DateFormat old = this.periodFormat;
-        this.periodFormat = periodFormat != null ? periodFormat : new SimpleDateFormat(DEFAULT_PERIOD_FORMAT);
+        this.periodFormat = periodFormat != null ? periodFormat : new SimpleDateFormat(DEFAULT_PERIOD_FORMAT, Locale.getDefault(Locale.Category.DISPLAY));
         firePropertyChange(PERIOD_FORMAT_PROPERTY, old, this.periodFormat);
     }
 
@@ -262,7 +260,7 @@ abstract class ATimeSeriesChart extends JComponent implements TimeSeriesChart<In
     @Override
     public void setValueFormat(@Nullable NumberFormat valueFormat) {
         NumberFormat old = this.valueFormat;
-        this.valueFormat = valueFormat != null ? valueFormat : new DecimalFormat(DEFAULT_VALUE_FORMAT);
+        this.valueFormat = valueFormat != null ? valueFormat : new DecimalFormat(DEFAULT_VALUE_FORMAT, DecimalFormatSymbols.getInstance(Locale.getDefault(Locale.Category.DISPLAY)));
         firePropertyChange(VALUE_FORMAT_PROPERTY, old, this.valueFormat);
     }
 

@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.util.EnumMap;
+import java.util.Locale;
 import java.util.Map.Entry;
 import lombok.NonNull;
 
@@ -94,7 +95,7 @@ public class MailtoBuilder {
             } else {
                 sb.append("&");
             }
-            sb.append(o.getKey().toString().toLowerCase()).append("=").append(encodex(o.getValue()));
+            sb.append(o.getKey().toString().toLowerCase(Locale.ROOT)).append("=").append(encodex(o.getValue()));
         }
         return URI.create(sb.toString());
     }
