@@ -83,6 +83,13 @@
             <artifactId>flatlaf</artifactId>
             <version>3.4</version>
         </dependency>
+
+        <!-- runtime only -->
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreesvg</artifactId>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <profiles>

@@ -19,7 +19,6 @@
     <properties>
         <!-- dependencies -->
         <jfreechart.version>1.0.19</jfreechart.version>
-        <jfreesvg.version>3.4.3</jfreesvg.version>
     </properties>
 
     <dependencyManagement>
@@ -38,11 +37,6 @@
                         <artifactId>itext</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.jfree</groupId>
-                <artifactId>jfreesvg</artifactId>
-                <version>${jfreesvg.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -46,6 +46,9 @@
         <!-- GitHub hosting -->
         <x.github.user>nbbrd</x.github.user>
         <x.github.repo>java-desktop-util</x.github.repo>
+
+        <!-- dependencies -->
+        <jfreesvg.version>3.4.3</jfreesvg.version>
     </properties>
 
     <modules>
@@ -74,6 +77,11 @@
                 <version>0.0.27</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jfree</groupId>
+                <artifactId>jfreesvg</artifactId>
+                <version>${jfreesvg.version}</version>
             </dependency>
 
             <!-- test libraries -->
