@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Migrate VBScript to PowerShell [#357](https://github.com/nbbrd/java-desktop-util/issues/357)
+
 ## [2.3.1] - 2024-02-26
 
 ### Fixed
