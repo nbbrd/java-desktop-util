@@ -8,15 +8,27 @@ If ($args.Count -ne 1) {
 $query = $args[0]
 
 $con = New-Object -ComObject ADODB.Connection
-$con.Open("Provider=Search.CollatorDSO;Extended Properties='Application=Windows';")
+try {
+    $con.Open("Provider=Search.CollatorDSO;Extended Properties='Application=Windows';")
 
-$rs  = New-Object -ComObject ADODB.Recordset
-$rs.Open("SELECT System.ItemUrl FROM SYSTEMINDEX WHERE SCOPE='file:' AND System.FileName like '%$query%'", $con)
+    $rs  = New-Object -ComObject ADODB.Recordset
+    try {
+        $rs.Open("SELECT System.ItemUrl FROM SYSTEMINDEX WHERE SCOPE='file:' AND System.FileName like '%$query%'", $con)
 
-While (-Not $rs.EOF) {
-    $rs.Fields.Item(0).Value.Replace("file:", "")
-    $rs.MoveNext()
+        While (-Not $rs.EOF) {
+            $rs.Fields.Item(0).Value.Replace("file:", "")
+            $rs.MoveNext()
+        }
+    } catch {
+        Write-Output "Query failed: [$($_.Exception.GetType().FullName)] $_.Message"
+        Exit(2)
+    } finally {
+        if ($rs.State -eq [System.Data.ConnectionState]::Open) { $rs.Close() }
+    }
+} catch {
+    Write-Output "Connection failed: [$($_.Exception.GetType().FullName)] $_.Message"
+    Exit(1)
+} finally {
+    if ($con.State -eq [System.Data.ConnectionState]::Open) { $con.Close() }
 }
 
-$rs.Close()
-$con.Close()
