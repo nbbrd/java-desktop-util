@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.2] - 2024-06-13
+
+### Changed
+
+- Migrate VBScript to PowerShell [#357](https://github.com/nbbrd/java-desktop-util/issues/357)
+
 ## [2.3.1] - 2024-02-26
 
 ### Fixed
@@ -86,7 +92,8 @@ java-desktop-util follows [semantic versioning](https://semver.org/).
 ### Fixed
 - JDK11 cleanup
 
-[Unreleased]: https://github.com/nbbrd/java-desktop-util/compare/v2.3.1...HEAD
+[Unreleased]: https://github.com/nbbrd/java-desktop-util/compare/v2.3.2...HEAD
+[2.3.2]: https://github.com/nbbrd/java-desktop-util/compare/v2.3.1...v2.3.2
 [2.3.1]: https://github.com/nbbrd/java-desktop-util/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/nbbrd/java-desktop-util/compare/v2.2.8...v2.3.0
 [2.2.8]: https://github.com/nbbrd/java-desktop-util/compare/v2.2.7...v2.2.8

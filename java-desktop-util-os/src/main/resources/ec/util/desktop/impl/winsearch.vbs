@@ -1,4 +1,4 @@
-' cscript /nologo search.vbs
+' cscript /nologo winsearch.vbs
                 
 On Error Resume Next
 

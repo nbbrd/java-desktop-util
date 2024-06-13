@@ -1,20 +1,23 @@
 /*
  * Copyright 2015 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.util.desktop.impl;
+
+import lombok.AccessLevel;
+import lombok.NonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,8 +25,6 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * http://en.wikipedia.org/wiki/Windows_Search
@@ -59,6 +60,7 @@ abstract class WinSearch {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
+
     /**
      * http://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
      */
@@ -67,24 +69,25 @@ abstract class WinSearch {
         private static final WinSearch INSTANCE = createInstance();
 
         private static WinSearch createInstance() {
-            File searchScript = extractSearchScript();
-            if (searchScript != null) {
-                log.log(Level.INFO, "Using VbsSearch");
-                return new VbsSearch(WinScriptHost.getDefault(), searchScript);
+            try {
+                PowerShellSearch result = PowerShellSearch.init();
+                log.log(Level.INFO, "Using PowerShellSearch");
+                return result;
+            } catch (IOException ex) {
+                log.log(Level.INFO, "Cannot load PowerShellSearch", ex);
             }
+
+            try {
+                VbsSearch result = VbsSearch.init();
+                log.log(Level.INFO, "Using VbsSearch");
+                return result;
+            } catch (IOException ex) {
+                log.log(Level.INFO, "Cannot load VbsSearch", ex);
+            }
+
             // fallback
             log.log(Level.INFO, "Using NoOpSearch");
             return noOp();
-        }
-
-        @Nullable
-        private static File extractSearchScript() {
-            try {
-                return Util.extractResource("winsearch.vbs", "winsearch", ".vbs");
-            } catch (IOException ex) {
-                log.log(Level.INFO, "Cannot load search script", ex);
-                return null;
-            }
         }
     }
 
@@ -108,22 +111,52 @@ abstract class WinSearch {
         }
     }
 
+    @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
     static final class VbsSearch extends WinSearch {
+
+        public static @NonNull VbsSearch init() throws IOException {
+            return new VbsSearch(
+                    WinScriptHost.getDefault(), Util.extractResource("winsearch.vbs", "winsearch", ".vbs")
+            );
+        }
 
         private static final String QUOTE = "\"";
 
-        private final WinScriptHost wsh;
-        private final File searchScript;
-
-        public VbsSearch(@NonNull WinScriptHost wsh, @NonNull File searchScript) {
-            this.wsh = wsh;
-            this.searchScript = searchScript;
-        }
+        private final @NonNull WinScriptHost wsh;
+        private final @NonNull File searchScript;
 
         @Override
         public @NonNull List<File> getFilesByName(@NonNull String query) throws IOException {
             String quotedQuery = quote(query.replace(QUOTE, ""));
             Process p = wsh.exec(searchScript, quotedQuery);
+            return Util.toList(p, Charset.defaultCharset(), File::new);
+        }
+
+        @NonNull
+        private static String quote(@NonNull String input) {
+            return QUOTE + input + QUOTE;
+        }
+    }
+
+    @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
+    static final class PowerShellSearch extends WinSearch {
+
+        public static @NonNull PowerShellSearch init() throws IOException {
+            return new PowerShellSearch(
+                    Util.extractResource("winsearch.ps1", "winsearch", ".ps1")
+            );
+        }
+
+        private static final String QUOTE = "\"";
+
+        private final @NonNull File searchScript;
+
+        @Override
+        public @NonNull List<File> getFilesByName(@NonNull String query) throws IOException {
+            String quotedQuery = quote(query.replace(QUOTE, ""));
+            Process p = new ProcessBuilder("powershell", "-file", searchScript.getAbsolutePath(), quotedQuery)
+                    .redirectError(ProcessBuilder.Redirect.INHERIT)
+                    .start();
             return Util.toList(p, Charset.defaultCharset(), File::new);
         }
 
