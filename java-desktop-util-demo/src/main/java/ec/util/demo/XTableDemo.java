@@ -1,46 +1,37 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.util.demo;
 
-import static ec.util.demo.XTableCommand.applyColumnWidthAsPercentages;
-import static ec.util.demo.XTableCommand.applyDefaultRenderer;
-import static ec.util.demo.XTableCommand.applyModel;
-import static ec.util.demo.XTableCommand.applyNoDataMessage;
 import ec.util.grid.swing.XTable;
 import ec.util.various.swing.BasicSwingLauncher;
+import ec.util.various.swing.JCommand;
 import ec.util.various.swing.ModernUI;
 import ec.util.various.swing.PopupMouseAdapter;
 import internal.Colors;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.util.logging.Level;
-import javax.swing.Icon;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JToolTip;
+import lombok.NonNull;
+
+import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import java.awt.*;
+import java.util.logging.Level;
+
+import static ec.util.demo.XTableCommand.*;
 
 /**
  *
@@ -58,6 +49,7 @@ public final class XTableDemo extends JPanel {
 
     public XTableDemo() {
         XTable table = new XTable();
+        table.setModel(createModel());
         table.addMouseListener(PopupMouseAdapter.fromMenu(createMenu(table)));
 
         applyNoDataMessage("<html><center><b><font size=+2>No data</font></b><br>(See popup menu for options)").executeSafely(table);
@@ -71,11 +63,11 @@ public final class XTableDemo extends JPanel {
 
         JMenuItem item;
 
-        item = new JCheckBoxMenuItem(applyModel(createModel()).toAction(table));
+        item = new JCheckBoxMenuItem(fillModel().toAction(table));
         item.setText("Fill");
         result.add(item);
 
-        item = new JCheckBoxMenuItem(applyModel(new DefaultTableModel()).toAction(table));
+        item = new JCheckBoxMenuItem(clearModel().toAction(table));
         item.setText("Clear");
         result.add(item);
 
@@ -95,22 +87,31 @@ public final class XTableDemo extends JPanel {
         item.setText("Change columns width");
         result.add(item);
 
+        item = new JMenuItem(new JCommand<>(){
+
+            @Override
+            public void execute(@NonNull Object component) throws Exception {
+                System.out.println("hello");
+            }
+
+            @Override
+            public boolean isEnabled(@NonNull Object component) {
+                return table.getModel().getRowCount() > 0;
+            }
+        }.toAction(table).withWeakTableModelListener(table.getModel()));
+        item.setText("Enabled on table model row count > 0");
+        result.add(item);
+
         return result;
     }
 
     static TableModel createModel() {
-        DefaultTableModel result = new DefaultTableModel(new String[]{"Color", "Name"}, 0) {
+        return new DefaultTableModel(new String[]{"Color", "Name"}, 0) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
                 return columnIndex == 0 ? Color.class : String.class;
             }
         };
-        result.addRow(new Object[]{Color.RED, "Red"});
-        result.addRow(new Object[]{Color.GREEN, "Green"});
-        result.addRow(new Object[]{Color.BLUE, "Blue"});
-        result.addRow(new Object[]{Color.ORANGE, "Orange"});
-        result.addRow(new Object[]{Color.BLACK, "Black"});
-        return result;
     }
 
     static DefaultTableCellRenderer createCustomRenderer() {
@@ -162,5 +163,53 @@ public final class XTableDemo extends JPanel {
         public int getIconHeight() {
             return SIZE;
         }
+    }
+
+    private static XTableCommand fillModel() {
+        return new XTableCommand() {
+            @Override
+            public void execute(@NonNull XTable table) {
+                DefaultTableModel result = (DefaultTableModel) table.getModel();
+                result.addRow(new Object[]{Color.RED, "Red"});
+                result.addRow(new Object[]{Color.GREEN, "Green"});
+                result.addRow(new Object[]{Color.BLUE, "Blue"});
+                result.addRow(new Object[]{Color.ORANGE, "Orange"});
+                result.addRow(new Object[]{Color.BLACK, "Black"});
+            }
+
+            @Override
+            public boolean isEnabled(@NonNull XTable table) {
+                return table.getModel().getRowCount() == 0;
+            }
+
+            @Override
+            public JCommand.@NonNull ActionAdapter toAction(@NonNull XTable table) {
+                return super.toAction(table)
+                        .withWeakTableModelListener(table.getModel());
+            }
+        };
+    }
+
+    private static XTableCommand clearModel() {
+        return new XTableCommand() {
+            @Override
+            public void execute(@NonNull XTable table) {
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+                while (model.getRowCount()>0) {
+                    model.removeRow(0);
+                }
+            }
+
+            @Override
+            public boolean isEnabled(@NonNull XTable table) {
+                return table.getModel().getRowCount() > 0;
+            }
+
+            @Override
+            public JCommand.@NonNull ActionAdapter toAction(@NonNull XTable table) {
+                return super.toAction(table)
+                        .withWeakTableModelListener(table.getModel());
+            }
+        };
     }
 }
