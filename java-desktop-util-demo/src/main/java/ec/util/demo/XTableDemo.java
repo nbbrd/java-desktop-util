@@ -87,18 +87,7 @@ public final class XTableDemo extends JPanel {
         item.setText("Change columns width");
         result.add(item);
 
-        item = new JMenuItem(new JCommand<>(){
-
-            @Override
-            public void execute(@NonNull Object component) throws Exception {
-                System.out.println("hello");
-            }
-
-            @Override
-            public boolean isEnabled(@NonNull Object component) {
-                return table.getModel().getRowCount() > 0;
-            }
-        }.toAction(table).withWeakTableModelListener(table.getModel()));
+        item = new JMenuItem(new HelloCommand().toAction(table).withWeakTableModelListener(table.getModel()));
         item.setText("Enabled on table model row count > 0");
         result.add(item);
 
@@ -211,5 +200,18 @@ public final class XTableDemo extends JPanel {
                         .withWeakTableModelListener(table.getModel());
             }
         };
+    }
+
+    private static class HelloCommand extends JCommand<XTable> {
+
+        @Override
+        public void execute(@NonNull XTable component) throws Exception {
+            System.out.println("hello");
+        }
+
+        @Override
+        public boolean isEnabled(@NonNull XTable component) {
+            return component.getModel().getRowCount() > 0;
+        }
     }
 }
