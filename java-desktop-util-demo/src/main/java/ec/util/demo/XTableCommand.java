@@ -22,7 +22,6 @@ import ec.util.various.swing.JCommand;
 import lombok.NonNull;
 
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 
 /**
  *
@@ -35,20 +34,6 @@ abstract class XTableCommand extends JCommand<XTable> {
         return super.toAction(table)
                 .withWeakPropertyChangeListener(table)
                 .withWeakListSelectionListener(table.getSelectionModel());
-    }
-
-    public static XTableCommand applyModel(final TableModel model) {
-        return new XTableCommand() {
-            @Override
-            public void execute(@NonNull XTable table) {
-                table.setModel(model);
-            }
-
-            @Override
-            public boolean isSelected(@NonNull XTable table) {
-                return table.getModel().equals(model);
-            }
-        };
     }
 
     public static XTableCommand applyDefaultRenderer(final Class<?> columnClass, final TableCellRenderer renderer) {

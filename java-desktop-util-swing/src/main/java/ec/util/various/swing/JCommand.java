@@ -31,6 +31,10 @@ import javax.swing.Action;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
+
 import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -202,6 +206,26 @@ public abstract class JCommand<C> {
             return this;
         }
 
+        /**
+         * Register a table model listener on a table model. This
+         * listener uses a weak reference to avoid memory leaks.
+         *
+         * @param source a non-null table model
+         * @return itself
+         */
+        @NonNull
+        public ActionAdapter withWeakTableModelListener(@NonNull TableModel source) {
+            TableModelListener realListener = evt -> refreshActionState();
+            putValue("TableModelListener", realListener);
+            source.addTableModelListener(new WeakTableModelListener(realListener) {
+                @Override
+                protected void unregister(@NonNull Object source) {
+                    ((TableModel) source).removeTableModelListener(this);
+                }
+            });
+            return this;
+        }
+
         @Deprecated
         public void registerPropertyChangeListener(@NonNull Container source) {
             withWeakPropertyChangeListener(source);
@@ -252,6 +276,23 @@ public abstract class JCommand<C> {
             ListSelectionListener listener = delegate.get();
             if (listener != null) {
                 listener.valueChanged(e);
+            } else {
+                unregister(e.getSource());
+            }
+        }
+    }
+
+    private abstract static class WeakTableModelListener extends WeakEventListener<TableModelListener> implements TableModelListener {
+
+        public WeakTableModelListener(@NonNull TableModelListener delegate) {
+            super(delegate);
+        }
+
+        @Override
+        public void tableChanged(TableModelEvent e) {
+            TableModelListener listener = delegate.get();
+            if (listener != null) {
+                listener.tableChanged(e);
             } else {
                 unregister(e.getSource());
             }

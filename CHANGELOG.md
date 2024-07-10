@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0] - 2024-07-09
+
+### Added
+
+- Added TableModel support in JCommand
+
 ## [2.3.2] - 2024-06-13
 
 ### Changed
@@ -92,7 +98,8 @@ java-desktop-util follows [semantic versioning](https://semver.org/).
 ### Fixed
 - JDK11 cleanup
 
-[Unreleased]: https://github.com/nbbrd/java-desktop-util/compare/v2.3.2...HEAD
+[Unreleased]: https://github.com/nbbrd/java-desktop-util/compare/v2.4.0...HEAD
+[2.4.0]: https://github.com/nbbrd/java-desktop-util/compare/v2.3.2...v2.4.0
 [2.3.2]: https://github.com/nbbrd/java-desktop-util/compare/v2.3.1...v2.3.2
 [2.3.1]: https://github.com/nbbrd/java-desktop-util/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/nbbrd/java-desktop-util/compare/v2.2.8...v2.3.0
