@@ -111,6 +111,8 @@ public class FileAutoCompletionSource implements AutoCompletionSource {
     static List<File> children(File folder, FileFilter fileFilter) {
         File[] result = folder.listFiles(fileFilter);
         // result == null => An I/O exception occurred
-        return result != null ? Arrays.asList(result) : Collections.emptyList();
+        if (result == null) return Collections.emptyList();
+        Arrays.sort(result);
+        return Arrays.asList(result);
     }
 }
