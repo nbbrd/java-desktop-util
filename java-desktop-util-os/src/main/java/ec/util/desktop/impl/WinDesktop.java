@@ -17,17 +17,19 @@
 package ec.util.desktop.impl;
 
 import ec.util.desktop.Desktop;
-import ec.util.desktop.Desktop.Action;
-import ec.util.desktop.Desktop.KnownFolder;
-import static ec.util.desktop.impl.WinRegistry.Root.HKEY_CURRENT_USER;
-import static ec.util.desktop.impl.WinRegistry.Root.HKEY_LOCAL_MACHINE;
+import lombok.NonNull;
+import nbbrd.service.ServiceProvider;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nbbrd.service.ServiceProvider;
-import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+
+import static ec.util.desktop.impl.WinRegistry.Root.HKEY_CURRENT_USER;
+import static ec.util.desktop.impl.WinRegistry.Root.HKEY_LOCAL_MACHINE;
 
 /**
  * A generic {@link Desktop} implementation for Windows.
@@ -162,7 +164,12 @@ public class WinDesktop extends AwtDesktop {
     @Nullable
     private static File getKnownFolderByName(@NonNull WinRegistry registry, @NonNull String winFolderName) throws IOException {
         Object result = registry.getValue(HKEY_CURRENT_USER, SHELL_FOLDERS_KEY_PATH, winFolderName);
-        return result instanceof String && !((String) result).isEmpty() ? new File((String) result) : null;
+        if (!(result instanceof String) || ((String) result).isEmpty()) return null;
+        try {
+            return Paths.get((String) result).toFile();
+        } catch (InvalidPathException ex) {
+            return null;
+        }
     }
 
     @NonNull

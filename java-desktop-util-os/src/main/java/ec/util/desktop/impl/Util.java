@@ -1,41 +1,34 @@
 /*
  * Copyright 2015 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.util.desktop.impl;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.function.Function;
 import lombok.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.*;
+import java.util.function.Function;
+
 /**
- *
  * @author Philippe Charles
  */
 final class Util {
@@ -59,7 +52,11 @@ final class Util {
 
     @Nullable
     public static File fileFromPathname(@Nullable String pathname) {
-        return pathname != null && !pathname.isEmpty() ? new File(pathname) : null;
+        try {
+            return pathname != null && !pathname.isEmpty() ? Paths.get(pathname).toFile() : null;
+        } catch (InvalidPathException ex) {
+            return null;
+        }
     }
 
     /**
@@ -67,11 +64,11 @@ final class Util {
      *
      * @param file the file to check
      * @return the validated file
-     * @throws NullPointerException if file is null
+     * @throws NullPointerException     if file is null
      * @throws IllegalArgumentException if file doesn't exist
-     * @throws SecurityException If a security manager exists and its
-     * {@link SecurityManager#checkRead(java.lang.String)} method denies read
-     * access to the file
+     * @throws SecurityException        If a security manager exists and its
+     *                                  {@link SecurityManager#checkRead(java.lang.String)} method denies read
+     *                                  access to the file
      */
     @NonNull
     public static File checkFileValidation(@NonNull File file) throws NullPointerException, IllegalArgumentException, SecurityException {

@@ -33,11 +33,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
+import java.nio.file.Paths;
+import java.util.*;
 
 import static org.assertj.core.api.Assumptions.assumeThat;
 
@@ -60,7 +57,7 @@ public class WinDesktopTest {
         File script = File.createTempFile("search", "");
         script.deleteOnExit();
         GOOD = new Input(FakeRegistry.create(), script, new FakeLauncher(), new FakeSearch());
-        BAD = new Input(WinRegistry.noOp(), new File("helloworld"), ZSystem.noOp(), WinSearch.noOp());
+        BAD = new Input(WinRegistry.noOp(), Paths.get("helloworld").toFile(), ZSystem.noOp(), WinSearch.noOp());
         UGLY = new Input(WinRegistry.failing(), null, ZSystem.failing(), WinSearch.failing());
     }
 
@@ -98,13 +95,26 @@ public class WinDesktopTest {
         for (Desktop.KnownFolder o : Desktop.KnownFolder.values()) {
             Assertions.assertNull(new WinDesktop(BAD.registry, BAD.system, BAD.search).getKnownFolder(o));
         }
-        Assertions.assertEquals(new File("hello"), new WinDesktop(GOOD.registry, BAD.system, BAD.search).getKnownFolder(DESKTOP));
+        Assertions.assertEquals(Paths.get("hello").toFile(), new WinDesktop(GOOD.registry, BAD.system, BAD.search).getKnownFolder(DESKTOP));
         Assertions.assertNull(new WinDesktop(UGLY.registry, BAD.system, BAD.search).getKnownFolder(DESKTOP));
+
+        Assertions.assertNull(new WinDesktop(new FakeRegistry(), GOOD.system, GOOD.search).getKnownFolder(DESKTOP));
+
+        Assertions.assertNull(new WinDesktop(new FakeRegistry()
+                .putKey(HKEY_LOCAL_MACHINE, DESKTOP_SEARCH_KEY_PATH), GOOD.system, GOOD.search).getKnownFolder(DESKTOP));
+
+        Assertions.assertNull(new WinDesktop(new FakeRegistry()
+                .putKey(HKEY_LOCAL_MACHINE, DESKTOP_SEARCH_KEY_PATH)
+                .putStringValue(HKEY_CURRENT_USER, SHELL_FOLDERS_KEY_PATH, DESKTOP_DIR, ""), GOOD.system, GOOD.search).getKnownFolder(DESKTOP));
+
+        Assertions.assertNull(new WinDesktop(new FakeRegistry()
+                .putKey(HKEY_LOCAL_MACHINE, DESKTOP_SEARCH_KEY_PATH)
+                .putStringValue(HKEY_CURRENT_USER, SHELL_FOLDERS_KEY_PATH, DESKTOP_DIR, "!#:"), GOOD.system, GOOD.search).getKnownFolder(DESKTOP));
     }
 
     @Test
     public void testSearch1() throws IOException {
-        Assertions.assertArrayEquals(new File[]{new File("hello.html")}, new WinDesktop(GOOD.registry, GOOD.system, GOOD.search).search("hello"));
+        Assertions.assertArrayEquals(new File[]{Paths.get("hello.html").toFile()}, new WinDesktop(GOOD.registry, GOOD.system, GOOD.search).search("hello"));
     }
 
     @Test
@@ -141,42 +151,44 @@ public class WinDesktopTest {
                     .putStringValue(HKEY_CURRENT_USER, SHELL_FOLDERS_KEY_PATH, DESKTOP_DIR, "hello");
         }
 
-        private final Map<Root, Map<String, Map<String, String>>> data;
+        private final EnumMap<Root, Map<String, Map<String, String>>> data;
 
         public FakeRegistry() {
-            this.data = new HashMap<>();
+            this.data = new EnumMap<>(Root.class);
             for (WinRegistry.Root o : WinRegistry.Root.values()) {
                 data.put(o, new HashMap<>());
             }
         }
 
         public FakeRegistry putKey(Root root, String key) {
-            data.get(root).put(key, new HashMap<>());
+            getRootMap(root).put(key, new HashMap<>());
             return this;
+        }
+
+        private @NonNull Map<String, Map<String, String>> getRootMap(Root root) {
+            return data.get(root);
         }
 
         public FakeRegistry putStringValue(Root root, String key, String value, String xyz) {
-            Map<String, String> map = data.get(root).get(key);
-            if (map == null) {
-                map = new HashMap<>();
-                data.get(root).put(key, map);
-            }
-            map.put(value, xyz);
+            getRootMap(root)
+                    .computeIfAbsent(key, k -> new HashMap<>())
+                    .put(value, xyz);
             return this;
         }
 
         @Override
-        public boolean keyExists(@NonNull Root root, @NonNull String key) throws IOException {
-            return data.get(root).containsKey(key);
+        public boolean keyExists(@NonNull Root root, @NonNull String key) {
+            return getRootMap(root).containsKey(key);
         }
 
         @Override
-        public Object getValue(@NonNull Root root, @NonNull String key, @NonNull String value) throws IOException {
-            return data.get(root).get(key).get(value);
+        public Object getValue(@NonNull Root root, @NonNull String key, @NonNull String value) {
+            Map<String, String> node = getRootMap(root).get(key);
+            return node != null ? node.get(value) : null;
         }
 
         @Override
-        public @NonNull SortedMap<String, Object> getValues(@NonNull Root root, @NonNull String key) throws IOException {
+        public @NonNull SortedMap<String, Object> getValues(@NonNull Root root, @NonNull String key) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }
@@ -228,7 +240,7 @@ public class WinDesktopTest {
 
         @Override
         public @NonNull List<File> getFilesByName(@NonNull String query) throws IOException {
-            return Collections.singletonList(new File("hello.html"));
+            return Collections.singletonList(Paths.get("hello.html").toFile());
         }
     }
     //</editor-fold>

@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -54,7 +56,7 @@ abstract class XdgConfig {
     }
 
     @Nullable
-    private static File getConfigFile(@NonNull ZSystem system) {
+    static File getConfigFile(@NonNull ZSystem system) {
         // http://www.freedesktop.org/wiki/Software/xdg-user-dirs/
         File result;
         if (isFile(result = newFile(system.getEnv("XDG_CONFIG_HOME"), "user-dirs.dirs"))) {
@@ -105,7 +107,11 @@ abstract class XdgConfig {
         for (String o : children) {
             result.append(File.separatorChar).append(o);
         }
-        return new File(result.toString());
+        try {
+            return Paths.get(result.toString()).toFile();
+        } catch (InvalidPathException ex) {
+            return null;
+        }
     }
 
     private static boolean isFile(@Nullable File file) {
