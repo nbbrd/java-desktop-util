@@ -14,7 +14,7 @@ class UtilTest {
     void testFileFromPathname(@TempDir Path tmp) {
         assertThat(fileFromPathname(null)).isNull();
         assertThat(fileFromPathname("")).isNull();
-        assertThat(fileFromPathname("*\"/\\<>:|?")).isNull();
+        assertThat(fileFromPathname("*\"/\\<>:|?\0")).isNull();
         assertThat(fileFromPathname(tmp.toString())).isEqualTo(tmp.toFile());
     }
 }

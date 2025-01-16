@@ -29,7 +29,7 @@ class FileAutoCompletionSourceTest {
         assertThat(x.getValues(""))
                 .isEmpty();
 
-        assertThat(x.getValues("*\"/\\<>:|?"))
+        assertThat(x.getValues("*\"/\\<>:|?\0"))
                 .isEmpty();
 
         assertThat(x.getValues(tmp.toString()))
