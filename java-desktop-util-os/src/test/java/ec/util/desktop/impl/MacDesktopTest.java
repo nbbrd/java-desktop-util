@@ -27,7 +27,7 @@ class MacDesktopTest {
             assertThat(noHome.getKnownFolder(o)).isNull();
         }
 
-        MacDesktop invalidHome = new MacDesktop(onUserHome("!#:"));
+        MacDesktop invalidHome = new MacDesktop(onUserHome("*\"/\\<>:|?"));
         for (Desktop.KnownFolder o : Desktop.KnownFolder.values()) {
             assertThat(invalidHome.getKnownFolder(o)).isNull();
         }
