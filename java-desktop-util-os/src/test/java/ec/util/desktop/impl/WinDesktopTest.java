@@ -109,7 +109,7 @@ public class WinDesktopTest {
 
         Assertions.assertNull(new WinDesktop(new FakeRegistry()
                 .putKey(HKEY_LOCAL_MACHINE, DESKTOP_SEARCH_KEY_PATH)
-                .putStringValue(HKEY_CURRENT_USER, SHELL_FOLDERS_KEY_PATH, DESKTOP_DIR, "*\"/\\<>:|?"), GOOD.system, GOOD.search).getKnownFolder(DESKTOP));
+                .putStringValue(HKEY_CURRENT_USER, SHELL_FOLDERS_KEY_PATH, DESKTOP_DIR, "*\"/\\<>:|?\0"), GOOD.system, GOOD.search).getKnownFolder(DESKTOP));
     }
 
     @Test
