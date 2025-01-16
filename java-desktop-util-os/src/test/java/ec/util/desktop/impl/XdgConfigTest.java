@@ -52,6 +52,6 @@ public class XdgConfigTest {
         assertThat(getConfigFile(ZSystem.noOp())).isNull();
         assertThat(getConfigFile(MapSystem.builder().property("user.home", null).build())).isNull();
         assertThat(getConfigFile(MapSystem.builder().property("user.home", "").build())).isNull();
-        assertThat(getConfigFile(MapSystem.builder().property("user.home", "!#:").build())).isNull();
+        assertThat(getConfigFile(MapSystem.builder().property("user.home", "*\"/\\<>:|?").build())).isNull();
     }
 }
