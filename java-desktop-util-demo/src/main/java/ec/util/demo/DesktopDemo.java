@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
@@ -412,10 +414,10 @@ public final class DesktopDemo extends javax.swing.JPanel {
     }//GEN-LAST:event_moveToTrashButtonActionPerformed
 
     private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportButtonActionPerformed
-        File report = new File("DesktopReport_" + new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss", Locale.ROOT).format(new Date()) + ".xml");
+        File report = Paths.get("DesktopReport_" + new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss", Locale.ROOT).format(new Date()) + ".xml").toFile();
         fileChooser.setSelectedFile(report);
         if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-            try (FileOutputStream stream = new FileOutputStream(fileChooser.getSelectedFile())) {
+            try (OutputStream stream = Files.newOutputStream(fileChooser.getSelectedFile().toPath())) {
                 DesktopReport.create(desktop, stream);
             } catch (Exception ex) {
                 reportException(ex);

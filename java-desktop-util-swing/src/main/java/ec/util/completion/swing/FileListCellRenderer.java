@@ -17,6 +17,9 @@
 package ec.util.completion.swing;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -59,10 +62,13 @@ public class FileListCellRenderer extends CustomListCellRenderer<File> {
     protected Icon toIcon(String term, JList list, File value, int index, boolean isSelected, boolean cellHasFocus) {
         if (!value.isAbsolute()) {
             for (File path : paths) {
-                File tmp = new File(path, value.getPath());
-                if (tmp.exists()) {
-                    setToolTipText(tmp.getPath());
-                    return iconFactory.create(new IconTask(tmp), defaultIcon);
+                try {
+                    Path tmp = path.toPath().resolve(value.getPath());
+                    if (Files.exists(tmp)) {
+                        setToolTipText(tmp.toString());
+                        return iconFactory.create(new IconTask(tmp.toFile()), defaultIcon);
+                    }
+                } catch (InvalidPathException ex) {
                 }
             }
         }
