@@ -48,7 +48,7 @@
         <x.github.repo>java-desktop-util</x.github.repo>
 
         <!-- dependencies -->
-        <jfreesvg.version>3.4.3</jfreesvg.version>
+        <jfreesvg.version>3.4.4</jfreesvg.version>
     </properties>
 
     <modules>
