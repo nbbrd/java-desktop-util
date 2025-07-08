@@ -25,7 +25,7 @@ public class FaviconSupportTest {
     @Test
     public void testOfServiceLoader() {
         FaviconSupport main = FaviconSupport.ofServiceLoader();
-        assertThat(main.getSuppliers()).hasSize(3);
+        assertThat(main.getSuppliers()).hasSize(2);
         assertThat(main.getCache()).isEmpty();
         assertThat(main.getClient()).isNotNull();
         assertThat(main.getExecutor()).isNotNull();
