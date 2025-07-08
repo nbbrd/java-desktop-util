@@ -4,7 +4,6 @@ import lombok.NonNull;
 import nbbrd.desktop.favicon.FaviconRef;
 import nbbrd.desktop.favicon.URLConnectionFactory;
 import nbbrd.desktop.favicon.spi.FaviconSupplier;
-import nbbrd.service.ServiceProvider;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.awt.*;
@@ -14,7 +13,11 @@ import java.net.URL;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
-@ServiceProvider
+/**
+ * On <a href="https://github.com/faviconkit">GitHub</a>:<br>
+ * As of March 25, 2025, Favicon Kit is officially retired and archived.
+ */
+@Deprecated
 public final class FaviconkitSupplier implements FaviconSupplier {
 
     @Override

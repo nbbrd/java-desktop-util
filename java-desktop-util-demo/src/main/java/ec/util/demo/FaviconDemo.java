@@ -26,10 +26,12 @@ import lombok.NonNull;
 import nbbrd.desktop.favicon.*;
 import nbbrd.desktop.favicon.spi.FaviconSupplier;
 import nbbrd.desktop.favicon.spi.FaviconSupplierLoader;
+import nl.altindag.ssl.SSLFactory;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.imageio.ImageIO;
+import javax.net.ssl.HttpsURLConnection;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
@@ -53,12 +55,23 @@ import static java.util.stream.Collectors.toList;
 public final class FaviconDemo {
 
     public static void main(String[] args) {
+        initSSL();
         new BasicSwingLauncher()
                 .content(FaviconDemo::create)
                 .title("Favicon Demo")
                 .size(500, 500)
                 .logLevel(Level.FINE)
                 .launch();
+    }
+
+    private static void initSSL() {
+        SSLFactory sslFactory = SSLFactory.builder()
+                .withDefaultTrustMaterial()
+                .withSystemTrustMaterial()
+                .build();
+
+        HttpsURLConnection.setDefaultHostnameVerifier(sslFactory.getHostnameVerifier());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sslFactory.getSslSocketFactory());
     }
 
     static Component create() {
@@ -86,7 +99,7 @@ public final class FaviconDemo {
                     FaviconRef ref = (FaviconRef) value;
                     result.setText("<html><b>" + ref.getDomain() + "</b><br>" + ref + "</html>");
                     result.setIcon(support.get(ref, list::repaint));
-                    result.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+                    result.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
                 }
                 return result;
             }
@@ -173,10 +186,12 @@ public final class FaviconDemo {
     private static class LocalFaviconSupplier implements FaviconSupplier {
 
         @lombok.Builder.Default
-        @NonNull String name = "";
+        @NonNull
+        String name = "";
 
         @lombok.Builder.Default
-        @NonNegative long delayInMillis = 0;
+        @NonNegative
+        long delayInMillis = 0;
 
         @Override
         public int getRank() {
