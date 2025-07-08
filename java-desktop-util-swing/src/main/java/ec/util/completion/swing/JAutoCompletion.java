@@ -140,11 +140,12 @@ public class JAutoCompletion extends AbstractAutoCompletion<JComponent> {
 
     @Override
     public void search(@NonNull String term) {
-        if (!enabled || term.length() < minLength) {
+        String trimmedTerm = term.trim();
+        if (!enabled || trimmedTerm.length() < minLength) {
             close();
             return;
         }
-        search(getRequest(term));
+        search(getRequest(trimmedTerm));
     }
 
     private Request getRequest(String term) {
