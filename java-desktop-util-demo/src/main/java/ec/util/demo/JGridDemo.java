@@ -1,74 +1,55 @@
 /*
  * Copyright 2013 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.util.demo;
 
-import ec.util.grid.CellIndex;
 import ec.util.chart.ObsIndex;
 import ec.util.chart.TimeSeriesChart;
 import ec.util.chart.swing.JTimeSeriesChart;
+import ec.util.demo.ext.JDemoPane;
+import ec.util.grid.CellIndex;
 import ec.util.grid.swing.AbstractGridModel;
 import ec.util.grid.swing.GridModel;
 import ec.util.grid.swing.GridModels;
 import ec.util.grid.swing.JGrid;
-import static ec.util.grid.swing.JGrid.COLUMN_SELECTION_ALLOWED_PROPERTY;
-import static ec.util.grid.swing.JGrid.DRAG_ENABLED_PROPERTY;
-import static ec.util.grid.swing.JGrid.MODEL_PROPERTY;
-import static ec.util.grid.swing.JGrid.ROW_SELECTION_ALLOWED_PROPERTY;
 import ec.util.various.swing.BasicSwingLauncher;
 import ec.util.various.swing.JCommand;
 import ec.util.various.swing.ModernUI;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyDescriptor;
+import lombok.NonNull;
+import org.jfree.data.time.*;
+import org.jfree.data.xy.IntervalXYDataset;
+
+import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
+import java.beans.*;
 import java.lang.reflect.InvocationTargetException;
 import java.text.*;
 import java.util.*;
-import javax.swing.Action;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.table.TableCellRenderer;
 
-import lombok.NonNull;
-import org.jfree.data.time.Month;
-import org.jfree.data.time.TimePeriodAnchor;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.time.TimeSeriesDataItem;
-import org.jfree.data.xy.IntervalXYDataset;
+import static ec.util.grid.swing.JGrid.*;
 
 /**
- *
  * @author Philippe Charles
  */
 public final class JGridDemo extends JPanel {
 
     public static void main(String[] args) {
         new BasicSwingLauncher()
-                .content(JGridDemo.class)
+                .content(() -> JDemoPane.of(new JGridDemo()))
                 .title("Grid Demo")
                 .size(750, 300)
                 .launch();

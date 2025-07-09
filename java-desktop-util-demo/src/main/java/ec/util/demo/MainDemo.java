@@ -28,7 +28,7 @@ public final class MainDemo {
         result.add("JTimeSeriesChart", new JTimeSeriesChartDemo());
         result.add("JTimeSeriesRendererSupport", new JTimeSeriesRendererSupportDemo());
         result.add("SpinningIcon", new SpinningIconDemo());
-        result.add("StandardSwingColor", StandardSwingColorDemo.create());
+        result.add("StandardSwingColor", SwingColorDemo.create());
         result.add("ToolBarIcon", ToolBarIconDemo.create());
         result.add("XPopup", XPopupDemo.create());
         result.add("XTable", new XTableDemo());

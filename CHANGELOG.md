@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix dead favicon supplier [#471](https://github.com/nbbrd/java-desktop-util/issues/471)
+- Fix grid colors on flatlaf l&f [#472](https://github.com/nbbrd/java-desktop-util/issues/472)
 
 ### Changed
 

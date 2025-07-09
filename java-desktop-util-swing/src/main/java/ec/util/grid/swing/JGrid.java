@@ -18,9 +18,11 @@ package ec.util.grid.swing;
 
 import ec.util.grid.CellIndex;
 import ec.util.various.swing.LineBorder2;
-import nbbrd.design.swing.OnEDT;
+import ec.util.various.swing.UIItem;
 import internal.Colors;
 import lombok.NonNull;
+import nbbrd.design.MightBePromoted;
+import nbbrd.design.SealedType;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.swing.*;
@@ -36,10 +38,17 @@ import java.awt.dnd.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.util.Enumeration;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 
 import static ec.util.various.swing.ModernUI.withEmptyBorders;
 import static ec.util.various.swing.StandardSwingColor.*;
+import static internal.Colors.withAlpha;
+import static internal.ExtSwingColor.*;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.WHITE;
 
 /**
  * A grid component for Swing that differs from a JTable by adding a row header.
@@ -675,13 +684,17 @@ public final class JGrid extends AGrid {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Renderers">
+    @SealedType({ColumnRenderer.class, RowRenderer.class, CornerRenderer.class})
     private abstract static class HeaderRenderer implements TableCellRenderer {
 
         protected final JLabel renderer;
+        private GridUIResource gridResource;
 
         public HeaderRenderer() {
             this.renderer = new DefaultTableCellRenderer();
-            renderer.setOpaque(true);
+            this.renderer.setOpaque(true);
+            this.gridResource = null;
+            UIManager.addPropertyChangeListener(evt -> gridResource = null);
         }
 
         abstract protected boolean isHeaderSelected(JTable table, int row, int column);
@@ -690,6 +703,8 @@ public final class JGrid extends AGrid {
 
         @Override
         public JLabel getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if (gridResource == null) gridResource = GridUIResource.header();
+
             String text = value != null ? value.toString() : "";
             if (text.isEmpty()) {
                 renderer.setText(" ");
@@ -702,7 +717,7 @@ public final class JGrid extends AGrid {
                 renderer.setToolTipText(text);
             }
             renderer.setFont(table.getFont());
-            CellUIResource cellResource = GridUIResource.getDefault().getHeader(isHeaderSelected(table, row, column), isHeaderHovered(table, row, column));
+            CellUIResource cellResource = gridResource.get(isHeaderSelected(table, row, column), isHeaderHovered(table, row, column));
             renderer.setBackground(cellResource.getBackground());
             renderer.setForeground(cellResource.getForeground());
             renderer.setBorder(cellResource.getBorder());
@@ -771,22 +786,27 @@ public final class JGrid extends AGrid {
 
         private final JGrid grid;
         private final JLabel renderer;
+        private GridUIResource gridResource;
 
         public GridCellRenderer(@NonNull JGrid grid) {
             this.grid = grid;
             this.renderer = new DefaultTableCellRenderer();
+            this.gridResource = null;
+            UIManager.addPropertyChangeListener(evt -> gridResource = null);
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if (gridResource == null) gridResource = GridUIResource.cell();
+
             renderer.setFont(table.getFont());
 
             CellIndex hoveredCell = grid.getHoveredCell();
-            boolean focused = !grid.isCrosshairVisible()
+            boolean hovered = !grid.isCrosshairVisible()
                     ? hoveredCell.equals(row, column)
                     : (hoveredCell.getRow() == row || hoveredCell.getColumn() == column);
 
-            CellUIResource resource = GridUIResource.getDefault().getCell(isSelected, focused);
+            CellUIResource resource = gridResource.get(isSelected, hovered);
             renderer.setBorder(resource.getBorder());
 
             renderer.setBackground(resource.getBackground());
@@ -797,108 +817,103 @@ public final class JGrid extends AGrid {
         }
     }
 
-    private static abstract class GridUIResource {
+    @lombok.Builder
+    private static class GridUIResource {
 
         @NonNull
-        abstract public CellUIResource getHeader(boolean selected, boolean hovered);
+        CellUIResource normal;
 
         @NonNull
-        abstract public CellUIResource getCell(boolean selected, boolean hovered);
+        CellUIResource selected;
 
-        @OnEDT
         @NonNull
-        public static GridUIResource getDefault() {
-            if (GridColorsImpl.INSTANCE == null) {
-                GridColorsImpl.INSTANCE = new GridColorsImpl();
-            }
-            return GridColorsImpl.INSTANCE;
+        CellUIResource hovered;
+
+        @NonNull
+        CellUIResource selectedAndHovered;
+
+        public @NonNull CellUIResource get(boolean selected, boolean hovered) {
+            return selected ? (hovered ? selectedAndHovered : this.selected) : (hovered ? this.hovered : normal);
         }
 
-        //<editor-fold defaultstate="collapsed" desc="Implementation details">
-        private static final class GridColorsImpl extends GridUIResource {
+        public static @NonNull GridUIResource header() {
+            Optional<Color> normalBg = first(TABLE_HEADER_BACKGROUND);
+            Optional<Color> normalFg = first(TABLE_HEADER_FOREGROUND);
 
-            private static GridColorsImpl INSTANCE = null;
+            Optional<Color> selectedBg = first(TABLE_HEADER_HOVER_BACKGROUND, TABLE_SELECTION_BACKGROUND, TABLE_HEADER_BACKGROUND).map(GridUIResource::alter);
+            Optional<Color> selectedFg = first(TABLE_HEADER_HOVER_FOREGROUND, TABLE_SELECTION_FOREGROUND, TABLE_HEADER_FOREGROUND);
 
-            static {
-                UIManager.addPropertyChangeListener(evt -> INSTANCE = null);
-            }
+            Optional<Color> hoveredBg = first(TABLE_SELECTION_BACKGROUND, TABLE_HEADER_BACKGROUND);
+            Optional<Color> hoveredFg = first(TABLE_SELECTION_FOREGROUND, TABLE_HEADER_FOREGROUND);
 
-            private final CellUIResource header;
-            private final CellUIResource headerSelection;
-            private final CellUIResource headerFocus;
-            private final CellUIResource headerBoth;
-            private final CellUIResource cell;
-            private final CellUIResource cellSelection;
-            private final CellUIResource cellFocus;
-            private final CellUIResource cellBoth;
+            Optional<Color> selectedAndHoveredBg = first(TABLE_SELECTION_BACKGROUND, TABLE_HEADER_HOVER_BACKGROUND, TABLE_HEADER_BACKGROUND).map(GridUIResource::withAlpha200);
+            Optional<Color> selectedAndHoveredFg = first(TABLE_SELECTION_FOREGROUND, TABLE_HEADER_HOVER_FOREGROUND, TABLE_HEADER_FOREGROUND);
 
-            private GridColorsImpl() {
-                Color headerBackground = TABLE_HEADER_BACKGROUND.lookup().orElseGet(() -> new Color(240, 240, 240));
-                Color headerForeground = TABLE_HEADER_FOREGROUND.lookup().orElse(Color.BLACK);
-                Color background = TABLE_BACKGROUND.lookup().orElse(Color.WHITE);
-                Color foreground = TABLE_FOREGROUND.lookup().orElse(Color.BLACK);
-                Color selectionBackground = TABLE_SELECTION_BACKGROUND.lookup().orElseGet(() -> new Color(51, 153, 255));
-                Color selectionForeground = TABLE_SELECTION_FOREGROUND.lookup().orElseGet(() -> new Color(255, 255, 255));
+            Color lineColor = Colors.isDark(normalBg.orElse(WHITE)) ? normalBg.orElse(WHITE).brighter() : normalBg.orElse(WHITE).darker();
+            Border border = BorderFactory.createCompoundBorder(
+                    new LineBorder2(lineColor, 0, 0, 1, 1),
+                    BorderFactory.createEmptyBorder(0, 4, 0, 4));
 
-                Border headerBorder = BorderFactory.createCompoundBorder(
-                        new LineBorder2(Colors.isDark(headerBackground) ? headerBackground.brighter() : headerBackground.darker(), 0, 0, 1, 1),
-                        BorderFactory.createEmptyBorder(0, 4, 0, 4));
-                Border noBorder = BorderFactory.createEmptyBorder();
-
-                this.header = CellUIResource.of(headerBackground, headerForeground, headerBorder);
-                this.headerSelection = CellUIResource.of(selectionBackground.darker(), selectionForeground, headerBorder);
-                this.headerFocus = CellUIResource.of(selectionBackground, selectionForeground, headerBorder);
-                this.headerBoth = CellUIResource.of(selectionBackground, selectionForeground, headerBorder);
-
-                this.cell = CellUIResource.of(background, foreground, noBorder);
-                this.cellSelection = CellUIResource.of(selectionBackground, selectionForeground, noBorder);
-                this.cellFocus = CellUIResource.of(Colors.withAlpha(selectionBackground, 200), selectionForeground, noBorder);
-                this.cellBoth = CellUIResource.of(Colors.withAlpha(selectionBackground, 200), selectionForeground, noBorder);
-            }
-
-            @Override
-            public @NonNull CellUIResource getHeader(boolean selected, boolean hovered) {
-                return selected ? (hovered ? headerBoth : headerSelection) : (hovered ? headerFocus : header);
-            }
-
-            @Override
-            public @NonNull CellUIResource getCell(boolean selected, boolean hovered) {
-                return selected ? (hovered ? cellBoth : cellSelection) : (hovered ? cellFocus : cell);
-            }
+            return GridUIResource
+                    .builder()
+                    .normal(new CellUIResource(normalBg.orElse(WHITE), normalFg.orElse(BLACK), border))
+                    .selected(new CellUIResource(selectedBg.orElse(WHITE), selectedFg.orElse(BLACK), border))
+                    .hovered(new CellUIResource(hoveredBg.orElse(WHITE), hoveredFg.orElse(BLACK), border))
+                    .selectedAndHovered(new CellUIResource(selectedAndHoveredBg.orElse(WHITE), selectedAndHoveredFg.orElse(BLACK), border))
+                    .build();
         }
-        //</editor-fold>
+
+        public static @NonNull GridUIResource cell() {
+            Optional<Color> normalBg = first(TABLE_BACKGROUND);
+            Optional<Color> normalFg = first(TABLE_FOREGROUND);
+
+            Optional<Color> selectedBg = first(TABLE_SELECTION_INACTIVE_BACKGROUND, TABLE_SELECTION_BACKGROUND, TABLE_BACKGROUND);
+            Optional<Color> selectedFg = first(TABLE_SELECTION_INACTIVE_FOREGROUND, TABLE_SELECTION_FOREGROUND, TABLE_FOREGROUND);
+
+            Optional<Color> hoveredBg = first(TABLE_SELECTION_BACKGROUND, TABLE_BACKGROUND);
+            Optional<Color> hoveredFg = first(TABLE_SELECTION_FOREGROUND, TABLE_FOREGROUND);
+
+            Optional<Color> selectedAndHoveredBg = first(TABLE_SELECTION_BACKGROUND, TABLE_SELECTION_INACTIVE_BACKGROUND, TABLE_BACKGROUND).map(GridUIResource::withAlpha200);
+            Optional<Color> selectedAndHoveredFg = first(TABLE_SELECTION_FOREGROUND, TABLE_SELECTION_INACTIVE_FOREGROUND, TABLE_FOREGROUND);
+
+            Border border = BorderFactory.createEmptyBorder();
+
+            return GridUIResource
+                    .builder()
+                    .normal(new CellUIResource(normalBg.orElse(WHITE), normalFg.orElse(BLACK), border))
+                    .selected(new CellUIResource(selectedBg.orElse(WHITE), selectedFg.orElse(BLACK), border))
+                    .hovered(new CellUIResource(hoveredBg.orElse(WHITE), hoveredFg.orElse(BLACK), border))
+                    .selectedAndHovered(new CellUIResource(selectedAndHoveredBg.orElse(WHITE), selectedAndHoveredFg.orElse(BLACK), border))
+                    .build();
+        }
+
+        @SuppressWarnings("unchecked")
+        @MightBePromoted
+        private static <T> Optional<T> first(UIItem<T>... items) {
+            return Stream.of(items).map(UIItem::value).filter(Objects::nonNull).findFirst();
+        }
+
+        private static Color alter(Color color) {
+            return Colors.isDark(color) ? color.brighter() : color.darker();
+        }
+
+        private static Color withAlpha200(Color color) {
+            return withAlpha(color, 200);
+        }
     }
 
-    private static abstract class CellUIResource {
+    @lombok.Getter
+    @lombok.AllArgsConstructor
+    private static class CellUIResource {
 
         @NonNull
-        abstract public Color getBackground();
+        Color background;
 
         @NonNull
-        abstract public Color getForeground();
+        Color foreground;
 
         @NonNull
-        abstract public Border getBorder();
-
-        @NonNull
-        public static CellUIResource of(final Color background, final Color foreground, final Border border) {
-            return new CellUIResource() {
-                @Override
-                public @NonNull Color getBackground() {
-                    return background;
-                }
-
-                @Override
-                public @NonNull Color getForeground() {
-                    return foreground;
-                }
-
-                @Override
-                public @NonNull Border getBorder() {
-                    return border;
-                }
-            };
-        }
+        Border border;
     }
     //</editor-fold>
 }
