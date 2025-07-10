@@ -174,6 +174,10 @@ public final class JGrid extends AGrid {
         fct.getFixedTable().setDefaultRenderer(Object.class, renderer);
     }
 
+    public TableCellRenderer getCornerRenderer() {
+        return fct.getFixedTable().getTableHeader().getDefaultRenderer();
+    }
+
     public void setCornerRenderer(TableCellRenderer renderer) {
         fct.getFixedTable().getTableHeader().setDefaultRenderer(renderer);
     }
@@ -492,10 +496,6 @@ public final class JGrid extends AGrid {
             this.gridModel = gridModel != null ? gridModel : GridModels.empty();
             this.gridModel.addTableModelListener(this);
             fireTableStructureChanged();
-        }
-
-        public GridModel getGridModel() {
-            return gridModel;
         }
 
         public boolean hasData() {
