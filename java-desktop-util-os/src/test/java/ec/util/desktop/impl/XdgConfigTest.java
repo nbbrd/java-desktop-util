@@ -16,13 +16,17 @@
  */
 package ec.util.desktop.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+
+import static ec.util.desktop.impl.XdgConfig.getConfigFile;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -39,8 +43,15 @@ public class XdgConfigTest {
         try (InputStream fis = XdgConfigTest.class.getResourceAsStream("user-dirs.dirs")) {
             XdgConfig config = XdgConfig.parseConfig(fis, env);
             Assertions.assertEquals(8, config.keySet().size());
-            Assertions.assertEquals(new File(tmpDir, "Documents"), new File(config.get(XdgDesktop.DOCUMENTS_DIR)));
+            Assertions.assertEquals(Paths.get(tmpDir, "Documents").toFile(), Paths.get(config.get(XdgDesktop.DOCUMENTS_DIR)).toFile());
         }
     }
 
+    @Test
+    void getGetConfigFile() {
+        assertThat(getConfigFile(ZSystem.noOp())).isNull();
+        assertThat(getConfigFile(MapSystem.builder().property("user.home", null).build())).isNull();
+        assertThat(getConfigFile(MapSystem.builder().property("user.home", "").build())).isNull();
+        assertThat(getConfigFile(MapSystem.builder().property("user.home", "*\"/\\<>:|?\0").build())).isNull();
+    }
 }

@@ -1,30 +1,28 @@
 /*
  * Copyright 2015 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.util.various.swing;
 
 import internal.InternalUtil;
-import java.awt.Color;
+import lombok.NonNull;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.Objects;
 import java.util.function.Supplier;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
-import lombok.NonNull;
 
 /**
  * http://alvinalexander.com/java/java-uimanager-color-keys-list
@@ -54,36 +52,28 @@ public enum StandardSwingColor implements UIItem<Color> {
 
     @Override
     public Color value() {
-        Color result = null;
+        Color result = UIManager.getColor(key);
+        if (result != null) return result;
         switch (this) {
             case TABLE_HEADER_BACKGROUND:
-                result = TABLE.get().getTableHeader().getBackground();
-                break;
+                return TABLE.get().getTableHeader().getBackground();
             case TABLE_HEADER_FOREGROUND:
-                result = TABLE.get().getTableHeader().getForeground();
-                break;
+                return TABLE.get().getTableHeader().getForeground();
             case TABLE_BACKGROUND:
-                result = TABLE.get().getBackground();
-                break;
+                return TABLE.get().getBackground();
             case TABLE_FOREGROUND:
-                result = TABLE.get().getForeground();
-                break;
+                return TABLE.get().getForeground();
             case TABLE_SELECTION_BACKGROUND:
-                result = TABLE.get().getSelectionBackground();
-                break;
+                return TABLE.get().getSelectionBackground();
             case TABLE_SELECTION_FOREGROUND:
-                result = TABLE.get().getSelectionForeground();
-                break;
-            case TEXT_FIELD_INACTIVE_BACKGROUND:
-                break;
+                return TABLE.get().getSelectionForeground();
             case TEXT_FIELD_INACTIVE_FOREGROUND:
-                result = TEXT_FIELD.get().getDisabledTextColor();
-                break;
+                return TEXT_FIELD.get().getDisabledTextColor();
             case CONTROL:
-                result = PANEL.get().getBackground();
-                break;
+                return PANEL.get().getBackground();
+            default:
+                return null;
         }
-        return result != null ? result : UIManager.getColor(key);
     }
 
     @Deprecated

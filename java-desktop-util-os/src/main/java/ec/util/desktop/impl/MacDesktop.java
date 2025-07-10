@@ -1,29 +1,33 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.util.desktop.impl;
 
 import ec.util.desktop.Desktop;
-import ec.util.desktop.Desktop.Action;
+import lombok.NonNull;
+import nbbrd.service.ServiceProvider;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import nbbrd.service.ServiceProvider;
-import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * A generic {@link Desktop} implementation for Mac OS X.
@@ -119,7 +123,15 @@ public class MacDesktop extends AwtDesktop {
 
     @Nullable
     private static File getKnownFolderByName(@NonNull ZSystem system, @NonNull String osxFolderName) {
-        File result = new File(system.getProperty("user.home"), osxFolderName);
-        return result.exists() ? result : null;
+        String userHome = system.getProperty("user.home");
+        if (userHome == null) {
+            return null;
+        }
+        try {
+            Path result = Paths.get(userHome, osxFolderName);
+            return Files.exists(result) ? result.toFile() : null;
+        } catch (InvalidPathException ex) {
+            return null;
+        }
     }
 }

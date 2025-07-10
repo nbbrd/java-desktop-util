@@ -21,6 +21,10 @@ import lombok.NonNull;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -54,38 +58,44 @@ public class FileAutoCompletionSource implements AutoCompletionSource {
     @Override
     public @NonNull List<File> getValues(final @NonNull String term) throws IOException {
         // case 1: absolute path
-        {
-            File file = new File(term);
+        try {
+            Path file = Paths.get(term);
             // is a directory -> get all children
-            if (file.exists() && file.isDirectory()) {
-                return children(file, fileFilter);
+            if (Files.exists(file) && Files.isDirectory(file)) {
+                return children(file.toFile(), fileFilter);
             }
-            File parent = file.getParentFile();
+            Path parent = file.getParent();
             // is not a directory but has parent -> get siblings
-            if (parent != null && parent.exists()) {
-                return children(parent, normalizedFilter(term));
+            if (parent != null && Files.exists(parent)) {
+                return children(parent.toFile(), normalizedFilter(term));
             }
+        } catch (InvalidPathException ex) {
+            return Collections.emptyList();
         }
+
         // case 2: relative path
-        {
+        try {
             for (File path : paths) {
-                File file = new File(path, term);
+                Path file = path.toPath().resolve(term);
                 // is a directory -> get all children
-                if (file.exists() && file.isDirectory()) {
-                    return toRelativeFiles(children(file, fileFilter), path);
+                if (Files.exists(file) && Files.isDirectory(file)) {
+                    return toRelativeFiles(children(file.toFile(), fileFilter), path);
                 }
-                File parent = file.getParentFile();
+                Path parent = file.getParent();
                 // is not a directory but has parent -> get siblings
-                if (parent != null && parent.exists()) {
-                    return toRelativeFiles(children(parent, normalizedFilter(file.getAbsolutePath())), path);
+                if (parent != null && Files.exists(parent)) {
+                    return toRelativeFiles(children(parent.toFile(), normalizedFilter(file.toFile().getAbsolutePath())), path);
                 }
             }
+        } catch (InvalidPathException ex) {
+            return Collections.emptyList();
         }
+
         return Collections.emptyList();
     }
 
     List<File> toRelativeFiles(List<File> files, File path) {
-        files.replaceAll(file -> new File(file.getPath().substring(path.getPath().length() + 1)));
+        files.replaceAll(file -> Paths.get(file.getPath().substring(path.getPath().length() + 1)).toFile());
         return files;
     }
 
@@ -100,7 +110,9 @@ public class FileAutoCompletionSource implements AutoCompletionSource {
 
     static List<File> children(File folder, FileFilter fileFilter) {
         File[] result = folder.listFiles(fileFilter);
-        // result == null => An I/O exception occured
-        return result != null ? Arrays.asList(result) : Collections.emptyList();
+        // result == null => An I/O exception occurred
+        if (result == null) return Collections.emptyList();
+        Arrays.sort(result);
+        return Arrays.asList(result);
     }
 }
