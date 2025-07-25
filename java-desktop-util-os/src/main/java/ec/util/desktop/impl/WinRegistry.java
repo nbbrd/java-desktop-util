@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.SortedMap;
 import java.util.logging.Level;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Facade that allows retrieving values from the registry of Windows.

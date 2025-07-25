@@ -4,7 +4,7 @@ import lombok.NonNull;
 import nbbrd.desktop.favicon.FaviconRef;
 import nbbrd.desktop.favicon.URLConnectionFactory;
 import nbbrd.desktop.favicon.spi.FaviconSupplier;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.awt.*;
 import java.io.IOException;

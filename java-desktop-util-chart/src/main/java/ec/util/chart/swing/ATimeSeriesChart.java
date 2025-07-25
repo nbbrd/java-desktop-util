@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import javax.swing.JComponent;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jfree.data.xy.IntervalXYDataset;
 
 /**

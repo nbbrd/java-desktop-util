@@ -30,7 +30,7 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 import lombok.AccessLevel;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  *

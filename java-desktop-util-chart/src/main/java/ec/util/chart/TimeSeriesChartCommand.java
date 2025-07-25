@@ -21,7 +21,7 @@ import ec.util.chart.TimeSeriesChart.DisplayTrigger;
 import ec.util.chart.TimeSeriesChart.Element;
 import ec.util.chart.TimeSeriesChart.RendererType;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;

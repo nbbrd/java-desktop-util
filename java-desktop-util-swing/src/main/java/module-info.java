@@ -17,7 +17,7 @@
 
 module nbbrd.desktop.swing {
     requires static lombok;
-    requires static org.checkerframework.checker.qual;
+    requires static org.jspecify;
     requires static nbbrd.design;
 
     requires transitive java.desktop;

@@ -17,7 +17,7 @@
 package ec.util.grid;
 
 import nbbrd.design.Immutable;
-import org.checkerframework.checker.index.qual.NonNegative;
+import nbbrd.design.NonNegative;
 import lombok.NonNull;
 
 import java.util.Objects;

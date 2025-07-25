@@ -3,7 +3,7 @@ package internal.desktop.favicon.spi;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import nbbrd.desktop.favicon.URLConnectionFactory;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

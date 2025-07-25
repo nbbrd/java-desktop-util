@@ -9,7 +9,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.entity.ChartEntity;
 import org.jfree.chart.entity.LegendItemEntity;

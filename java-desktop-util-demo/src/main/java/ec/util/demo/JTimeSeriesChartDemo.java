@@ -31,7 +31,7 @@ import ec.util.various.swing.JCommand;
 import internal.SpinningIcon;
 import internal.chart.ColorSchemeLoader;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jfree.data.time.*;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.kordamp.ikonli.swing.FontIcon;

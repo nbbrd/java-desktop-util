@@ -19,7 +19,7 @@ package ec.util.desktop.impl;
 import java.io.IOException;
 import java.util.Map;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author Philippe Charles

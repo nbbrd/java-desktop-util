@@ -26,7 +26,7 @@ import java.awt.Toolkit;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  *

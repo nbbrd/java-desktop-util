@@ -23,7 +23,7 @@ import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComponent;
 import javax.swing.ListSelectionModel;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  *

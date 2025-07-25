@@ -27,7 +27,7 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.table.TableCellRenderer;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Improved JTable that adds these functionalities: <li>alternate background for

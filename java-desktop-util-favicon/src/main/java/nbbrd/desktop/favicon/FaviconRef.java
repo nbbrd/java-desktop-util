@@ -1,7 +1,7 @@
 package nbbrd.desktop.favicon;
 
 import lombok.NonNull;
-import org.checkerframework.checker.index.qual.NonNegative;
+import nbbrd.design.NonNegative;
 
 import java.util.Optional;
 

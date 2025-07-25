@@ -17,7 +17,7 @@
 
 module nbbrd.desktop.os {
     requires static lombok;
-    requires static org.checkerframework.checker.qual;
+    requires static org.jspecify;
     requires static nbbrd.service;
 
     requires java.desktop;
