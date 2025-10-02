@@ -57,6 +57,10 @@ public class FileAutoCompletionSource implements AutoCompletionSource {
 
     @Override
     public @NonNull List<File> getValues(final @NonNull String term) throws IOException {
+        if (term.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         // case 1: absolute path
         try {
             Path file = Paths.get(term);
