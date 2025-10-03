@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix JDK25 file listing on blank filename [#504](https://github.com/nbbrd/java-desktop-util/issues/504)
+
 ## [2.5.0] - 2025-07-10
 
 ### Added
