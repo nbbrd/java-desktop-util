@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Auto highlight single obs in charts [#528](https://github.com/nbbrd/java-desktop-util/issues/528)
+- Ignore missing values in line charts [#529](https://github.com/nbbrd/java-desktop-util/issues/529)
 
 ### Fixed
 

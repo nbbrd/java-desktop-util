@@ -621,12 +621,16 @@ public final class JTimeSeriesChartDemo extends JPanel {
                 TimeSeries ts = new TimeSeries(i);
                 for (int j = 0; j < values[i].length; j++) {
                     cal.setTimeInMillis(start);
-                    ts.add(new TimeSeriesDataItem(freq.getPeriodAt(cal, j), values[i][j]));
+                        ts.add(new TimeSeriesDataItem(freq.getPeriodAt(cal, j), isNaN(j) ? Double.NaN : values[i][j]));
                 }
                 dataset.addSeries(ts);
             }
 
             chart.setDataset(dataset);
+        }
+
+        private boolean isNaN(int obsIndex) {
+            return obsIndex % 7 == 5 || obsIndex % 7 == 6;
         }
 
         static double[][] getValues(int series, int obs, Random rng, long startTimeMillis) {
