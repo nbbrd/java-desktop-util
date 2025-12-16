@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Auto highlight single obs in charts [#528](https://github.com/nbbrd/java-desktop-util/issues/528)
+
 ### Fixed
 
 - Fix JDK25 file listing on blank filename [#504](https://github.com/nbbrd/java-desktop-util/issues/504)

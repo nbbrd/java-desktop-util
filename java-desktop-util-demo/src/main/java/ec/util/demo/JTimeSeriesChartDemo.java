@@ -31,8 +31,8 @@ import ec.util.various.swing.JCommand;
 import internal.SpinningIcon;
 import internal.chart.ColorSchemeLoader;
 import lombok.NonNull;
-import org.jspecify.annotations.Nullable;
 import org.jfree.data.time.*;
+import org.jspecify.annotations.Nullable;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.kordamp.ikonli.swing.FontIcon;
 
@@ -103,9 +103,9 @@ public final class JTimeSeriesChartDemo extends JPanel {
 
         chart.setComponentPopupMenu(newMenu().getPopupMenu());
 
-        seriesState.withPlotIndex(0, 0, 0, 1);
-        seriesState.withRendererType(0, RendererType.LINE, RendererType.LINE, RendererType.COLUMN);
-        new RandomDataCommand(Freq.MONTHLY).executeSafely(chart);
+        seriesState.setPlotIndex(0, 0, 0, 1);
+        seriesState.setRendererType(0, RendererType.LINE, RendererType.LINE, RendererType.COLUMN);
+        new RandomDataCommand(Freq.MONTHLY, 3, 24).executeSafely(chart);
         chart.setColorSchemeSupport(SwingColorSchemeSupport.from(new AndroidColorScheme.AndroidDarkColorScheme()));
         chart.setLineThickness(2);
         chart.setMouseWheelEnabled(true);
@@ -161,8 +161,9 @@ public final class JTimeSeriesChartDemo extends JPanel {
         JMenu item;
 
         item = new JMenu("Data");
-        item.add(new RandomDataCommand(Freq.MONTHLY).toAction(chart)).setText("Monthly random data");
-        item.add(new RandomDataCommand(Freq.DAILY).toAction(chart)).setText("Daily random data");
+        item.add(new RandomDataCommand(Freq.MONTHLY, 3, 24).toAction(chart)).setText("Monthly random data");
+        item.add(new RandomDataCommand(Freq.DAILY, 3, 24).toAction(chart)).setText("Daily random data");
+        item.add(new RandomDataCommand(Freq.MONTHLY, 3, 1).toAction(chart)).setText("Single obs data");
         item.add(applyDataset(SomeTimeSeries.getCol1()).toAction(chart)).setText("AutoRangeIncludesZero?");
         result.add(item);
 
@@ -343,7 +344,7 @@ public final class JTimeSeriesChartDemo extends JPanel {
 
         @Override
         protected void putValue(int series) {
-            seriesState.withPlotIndex(series, value);
+            seriesState.setPlotIndex(series, value);
         }
 
         @Override
@@ -360,7 +361,7 @@ public final class JTimeSeriesChartDemo extends JPanel {
 
         @Override
         protected void putValue(int series) {
-            seriesState.withRendererType(series, value);
+            seriesState.setRendererType(series, value);
         }
 
         @Override
@@ -377,7 +378,7 @@ public final class JTimeSeriesChartDemo extends JPanel {
 
         @Override
         protected void putValue(int series) {
-            seriesState.withKnownColor(series, value);
+            seriesState.setKnownColor(series, value);
         }
     }
 
@@ -418,34 +419,26 @@ public final class JTimeSeriesChartDemo extends JPanel {
 
         private final Map<Integer, Map<Class<?>, Object>> data = new HashMap<>();
 
-        public SeriesState withPlotIndex(int series, int... list) {
+        public void setPlotIndex(int series, int... list) {
             for (int i = 0; i < list.length; i++) {
                 putValue(series + i, Integer.class, list[i]);
             }
-            return this;
         }
 
-        public SeriesState withRendererType(int series, RendererType... list) {
+        public void setRendererType(int series, RendererType... list) {
             for (int i = 0; i < list.length; i++) {
                 putValue(series + i, RendererType.class, list[i]);
             }
-            return this;
         }
 
-        public SeriesState withKnownColor(int series, ColorScheme.KnownColor... list) {
+        public void setKnownColor(int series, ColorScheme.KnownColor... list) {
             for (int i = 0; i < list.length; i++) {
                 putValue(series + i, ColorScheme.KnownColor.class, list[i]);
             }
-            return this;
         }
 
         private <X> void putValue(int series, @NonNull Class<X> clazz, @Nullable X value) {
-            Map<Class<?>, Object> tmp = data.get(series);
-            if (tmp == null) {
-                tmp = new HashMap<>();
-                data.put(series, tmp);
-            }
-            tmp.put(clazz, value);
+            data.computeIfAbsent(series, k -> new HashMap<>()).put(clazz, value);
         }
 
         @Nullable
@@ -608,6 +601,8 @@ public final class JTimeSeriesChartDemo extends JPanel {
         final Calendar cal = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault(Locale.Category.DISPLAY));
 
         final Freq freq;
+        final int seriesCount;
+        final int obsCount;
 
         @Override
         public void execute(@NonNull JTimeSeriesChart chart) {
@@ -621,7 +616,7 @@ public final class JTimeSeriesChartDemo extends JPanel {
             long start = cal.getTimeInMillis();
             TimeSeriesCollection dataset = new TimeSeriesCollection();
             dataset.setXPosition(TimePeriodAnchor.MIDDLE);
-            double[][] values = getValues(3, 24, random, start);
+            double[][] values = getValues(seriesCount, obsCount, random, start);
             for (int i = 0; i < values.length; i++) {
                 TimeSeries ts = new TimeSeries(i);
                 for (int j = 0; j < values[i].length; j++) {
@@ -634,7 +629,7 @@ public final class JTimeSeriesChartDemo extends JPanel {
             chart.setDataset(dataset);
         }
 
-        double[][] getValues(int series, int obs, Random rng, long startTimeMillis) {
+        static double[][] getValues(int series, int obs, Random rng, long startTimeMillis) {
             double[][] result = new double[series][obs];
             for (int i = 0; i < series; i++) {
                 for (int j = 0; j < obs; j++) {
