@@ -691,7 +691,7 @@ public final class JGrid extends AGrid {
         private GridUIResource gridResource;
 
         public HeaderRenderer() {
-            this.renderer = new DefaultTableCellRenderer();
+            this.renderer = new JLabel();
             this.renderer.setOpaque(true);
             this.gridResource = null;
             UIManager.addPropertyChangeListener(evt -> gridResource = null);
