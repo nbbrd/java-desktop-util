@@ -23,7 +23,7 @@ import internal.Colors;
 import lombok.NonNull;
 import nbbrd.design.MightBePromoted;
 import nbbrd.design.SealedType;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -691,7 +691,7 @@ public final class JGrid extends AGrid {
         private GridUIResource gridResource;
 
         public HeaderRenderer() {
-            this.renderer = new DefaultTableCellRenderer();
+            this.renderer = new JLabel();
             this.renderer.setOpaque(true);
             this.gridResource = null;
             UIManager.addPropertyChangeListener(evt -> gridResource = null);

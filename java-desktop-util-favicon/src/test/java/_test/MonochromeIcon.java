@@ -1,7 +1,7 @@
 package _test;
 
 import lombok.NonNull;
-import org.checkerframework.checker.index.qual.NonNegative;
+import nbbrd.design.NonNegative;
 
 import javax.swing.*;
 import java.awt.*;

@@ -36,7 +36,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
 import static javax.swing.TransferHandler.MOVE;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  *

@@ -36,7 +36,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A command pattern that targets Swing components. It is similar to the

@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Defines a function to apply on a series. A series is identified by its own

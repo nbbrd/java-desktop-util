@@ -19,7 +19,7 @@ package ec.util.desktop.impl;
 import ec.util.desktop.Desktop;
 import lombok.NonNull;
 import nbbrd.service.ServiceProvider;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;

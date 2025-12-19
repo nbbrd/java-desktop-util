@@ -27,8 +27,8 @@ import nbbrd.desktop.favicon.*;
 import nbbrd.desktop.favicon.spi.FaviconSupplier;
 import nbbrd.desktop.favicon.spi.FaviconSupplierLoader;
 import nl.altindag.ssl.SSLFactory;
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import nbbrd.design.NonNegative;
+import org.jspecify.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import javax.net.ssl.HttpsURLConnection;

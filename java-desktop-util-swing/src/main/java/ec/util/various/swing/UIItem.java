@@ -18,7 +18,7 @@ package ec.util.various.swing;
 
 import java.util.Optional;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  *

@@ -6,7 +6,7 @@ import nbbrd.design.swing.OnAnyThread;
 import nbbrd.design.swing.OnEDT;
 import nbbrd.desktop.favicon.spi.FaviconSupplier;
 import nbbrd.desktop.favicon.spi.FaviconSupplierLoader;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;

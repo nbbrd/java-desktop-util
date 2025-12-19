@@ -22,7 +22,7 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.EnumSet;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Defines the features of a time series chart.

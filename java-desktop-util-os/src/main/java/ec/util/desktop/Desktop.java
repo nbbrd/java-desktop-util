@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.net.URI;
 import nbbrd.service.ServiceDefinition;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * This interface is the main user entry point of the Desktop API. The real work

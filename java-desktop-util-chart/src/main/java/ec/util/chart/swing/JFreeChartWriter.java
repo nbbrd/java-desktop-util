@@ -23,7 +23,7 @@ import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
 import nbbrd.service.ServiceProvider;
-import org.checkerframework.checker.index.qual.NonNegative;
+import nbbrd.design.NonNegative;
 import lombok.NonNull;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;

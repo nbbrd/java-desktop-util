@@ -1,43 +1,22 @@
 /*
  * Copyright 2013 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.util.chart.swing;
 
 import ec.util.chart.TimeSeriesChart.RendererType;
-import static ec.util.chart.TimeSeriesChart.RendererType.AREA;
-import static ec.util.chart.TimeSeriesChart.RendererType.COLUMN;
-import static ec.util.chart.TimeSeriesChart.RendererType.LINE;
-import static ec.util.chart.TimeSeriesChart.RendererType.MARKER;
-import static ec.util.chart.TimeSeriesChart.RendererType.SPLINE;
-import static ec.util.chart.TimeSeriesChart.RendererType.STACKED_AREA;
-import static ec.util.chart.TimeSeriesChart.RendererType.STACKED_COLUMN;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.Polygon;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
-import java.util.EnumSet;
 import lombok.NonNull;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.block.LabelBlock;
@@ -48,17 +27,18 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.AbstractRenderer;
-import org.jfree.chart.renderer.xy.StackedXYAreaRenderer2;
-import org.jfree.chart.renderer.xy.StackedXYBarRenderer;
-import org.jfree.chart.renderer.xy.StandardXYBarPainter;
-import org.jfree.chart.renderer.xy.XYAreaRenderer2;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.chart.renderer.xy.XYItemRendererState;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.chart.renderer.xy.XYSplineRenderer;
+import org.jfree.chart.renderer.xy.*;
+import org.jfree.chart.util.LineUtilities;
 import org.jfree.data.Range;
 import org.jfree.data.xy.XYDataset;
+import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.Size2D;
+
+import java.awt.*;
+import java.awt.geom.*;
+import java.util.EnumSet;
+
+import static ec.util.chart.TimeSeriesChart.RendererType.*;
 
 /**
  *
@@ -145,6 +125,9 @@ public abstract class JTimeSeriesRendererSupport implements XYItemLabelGenerator
 
         protected final JTimeSeriesRendererSupport support;
 
+        @lombok.Getter
+        private boolean ignoreMissingValues = false;
+
         public LineRenderer(JTimeSeriesRendererSupport support) {
             this.support = support;
             setBaseItemLabelsVisible(true);
@@ -156,6 +139,12 @@ public abstract class JTimeSeriesRendererSupport implements XYItemLabelGenerator
             setUseFillPaint(true);
             setLegendItemLabelGenerator(support);
             setBaseItemLabelGenerator(support);
+            setIgnoreMissingValues(true);
+        }
+
+        public void setIgnoreMissingValues(boolean ignoreMissingValues) {
+            this.ignoreMissingValues = ignoreMissingValues;
+            fireChangeEvent();
         }
 
         @Override
@@ -234,6 +223,71 @@ public abstract class JTimeSeriesRendererSupport implements XYItemLabelGenerator
                 double transX1 = domainAxis.valueToJava2D(x1, dataArea, plot.getDomainAxisEdge());
                 double transY1 = rangeAxis.valueToJava2D(y1, dataArea, plot.getRangeAxisEdge());
                 support.drawItemLabel(g2, dataset, series, item, transX1, transY1);
+            }
+        }
+
+        @Override
+        protected void drawPrimaryLine(XYItemRendererState state, Graphics2D g2, XYPlot plot, XYDataset dataset, int pass, int series, int item, ValueAxis domainAxis, ValueAxis rangeAxis, Rectangle2D dataArea) {
+            if (isIgnoreMissingValues()) {
+                if (item == 0) {
+                    return;
+                }
+
+                int ignoreNaNIndex;
+
+                // get the data point...
+                double x1;
+                double y1;
+                ignoreNaNIndex = 0;
+                do {
+                    x1 = dataset.getXValue(series, item + ignoreNaNIndex);
+                    y1 = dataset.getYValue(series, item + ignoreNaNIndex);
+                    ignoreNaNIndex++;
+                } while (ignoreNaNIndex < dataset.getItemCount(series) && (Double.isNaN(y1) || Double.isNaN(x1)));
+                if (Double.isNaN(y1) || Double.isNaN(x1)) {
+                    return;
+                }
+
+                double x0;
+                double y0;
+                ignoreNaNIndex = item;
+                do {
+                    x0 = dataset.getXValue(series, ignoreNaNIndex - 1);
+                    y0 = dataset.getYValue(series, ignoreNaNIndex - 1);
+                    ignoreNaNIndex--;
+                } while (ignoreNaNIndex > 0 && (Double.isNaN(y0) || Double.isNaN(x0)));
+                if (Double.isNaN(y0) || Double.isNaN(x0)) {
+                    return;
+                }
+
+                RectangleEdge xAxisLocation = plot.getDomainAxisEdge();
+                RectangleEdge yAxisLocation = plot.getRangeAxisEdge();
+
+                double transX0 = domainAxis.valueToJava2D(x0, dataArea, xAxisLocation);
+                double transY0 = rangeAxis.valueToJava2D(y0, dataArea, yAxisLocation);
+
+                double transX1 = domainAxis.valueToJava2D(x1, dataArea, xAxisLocation);
+                double transY1 = rangeAxis.valueToJava2D(y1, dataArea, yAxisLocation);
+
+                // only draw if we have good values
+                if (Double.isNaN(transX0) || Double.isNaN(transY0)
+                        || Double.isNaN(transX1) || Double.isNaN(transY1)) {
+                    return;
+                }
+
+                PlotOrientation orientation = plot.getOrientation();
+                boolean visible;
+                if (orientation == PlotOrientation.HORIZONTAL) {
+                    state.workingLine.setLine(transY0, transX0, transY1, transX1);
+                } else if (orientation == PlotOrientation.VERTICAL) {
+                    state.workingLine.setLine(transX0, transY0, transX1, transY1);
+                }
+                visible = LineUtilities.clipLine(state.workingLine, dataArea);
+                if (visible) {
+                    drawFirstPassShape(g2, pass, series, item, state.workingLine);
+                }
+            } else {
+                super.drawPrimaryLine(state, g2, plot, dataset, pass, series, item, domainAxis, rangeAxis, dataArea);
             }
         }
 

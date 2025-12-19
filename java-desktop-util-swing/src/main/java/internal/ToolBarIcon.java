@@ -24,7 +24,7 @@ import javax.swing.JToolBar;
 import javax.swing.UIManager;
 
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  *

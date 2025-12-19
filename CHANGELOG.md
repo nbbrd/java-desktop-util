@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.0] - 2025-12-19
+
+### Added
+
+- Auto highlight single obs in charts [#528](https://github.com/nbbrd/java-desktop-util/issues/528)
+- Ignore missing values in line charts [#529](https://github.com/nbbrd/java-desktop-util/issues/529)
+
+### Fixed
+
+- Fix JDK25 file listing on blank filename [#504](https://github.com/nbbrd/java-desktop-util/issues/504)
+- Fix JGrid column header colors [#473](https://github.com/nbbrd/java-desktop-util/issues/473)
+
 ## [2.5.0] - 2025-07-10
 
 ### Added
@@ -123,7 +135,8 @@ java-desktop-util follows [semantic versioning](https://semver.org/).
 
 - JDK11 cleanup
 
-[Unreleased]: https://github.com/nbbrd/java-desktop-util/compare/v2.5.0...HEAD
+[Unreleased]: https://github.com/nbbrd/java-desktop-util/compare/v2.6.0...HEAD
+[2.6.0]: https://github.com/nbbrd/java-desktop-util/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/nbbrd/java-desktop-util/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/nbbrd/java-desktop-util/compare/v2.3.2...v2.4.0
 [2.3.2]: https://github.com/nbbrd/java-desktop-util/compare/v2.3.1...v2.3.2

@@ -24,7 +24,7 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A specialized renderer used by JAutoCompletion that highlights terms.

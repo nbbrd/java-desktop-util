@@ -35,7 +35,7 @@ import java.util.Random;
 import java.util.TimeZone;
 import javax.swing.JOptionPane;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jfree.data.time.Month;
 import org.jfree.data.time.TimePeriodAnchor;
 import org.jfree.data.time.TimeSeries;

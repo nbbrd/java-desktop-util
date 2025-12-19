@@ -32,7 +32,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.Timer;
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  *

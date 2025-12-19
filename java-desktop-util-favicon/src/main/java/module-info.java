@@ -2,7 +2,7 @@
 module nbbrd.desktop.favicon {
 
     requires static lombok;
-    requires static org.checkerframework.checker.qual;
+    requires static org.jspecify;
     requires static nbbrd.design;
     requires static nbbrd.service;
 

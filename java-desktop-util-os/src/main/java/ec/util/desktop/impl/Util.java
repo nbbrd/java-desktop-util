@@ -17,7 +17,7 @@
 package ec.util.desktop.impl;
 
 import lombok.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.io.*;
 import java.nio.charset.Charset;
