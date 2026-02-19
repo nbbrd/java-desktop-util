@@ -230,34 +230,36 @@ public abstract class JTimeSeriesRendererSupport implements XYItemLabelGenerator
         protected void drawPrimaryLine(XYItemRendererState state, Graphics2D g2, XYPlot plot, XYDataset dataset, int pass, int series, int item, ValueAxis domainAxis, ValueAxis rangeAxis, Rectangle2D dataArea) {
             if (isIgnoreMissingValues()) {
                 if (item == 0) {
-                    return;
+                    return; // first value has no predecessor
                 }
 
-                int ignoreNaNIndex;
-
-                // get the data point...
-                double x1;
-                double y1;
-                ignoreNaNIndex = 0;
-                do {
-                    x1 = dataset.getXValue(series, item + ignoreNaNIndex);
-                    y1 = dataset.getYValue(series, item + ignoreNaNIndex);
-                    ignoreNaNIndex++;
-                } while (ignoreNaNIndex < dataset.getItemCount(series) && (Double.isNaN(y1) || Double.isNaN(x1)));
-                if (Double.isNaN(y1) || Double.isNaN(x1)) {
-                    return;
+                // get the data point starting with Y value as X usually represents time
+                double y1 = dataset.getYValue(series, item);
+                if (Double.isNaN(y1)) {
+                    return; // no data point -> fail fast
+                }
+                double x1 = dataset.getXValue(series, item);
+                if (Double.isNaN(x1)) {
+                    return; // no data point -> fail fast
                 }
 
-                double x0;
+                // get previous data point starting with Y value as X usually represents time
                 double y0;
-                ignoreNaNIndex = item;
-                do {
-                    x0 = dataset.getXValue(series, ignoreNaNIndex - 1);
-                    y0 = dataset.getYValue(series, ignoreNaNIndex - 1);
-                    ignoreNaNIndex--;
-                } while (ignoreNaNIndex > 0 && (Double.isNaN(y0) || Double.isNaN(x0)));
-                if (Double.isNaN(y0) || Double.isNaN(x0)) {
-                    return;
+                double x0;
+                if (Double.isNaN(y0 = dataset.getYValue(series, item - 1))
+                        || Double.isNaN(x0 = dataset.getXValue(series, item - 1))) {
+                    // walk back to previous non-NaN data point
+                    x0 = Double.NaN;
+                    for (int index = item - 2; index >= 0; index--) {
+                        if (Double.isNaN(y0 = dataset.getYValue(series, index))
+                                || Double.isNaN(x0 = dataset.getXValue(series, index))) {
+                            continue;
+                        }
+                        break;
+                    }
+                    if (Double.isNaN(y0) || Double.isNaN(x0)) {
+                        return; // no previous data point -> give up
+                    }
                 }
 
                 RectangleEdge xAxisLocation = plot.getDomainAxisEdge();

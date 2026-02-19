@@ -6,7 +6,7 @@
 
     <groupId>com.github.nbbrd.java-desktop-util</groupId>
     <artifactId>java-desktop-util-parent</artifactId>
-    <version>2.6.0</version>
+    <version>2.6.1</version>
     <packaging>pom</packaging>
 
     <name>java-desktop-util</name>
@@ -39,7 +39,7 @@
     <properties>
         <!-- Java 8+ config -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.outputTimestamp>2025-12-19T13:40:51Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2026-02-19T13:48:24Z</project.build.outputTimestamp>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
         <requiredMavenVersion>3.9.11</requiredMavenVersion>
@@ -89,14 +89,14 @@
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>6.0.1</version>
+                <version>6.0.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>3.27.6</version>
+                <version>3.27.7</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -113,7 +113,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.14.1</version>
+                    <version>3.15.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -149,7 +149,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.9.0</version>
+                    <version>3.10.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -194,7 +194,7 @@
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
-                    <version>0.9.0</version>
+                    <version>0.10.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
@@ -204,7 +204,7 @@
                 <plugin>
                     <groupId>org.jreleaser</groupId>
                     <artifactId>jreleaser-maven-plugin</artifactId>
-                    <version>1.21.0</version>
+                    <version>1.22.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -670,6 +670,18 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+
+        <!-- Skip all checks for local builds -->
+        <profile>
+            <id>yolo</id>
+            <properties>
+                <enforcer.skip>true</enforcer.skip>
+                <modernizer.skip>true</modernizer.skip>
+                <forbiddenapis.skip>true</forbiddenapis.skip>
+                <jacoco.skip>true</jacoco.skip>
+                <heylogs.skip>true</heylogs.skip>
+            </properties>
         </profile>
     </profiles>
 </project>
