@@ -455,7 +455,7 @@ public final class Charts {
     }
 
     public static void writeChart(@NonNull String mediaType, @NonNull OutputStream stream, @NonNull JFreeChart chart, @NonNegative int width, @NonNegative int height) throws IOException {
-        for (JFreeChartWriter writer : JFreeChartWriterLoader.get()) {
+        for (JFreeChartWriter writer : JFreeChartWriterLoader.load()) {
             if (mediaType.equals(writer.getMediaType())) {
                 writer.writeChart(stream, chart, width, height);
                 return;

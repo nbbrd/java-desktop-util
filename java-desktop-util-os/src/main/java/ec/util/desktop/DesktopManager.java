@@ -1,17 +1,17 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.util.desktop;
@@ -19,15 +19,14 @@ package ec.util.desktop;
 import ec.util.desktop.Desktop.Factory;
 import ec.util.desktop.Desktop.Factory.SupportType;
 import ec.util.desktop.impl.DesktopFactoryLoader;
-import ec.util.desktop.impl.DesktopFactoryProc;
+import lombok.NonNull;
+
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-import lombok.NonNull;
 
 /**
  * The DesktopManager is a utility class that allows you to retrieve a suitable
@@ -40,10 +39,10 @@ import lombok.NonNull;
  * factories are available at runtime, this utility will choose the one that
  * offers the best support.
  *
+ * @author Philippe Charles
  * @see ServiceLoader
  * @see Factory
  * @see SupportType
- * @author Philippe Charles
  */
 public final class DesktopManager {
 
@@ -59,7 +58,7 @@ public final class DesktopManager {
     public static synchronized Desktop get() {
         if (DESKTOP == null) {
             try {
-                DESKTOP = load(new DesktopFactoryLoader().get());
+                DESKTOP = load(DesktopFactoryLoader.load());
             } catch (java.util.ServiceConfigurationError ex) {
                 LOGGER.log(Level.SEVERE, "While loading factories", ex);
                 DESKTOP = new NoOpDesktop();
@@ -91,8 +90,16 @@ public final class DesktopManager {
     @Deprecated
     public static Desktop load(@NonNull Iterable<? extends Factory> factories) {
         Objects.requireNonNull(factories, "factories");
-        Stream<Factory> stream = StreamSupport.stream(factories.spliterator(), false).map(Factory.class::cast);
-        return load(DesktopFactoryProc.INSTANCE.apply(stream).findFirst());
+        return load(DesktopFactoryLoader
+                .builder()
+                .backend(
+                        type -> factories,
+                        Function.identity(),
+                        ignore -> {
+                        }
+                )
+                .build()
+                .get());
     }
 
     private static Desktop load(Optional<Factory> bestFactory) {
