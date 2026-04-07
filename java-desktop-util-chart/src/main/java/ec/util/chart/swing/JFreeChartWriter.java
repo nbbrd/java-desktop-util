@@ -16,17 +16,17 @@
  */
 package ec.util.chart.swing;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.zip.GZIPOutputStream;
-import nbbrd.service.Mutability;
+import lombok.NonNull;
+import nbbrd.design.NonNegative;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
 import nbbrd.service.ServiceProvider;
-import nbbrd.design.NonNegative;
-import lombok.NonNull;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  *
@@ -34,9 +34,7 @@ import org.jfree.chart.JFreeChart;
  * @since 2.1.0
  */
 @ServiceDefinition(
-        singleton = true,
         quantifier = Quantifier.MULTIPLE,
-        mutability = Mutability.CONCURRENT,
         loaderName = "internal.chart.swing.JFreeChartWriterLoader"
 )
 public abstract class JFreeChartWriter {

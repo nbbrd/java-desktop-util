@@ -1,28 +1,30 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.util.desktop;
 
-import ec.util.desktop.impl.DesktopFactoryProc;
+import lombok.NonNull;
+import nbbrd.service.ServiceDefinition;
+import nbbrd.service.ServiceFilter;
+import nbbrd.service.ServiceSorter;
+import org.jspecify.annotations.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import nbbrd.service.ServiceDefinition;
-import lombok.NonNull;
-import org.jspecify.annotations.Nullable;
 
 /**
  * This interface is the main user entry point of the Desktop API. The real work
@@ -30,9 +32,9 @@ import org.jspecify.annotations.Nullable;
  * You can instantiate a concrete implementation but this work is already done
  * by the {@link DesktopManager} class through the use of {@link Factory}.
  *
+ * @author Philippe Charles
  * @see DesktopManager
  * @see Factory
- * @author Philippe Charles
  */
 public interface Desktop {
 
@@ -143,17 +145,17 @@ public interface Desktop {
      * platform is launched to open it.
      *
      * @param file the file to be opened with the associated application
-     * @throws NullPointerException if {@code file} is {@code null}
-     * @throws IllegalArgumentException if the specified file doesn't exist
+     * @throws NullPointerException          if {@code file} is {@code null}
+     * @throws IllegalArgumentException      if the specified file doesn't exist
      * @throws UnsupportedOperationException if the current platform does not
-     * support the {@link Desktop.Action#OPEN} action
-     * @throws IOException if the specified file has no associated application
-     * or the associated application fails to be launched
-     * @throws SecurityException if a security manager exists and its
-     * {@link java.lang.SecurityManager#checkRead(java.lang.String)} method
-     * denies read access to the file, or it denies the
-     * <code>AWTPermission("showWindowWithoutWarningBanner")</code> permission,
-     * or the calling thread is not allowed to create a subprocess
+     *                                       support the {@link Desktop.Action#OPEN} action
+     * @throws IOException                   if the specified file has no associated application
+     *                                       or the associated application fails to be launched
+     * @throws SecurityException             if a security manager exists and its
+     *                                       {@link java.lang.SecurityManager#checkRead(java.lang.String)} method
+     *                                       denies read access to the file, or it denies the
+     *                                       <code>AWTPermission("showWindowWithoutWarningBanner")</code> permission,
+     *                                       or the calling thread is not allowed to create a subprocess
      * @see java.awt.AWTPermission
      */
     void open(@NonNull File file) throws IOException;
@@ -162,19 +164,19 @@ public interface Desktop {
      * Launches the associated editor application and opens a file for editing.
      *
      * @param file the file to be opened for editing
-     * @throws NullPointerException if the specified file is {@code null}
-     * @throws IllegalArgumentException if the specified file doesn't exist
+     * @throws NullPointerException          if the specified file is {@code null}
+     * @throws IllegalArgumentException      if the specified file doesn't exist
      * @throws UnsupportedOperationException if the current platform does not
-     * support the {@link Desktop.Action#EDIT} action
-     * @throws IOException if the specified file has no associated editor, or
-     * the associated application fails to be launched
-     * @throws SecurityException if a security manager exists and its
-     * {@link java.lang.SecurityManager#checkRead(java.lang.String)} method
-     * denies read access to the file, or {@link
-     * java.lang.SecurityManager#checkWrite(java.lang.String)} method denies
-     * write access to the file, or it denies the
-     * <code>AWTPermission("showWindowWithoutWarningBanner")</code> permission,
-     * or the calling thread is not allowed to create a subprocess
+     *                                       support the {@link Desktop.Action#EDIT} action
+     * @throws IOException                   if the specified file has no associated editor, or
+     *                                       the associated application fails to be launched
+     * @throws SecurityException             if a security manager exists and its
+     *                                       {@link java.lang.SecurityManager#checkRead(java.lang.String)} method
+     *                                       denies read access to the file, or {@link
+     *                                       java.lang.SecurityManager#checkWrite(java.lang.String)} method denies
+     *                                       write access to the file, or it denies the
+     *                                       <code>AWTPermission("showWindowWithoutWarningBanner")</code> permission,
+     *                                       or the calling thread is not allowed to create a subprocess
      * @see java.awt.AWTPermission
      */
     void edit(@NonNull File file) throws IOException;
@@ -184,19 +186,19 @@ public interface Desktop {
      * associated application's print command.
      *
      * @param file the file to be printed
-     * @throws NullPointerException if the specified file is {@code
-     * null}
-     * @throws IllegalArgumentException if the specified file doesn't exist
+     * @throws NullPointerException          if the specified file is {@code
+     *                                       null}
+     * @throws IllegalArgumentException      if the specified file doesn't exist
      * @throws UnsupportedOperationException if the current platform does not
-     * support the {@link Desktop.Action#PRINT} action
-     * @throws IOException if the specified file has no associated application
-     * that can be used to print it
-     * @throws SecurityException if a security manager exists and its
-     * {@link java.lang.SecurityManager#checkRead(java.lang.String)} method
-     * denies read access to the file, or its {@link
-     * java.lang.SecurityManager#checkPrintJobAccess()} method denies the
-     * permission to print the file, or the calling thread is not allowed to
-     * create a subprocess
+     *                                       support the {@link Desktop.Action#PRINT} action
+     * @throws IOException                   if the specified file has no associated application
+     *                                       that can be used to print it
+     * @throws SecurityException             if a security manager exists and its
+     *                                       {@link java.lang.SecurityManager#checkRead(java.lang.String)} method
+     *                                       denies read access to the file, or its {@link
+     *                                       java.lang.SecurityManager#checkPrintJobAccess()} method denies the
+     *                                       permission to print the file, or the calling thread is not allowed to
+     *                                       create a subprocess
      */
     void print(@NonNull File file) throws IOException;
 
@@ -214,17 +216,17 @@ public interface Desktop {
      * {@code BasicService.showDocument()} is used.
      *
      * @param uri the URI to be displayed in the user default browser
-     * @throws NullPointerException if {@code uri} is {@code null}
+     * @throws NullPointerException          if {@code uri} is {@code null}
      * @throws UnsupportedOperationException if the current platform does not
-     * support the {@link Desktop.Action#BROWSE} action
-     * @throws IOException if the user default browser is not found, or it fails
-     * to be launched, or the default handler application failed to be launched
-     * @throws SecurityException if a security manager exists and it denies the
-     * <code>AWTPermission("showWindowWithoutWarningBanner")</code> permission,
-     * or the calling thread is not allowed to create a subprocess; and not
-     * invoked from within an applet or Java Web Started application
-     * @throws IllegalArgumentException if the necessary permissions are not
-     * available and the URI can not be converted to a {@code URL}
+     *                                       support the {@link Desktop.Action#BROWSE} action
+     * @throws IOException                   if the user default browser is not found, or it fails
+     *                                       to be launched, or the default handler application failed to be launched
+     * @throws SecurityException             if a security manager exists and it denies the
+     *                                       <code>AWTPermission("showWindowWithoutWarningBanner")</code> permission,
+     *                                       or the calling thread is not allowed to create a subprocess; and not
+     *                                       invoked from within an applet or Java Web Started application
+     * @throws IllegalArgumentException      if the necessary permissions are not
+     *                                       available and the URI can not be converted to a {@code URL}
      * @see java.net.URI
      * @see java.awt.AWTPermission
      */
@@ -234,12 +236,12 @@ public interface Desktop {
      * Launches the mail composing window of the user default mail client.
      *
      * @throws UnsupportedOperationException if the current platform does not
-     * support the {@link Desktop.Action#MAIL} action
-     * @throws IOException if the user default mail client is not found, or it
-     * fails to be launched
-     * @throws SecurityException if a security manager exists and it denies the
-     * <code>AWTPermission("showWindowWithoutWarningBanner")</code> permission,
-     * or the calling thread is not allowed to create a subprocess
+     *                                       support the {@link Desktop.Action#MAIL} action
+     * @throws IOException                   if the user default mail client is not found, or it
+     *                                       fails to be launched
+     * @throws SecurityException             if a security manager exists and it denies the
+     *                                       <code>AWTPermission("showWindowWithoutWarningBanner")</code> permission,
+     *                                       or the calling thread is not allowed to create a subprocess
      * @see java.awt.AWTPermission
      */
     void mail() throws IOException;
@@ -257,17 +259,17 @@ public interface Desktop {
      * 2368)</a> for the {@code mailto:} URI specification details.
      *
      * @param mailtoURI the specified {@code mailto:} URI
-     * @throws NullPointerException if the specified URI is {@code
-     * null}
-     * @throws IllegalArgumentException if the URI scheme is not
-     * <code>"mailto"</code>
+     * @throws NullPointerException          if the specified URI is {@code
+     *                                       null}
+     * @throws IllegalArgumentException      if the URI scheme is not
+     *                                       <code>"mailto"</code>
      * @throws UnsupportedOperationException if the current platform does not
-     * support the {@link Desktop.Action#MAIL} action
-     * @throws IOException if the user default mail client is not found or fails
-     * to be launched
-     * @throws SecurityException if a security manager exists and it denies the
-     * <code>AWTPermission("showWindowWithoutWarningBanner")</code> permission,
-     * or the calling thread is not allowed to create a subprocess
+     *                                       support the {@link Desktop.Action#MAIL} action
+     * @throws IOException                   if the user default mail client is not found or fails
+     *                                       to be launched
+     * @throws SecurityException             if a security manager exists and it denies the
+     *                                       <code>AWTPermission("showWindowWithoutWarningBanner")</code> permission,
+     *                                       or the calling thread is not allowed to create a subprocess
      * @see java.net.URI
      * @see java.awt.AWTPermission
      */
@@ -279,9 +281,9 @@ public interface Desktop {
      *
      * @param file the file to be shown
      * @throws UnsupportedOperationException if the current platform does not
-     * support the {@link Desktop.Action#SHOW_IN_FOLDER} action
-     * @throws IOException if the user default file manager is not found or
-     * fails to be launched
+     *                                       support the {@link Desktop.Action#SHOW_IN_FOLDER} action
+     * @throws IOException                   if the user default file manager is not found or
+     *                                       fails to be launched
      */
     void showInFolder(@NonNull File file) throws IOException;
 
@@ -290,8 +292,8 @@ public interface Desktop {
      *
      * @param files the files to be moved to the system trash
      * @throws UnsupportedOperationException if the current platform does not
-     * support the {@link Desktop.Action#MOVE_TO_TRASH} action
-     * @throws IOException if the operation failed
+     *                                       support the {@link Desktop.Action#MOVE_TO_TRASH} action
+     * @throws IOException                   if the operation failed
      */
     void moveToTrash(@NonNull File... files) throws IOException;
 
@@ -301,9 +303,9 @@ public interface Desktop {
      * @param knownFolder
      * @return a <code>File</code> object if the folder has been found and
      * exist, null otherwise
-     * @throws IOException if the operation failed
+     * @throws IOException                   if the operation failed
      * @throws UnsupportedOperationException if the current platform does not
-     * support the {@link Desktop.Action#KNOWN_FOLDER_LOOKUP} action
+     *                                       support the {@link Desktop.Action#KNOWN_FOLDER_LOOKUP} action
      */
     @Nullable
     File getKnownFolderPath(@NonNull KnownFolder knownFolder) throws IOException;
@@ -318,9 +320,9 @@ public interface Desktop {
      * @param query
      * @return a non-null array of files
      * @throws UnsupportedOperationException if the current platform does not
-     * support the {@link Desktop.Action#SEARCH} action
-     * @throws IOException if the user default desktop search engine fails to be
-     * launched
+     *                                       support the {@link Desktop.Action#SEARCH} action
+     * @throws IOException                   if the user default desktop search engine fails to be
+     *                                       launched
      */
     @NonNull
     File[] search(@NonNull String query) throws IOException;
@@ -332,8 +334,7 @@ public interface Desktop {
      * the best Desktop implementation available.
      */
     @ServiceDefinition(
-            loaderName = "ec.util.desktop.impl.DesktopFactoryLoader",
-            preprocessor = DesktopFactoryProc.class
+            loaderName = "ec.util.desktop.impl.DesktopFactoryLoader"
     )
     interface Factory {
 
@@ -346,6 +347,22 @@ public interface Desktop {
             BASIC,
             GENERIC,
             SPECIFIC
+        }
+
+        @ServiceFilter
+        default boolean isSupported() {
+            String osArch = System.getProperty("os.arch");
+            String osName = System.getProperty("os.name");
+            String osVersion = System.getProperty("os.version");
+            return !getSupportType(osArch, osName, osVersion).equals(SupportType.NONE);
+        }
+
+        @ServiceSorter(reverse = true)
+        default @NonNull SupportType getSupportType() {
+            String osArch = System.getProperty("os.arch");
+            String osName = System.getProperty("os.name");
+            String osVersion = System.getProperty("os.version");
+            return getSupportType(osArch, osName, osVersion);
         }
 
         /**
