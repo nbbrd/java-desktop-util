@@ -23,6 +23,7 @@ public final class MainDemo {
         result.add("FontAwesome2", new FontAwesomeDemo2());
         result.add("JAutoCompletion", new JAutoCompletionDemo());
         result.add("JGrid", new JGridDemo());
+        result.add("JMasterDetail", new JMasterDetailDemo());
         result.add("JListOrdering", JListOrderingDemo.create());
         result.add("JListSelection", JListSelectionDemo.create());
         result.add("JTimeSeriesChart", new JTimeSeriesChartDemo());
