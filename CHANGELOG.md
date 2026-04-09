@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix JGrid blank color name on FlatLaf [#558](https://github.com/nbbrd/java-desktop-util/issues/558)
+
 ## [2.6.1] - 2026-02-19
 
 ### Changed
