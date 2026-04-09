@@ -173,7 +173,7 @@ public final class JTimeSeriesChartDemo extends JPanel {
         result.addSeparator();
 
         item = new JMenu("Color scheme");
-        for (ColorScheme o : ColorSchemeLoader.get()) {
+        for (ColorScheme o : ColorSchemeLoader.load()) {
             JMenuItem subItem = item.add(new JCheckBoxMenuItem(applyColorScheme(o).toAction(chart)));
             subItem.setText(o.getDisplayName());
             subItem.setIcon(new ColorSchemeIcon(o));

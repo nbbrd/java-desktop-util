@@ -16,13 +16,13 @@
  */
 package ec.util.chart;
 
-import java.util.List;
-import java.util.Map;
-import nbbrd.service.Mutability;
+import lombok.NonNull;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
-import lombok.NonNull;
 import nbbrd.service.ServiceId;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Defines a color scheme for charts.
@@ -49,9 +49,7 @@ import nbbrd.service.ServiceId;
  * @author Demortier Jeremy
  */
 @ServiceDefinition(
-        singleton = true,
         quantifier = Quantifier.MULTIPLE,
-        mutability = Mutability.CONCURRENT,
         loaderName = "internal.chart.ColorSchemeLoader"
 )
 public interface ColorScheme {

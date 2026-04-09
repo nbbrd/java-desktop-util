@@ -687,12 +687,13 @@ public final class JGrid extends AGrid {
     @SealedType({ColumnRenderer.class, RowRenderer.class, CornerRenderer.class})
     private abstract static class HeaderRenderer implements TableCellRenderer {
 
-        protected final JLabel renderer;
+        protected final LockedLabel renderer;
         private GridUIResource gridResource;
 
         public HeaderRenderer() {
-            this.renderer = new JLabel();
+            this.renderer = new LockedLabel();
             this.renderer.setOpaque(true);
+            this.renderer.setHorizontalAlignment(JLabel.CENTER);
             this.gridResource = null;
             UIManager.addPropertyChangeListener(evt -> gridResource = null);
         }
@@ -718,14 +719,32 @@ public final class JGrid extends AGrid {
             }
             renderer.setFont(table.getFont());
             CellUIResource cellResource = gridResource.get(isHeaderSelected(table, row, column), isHeaderHovered(table, row, column));
+            renderer.lockColors = false;
             renderer.setBackground(cellResource.getBackground());
             renderer.setForeground(cellResource.getForeground());
+            renderer.lockColors = true;
             renderer.setBorder(cellResource.getBorder());
             int preferredHeight = table.getRowHeight() + 1;
             if (renderer.getPreferredSize().height != preferredHeight) {
                 renderer.setPreferredSize(new Dimension(10, preferredHeight));
             }
             return renderer;
+        }
+
+        private static final class LockedLabel extends JLabel {
+
+            // FlatLaf change background and foreground on hover
+            private boolean lockColors = true;
+
+            @Override
+            public void setBackground(Color bg) {
+                if (!lockColors) super.setBackground(bg);
+            }
+
+            @Override
+            public void setForeground(Color fg) {
+                if (!lockColors) super.setForeground(fg);
+            }
         }
     }
 
@@ -735,7 +754,6 @@ public final class JGrid extends AGrid {
 
         public RowRenderer(JGrid grid) {
             this.grid = grid;
-            renderer.setHorizontalAlignment(JLabel.CENTER);
         }
 
         @Override
@@ -755,7 +773,6 @@ public final class JGrid extends AGrid {
 
         public ColumnRenderer(JGrid grid) {
             this.grid = grid;
-            renderer.setHorizontalAlignment(JLabel.CENTER);
         }
 
         @Override
