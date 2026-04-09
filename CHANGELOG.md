@@ -102,7 +102,7 @@ java-desktop-util follows [semantic versioning](https://semver.org/).
 
 ### Changed
 
-- Migration to [Maven-Central](https://search.maven.org/search?q=g:com.github.nbbrd.java-desktop-util)
+- Migration to [Maven-Central](https://search.maven.org)
 - **Breaking change:** Maven groupId is now `com.github.nbbrd.java-desktop-util`
 
 ## [2.2.4] - 2020-05-25
