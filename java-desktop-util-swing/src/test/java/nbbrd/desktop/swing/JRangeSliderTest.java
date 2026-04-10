@@ -1,4 +1,4 @@
-package ec.util.various.swing;
+package nbbrd.desktop.swing;
 
 import org.junit.jupiter.api.Test;
 

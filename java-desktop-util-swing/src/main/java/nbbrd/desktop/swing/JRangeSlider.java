@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-package ec.util.various.swing;
+package nbbrd.desktop.swing;
 
 import lombok.NonNull;
 

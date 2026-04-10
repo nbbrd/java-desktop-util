@@ -2,7 +2,7 @@ package ec.util.demo;
 
 import ec.util.demo.ext.JDemoPane;
 import ec.util.various.swing.BasicSwingLauncher;
-import ec.util.various.swing.JMasterDetail;
+import nbbrd.desktop.swing.JMasterDetail;
 
 import javax.swing.*;
 import java.awt.*;

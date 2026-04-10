@@ -19,7 +19,7 @@ package ec.util.demo;
 import ec.util.demo.ext.JDemoPane;
 import ec.util.various.swing.BasicSwingLauncher;
 import ec.util.various.swing.JCommand;
-import ec.util.various.swing.JMasterDetail;
+import nbbrd.desktop.swing.JMasterDetail;
 import lombok.NonNull;
 
 import javax.swing.*;

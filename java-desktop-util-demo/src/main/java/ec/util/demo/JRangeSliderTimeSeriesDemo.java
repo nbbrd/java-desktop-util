@@ -20,7 +20,7 @@ import ec.util.chart.TimeSeriesChart;
 import ec.util.chart.swing.JTimeSeriesChart;
 import ec.util.demo.ext.JDemoPane;
 import ec.util.various.swing.BasicSwingLauncher;
-import ec.util.various.swing.JRangeSlider;
+import nbbrd.desktop.swing.JRangeSlider;
 import org.jfree.data.time.*;
 
 import javax.swing.*;
