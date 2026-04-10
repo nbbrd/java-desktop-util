@@ -100,6 +100,7 @@ public final class JGrid extends AGrid {
         enableCellHovering();
         enableCellSelection();
         enableProperties();
+        enableFocusOnClick();
 
         setLayout(new BorderLayout());
         add(new JLayer<>(scrollPane, new DropUI()), BorderLayout.CENTER);
@@ -373,6 +374,16 @@ public final class JGrid extends AGrid {
                 case "componentPopupMenu":
                     onComponentPopupMenuChange();
                     break;
+            }
+        });
+    }
+
+    private void enableFocusOnClick() {
+        main.setFocusable(true);
+        scrollPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                main.requestFocusInWindow();
             }
         });
     }

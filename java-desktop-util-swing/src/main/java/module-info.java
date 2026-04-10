@@ -31,4 +31,5 @@ module nbbrd.desktop.swing {
     exports ec.util.list.swing;
     exports ec.util.table.swing;
     exports ec.util.various.swing;
+    exports nbbrd.desktop.swing;
 }
