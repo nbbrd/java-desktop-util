@@ -28,6 +28,7 @@ import ec.util.grid.swing.JGrid;
 import ec.util.various.swing.BasicSwingLauncher;
 import ec.util.various.swing.JCommand;
 import ec.util.various.swing.ModernUI;
+import ec.util.various.swing.TextPrompt;
 import lombok.NonNull;
 import org.jfree.data.time.*;
 import org.jfree.data.xy.IntervalXYDataset;
@@ -57,10 +58,12 @@ public final class JGridDemo extends JPanel {
 
     private final JGrid grid;
     private final JTimeSeriesChart chart;
+    private final JTextField focus;
 
     public JGridDemo() {
         this.grid = new JGrid();
         this.chart = new JTimeSeriesChart();
+        this.focus = new JTextField();
 
         SampleData sampleData = new SampleData();
 
@@ -80,10 +83,13 @@ public final class JGridDemo extends JPanel {
         chart.setCrosshairTrigger(TimeSeriesChart.DisplayTrigger.SELECTION);
         chart.setDataset(sampleData.asDataset());
 
+        new TextPrompt("click here to test grid focus", focus);
+
         enableSync();
 
         setLayout(new BorderLayout());
         add(BorderLayout.CENTER, ModernUI.withEmptyBorders(new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, grid, chart)));
+        add(BorderLayout.SOUTH, focus);
     }
 
     private JMenu createGridMenu() {

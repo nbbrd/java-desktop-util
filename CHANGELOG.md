@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add JMasterDetail component [#559](https://github.com/nbbrd/java-desktop-util/issues/559)
 - Add JRangeSlider component [#560](https://github.com/nbbrd/java-desktop-util/issues/560)
 
+### Fixed
+
+- Fix JGrid focus [#561](https://github.com/nbbrd/java-desktop-util/issues/561)
+
 ## [2.6.2] - 2026-04-09
 
 ### Fixed
