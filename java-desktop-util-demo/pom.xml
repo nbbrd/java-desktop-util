@@ -17,7 +17,7 @@
     <url>https://github.com/nbbrd/java-desktop-util</url>
 
     <properties>
-        <ikonli.version>2.6.0</ikonli.version>
+        <ikonli.version>11.5.0</ikonli.version>
     </properties>
 
     <dependencies>
