@@ -48,15 +48,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Trim terms in JAutoCompletion [#470](https://github.com/nbbrd/java-desktop-util/issues/470)
 
-### Fixed
-
-- Fix dead favicon supplier [#471](https://github.com/nbbrd/java-desktop-util/issues/471)
-- Fix grid colors on flatlaf l&f [#472](https://github.com/nbbrd/java-desktop-util/issues/472)
-
 ### Changed
 
 - Modernize use of NIO API
 - Migrate OSSRH to Central Portal
+
+### Fixed
+
+- Fix dead favicon supplier [#471](https://github.com/nbbrd/java-desktop-util/issues/471)
+- Fix grid colors on flatlaf l&f [#472](https://github.com/nbbrd/java-desktop-util/issues/472)
 
 ## [2.4.0] - 2024-07-09
 
