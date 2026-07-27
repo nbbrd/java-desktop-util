@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -54,7 +56,8 @@ public class WinDesktopTest {
     public static void beforeClass() throws IOException {
         assumeThat(java.awt.Desktop.isDesktopSupported()).isTrue();
 
-        File script = File.createTempFile("search", "");
+        Path tempFile = Files.createTempFile("search", "");
+        File script = tempFile.toFile();
         script.deleteOnExit();
         GOOD = new Input(FakeRegistry.create(), script, new FakeLauncher(), new FakeSearch());
         BAD = new Input(WinRegistry.noOp(), Paths.get("helloworld").toFile(), ZSystem.noOp(), WinSearch.noOp());

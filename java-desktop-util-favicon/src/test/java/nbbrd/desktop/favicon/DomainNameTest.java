@@ -3,7 +3,7 @@ package nbbrd.desktop.favicon;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -13,7 +13,7 @@ public class DomainNameTest {
     public void testOf() throws MalformedURLException {
         assertThatNullPointerException().isThrownBy(() -> DomainName.of(null));
 
-        assertThat(DomainName.of(new URL("https://www.google.com")))
+        assertThat(DomainName.of(URI.create("https://www.google.com").toURL()))
                 .hasToString("www.google.com");
     }
 
