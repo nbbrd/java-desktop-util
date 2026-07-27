@@ -8,8 +8,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.awt.*;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
@@ -40,8 +39,8 @@ public final class FaviconkitSupplier implements FaviconSupplier {
         return NO_FAVICON;
     }
 
-    private static URL getFaviconRequest(FaviconRef ref) throws MalformedURLException {
-        return new URL("https://api.faviconkit.com/" + ref.getDomain() + "/" + ref.getSize());
+    private static URI getFaviconRequest(FaviconRef ref) {
+        return URI.create("https://api.faviconkit.com/" + ref.getDomain() + "/" + ref.getSize());
     }
 
     private static boolean isDefaultFavicon(@Nullable String contentType) {

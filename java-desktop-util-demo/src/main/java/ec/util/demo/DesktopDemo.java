@@ -23,29 +23,10 @@ import ec.util.desktop.MailtoBuilder;
 import ec.util.various.swing.BasicSwingLauncher;
 import ec.util.various.swing.StandardSwingColor;
 import ec.util.various.swing.TextPrompt;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JFileChooser;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
+import org.kordamp.ikonli.materialdesign.MaterialDesign;
+import org.kordamp.ikonli.swing.FontIcon;
+
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -53,8 +34,23 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.kordamp.ikonli.materialdesign.MaterialDesign;
-import org.kordamp.ikonli.swing.FontIcon;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 
 /**
  *
@@ -93,7 +89,8 @@ public final class DesktopDemo extends javax.swing.JPanel {
         jList1.setCellRenderer(new KnownFolderRenderer());
 
         try {
-            sample = File.createTempFile("test", ".txt");
+            Path tempFile = Files.createTempFile("test", ".txt");
+            sample = tempFile.toFile();
             sample.deleteOnExit();
         } catch (IOException ex) {
             reportException(ex);
@@ -407,7 +404,8 @@ public final class DesktopDemo extends javax.swing.JPanel {
 
     private void moveToTrashButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveToTrashButtonActionPerformed
         try {
-            desktop.moveToTrash(File.createTempFile("test", ".txt"));
+            Path tempFile = Files.createTempFile("test", ".txt");
+            desktop.moveToTrash(tempFile.toFile());
         } catch (IOException ex) {
             reportException(ex);
         }

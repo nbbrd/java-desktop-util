@@ -11,16 +11,16 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 import java.net.URLConnection;
 
 @lombok.RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 final class ImageConnection implements Closeable {
 
-    public static @NonNull ImageConnection open(@NonNull URLConnectionFactory factory, @NonNull URL url) throws IOException {
-        URLConnection connection = factory.openConnection(url);
+    public static @NonNull ImageConnection open(@NonNull URLConnectionFactory factory, @NonNull URI uri) throws IOException {
+        URLConnection connection = factory.openConnection(uri.toURL());
         if (!(connection instanceof HttpURLConnection)) {
-            throw new IOException("Invalid url " + url);
+            throw new IOException("Invalid url " + uri);
         }
         connection.connect();
         return new ImageConnection((HttpURLConnection) connection);

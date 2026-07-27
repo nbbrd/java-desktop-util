@@ -16,14 +16,16 @@
  */
 package ec.util.desktop.impl;
 
+import lombok.NonNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.Locale;
-import lombok.NonNull;
 
 /**
  * Facade that allows executing script in Windows Script Host.
@@ -162,10 +164,11 @@ public abstract class WinScriptHost {
 
         @Override
         public @NonNull Process exec(@NonNull String script, @NonNull String language, String... args) throws IOException {
-            File file = File.createTempFile("script", Language.getByName(language).getExtension());
-            file.deleteOnExit();
-            Files.write(file.toPath(), Collections.singleton(script), StandardCharsets.UTF_8, StandardOpenOption.APPEND);
-            return exec(file, args);
+            Path tempFile = Files.createTempFile("script", Language.getByName(language).getExtension());
+            Files.write(tempFile, Collections.singleton(script), StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+            File result = tempFile.toFile();
+            result.deleteOnExit();
+            return exec(result, args);
         }
 
         private enum Language {
