@@ -139,6 +139,10 @@ public final class JMasterDetail extends JPanel {
 
     private void onLayoutChange() {
         removeAll();
+        // components must be detached first: moving a child from one slot to the other
+        // makes JSplitPane.remove() clear the newly assigned slot
+        splitPane.setLeftComponent(null);
+        splitPane.setRightComponent(null);
         if (!detailVisible) {
             add(masterNode, BorderLayout.CENTER);
         } else {
@@ -182,17 +186,11 @@ public final class JMasterDetail extends JPanel {
     }
 
     private void applyDividerPosition() {
-        boolean old = updatingDivider;
-        updatingDivider = true;
-        try {
-            splitPane.setResizeWeight(dividerPosition);
-            // proportional location can only be computed once the split pane has a valid size
-            dividerPending = true;
-            splitPane.revalidate();
-            splitPane.repaint();
-        } finally {
-            updatingDivider = old;
-        }
+        splitPane.setResizeWeight(dividerPosition);
+        // proportional location can only be computed once the split pane has a valid size
+        dividerPending = true;
+        splitPane.revalidate();
+        splitPane.repaint();
     }
 
     // </editor-fold>
@@ -212,8 +210,12 @@ public final class JMasterDetail extends JPanel {
      * Sets the master (primary) node component.
      *
      * @param masterNode non-null component
+     * @throws IllegalArgumentException if the component is the detail node
      */
     public void setMasterNode(@NonNull Component masterNode) {
+        if (masterNode == this.detailNode) {
+            throw new IllegalArgumentException("masterNode must be different from detailNode");
+        }
         Component old = this.masterNode;
         this.masterNode = masterNode;
         firePropertyChange(MASTER_NODE_PROPERTY, old, this.masterNode);
@@ -232,8 +234,12 @@ public final class JMasterDetail extends JPanel {
      * Sets the detail node component.
      *
      * @param detailNode non-null component
+     * @throws IllegalArgumentException if the component is the master node
      */
     public void setDetailNode(@NonNull Component detailNode) {
+        if (detailNode == this.masterNode) {
+            throw new IllegalArgumentException("detailNode must be different from masterNode");
+        }
         Component old = this.detailNode;
         this.detailNode = detailNode;
         firePropertyChange(DETAIL_NODE_PROPERTY, old, this.detailNode);

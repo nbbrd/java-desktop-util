@@ -19,16 +19,18 @@ package ec.util.demo;
 import ec.util.demo.ext.JDemoPane;
 import ec.util.various.swing.BasicSwingLauncher;
 import ec.util.various.swing.JCommand;
-import nbbrd.desktop.swing.JMasterDetail;
-import lombok.NonNull;
-
-import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
+import javax.swing.*;
+import javax.swing.plaf.basic.BasicSplitPaneDivider;
+import lombok.NonNull;
+import nbbrd.desktop.swing.JMasterDetail;
 
 /**
  * Demo for {@link JMasterDetail}.
@@ -51,10 +53,10 @@ public final class JMasterDetailDemo extends JPanel {
         this.masterDetail = new JMasterDetail();
 
         // Master: list of country names
-        JList<String> masterList = new JList<>(new String[]{
-                "Albania", "Belgium", "Croatia", "Denmark", "Estonia",
-                "Finland", "Germany", "Hungary", "Iceland", "Japan",
-                "Kenya", "Luxembourg", "Morocco", "Norway", "Oman"
+        JList<String> masterList = new JList<>(new String[] {
+            "Albania", "Belgium", "Croatia", "Denmark", "Estonia",
+            "Finland", "Germany", "Hungary", "Iceland", "Japan",
+            "Kenya", "Luxembourg", "Morocco", "Norway", "Oman"
         });
         masterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         masterList.setBorder(BorderFactory.createEmptyBorder(4, 6, 4, 6));
@@ -65,23 +67,21 @@ public final class JMasterDetailDemo extends JPanel {
         detailArea.setLineWrap(true);
         detailArea.setWrapStyleWord(true);
         detailArea.setMargin(new Insets(10, 10, 10, 10));
-        detailArea.setText("← Select an item from the list to see its details.");
+        detailArea.setText("Select an item from the list to see its details.");
 
         masterList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 String selected = masterList.getSelectedValue();
                 if (selected != null) {
-                    detailArea.setText(
-                            "Name:   " + selected + "\n\n"
+                    detailArea.setText("Name:   " + selected + "\n\n"
                             + "This is the detail view for \"" + selected + "\".\n\n"
                             + "Place any component here to show richer information\n"
                             + "about the item selected in the master list.\n\n"
                             + "Use the context menu (right-click) to explore all\n"
                             + "JMasterDetail properties: detail side, visibility\n"
-                            + "and divider position."
-                    );
+                            + "and divider position.");
                 } else {
-                    detailArea.setText("← Select an item from the list to see its details.");
+                    detailArea.setText("Select an item from the list to see its details.");
                 }
             }
         });
@@ -98,12 +98,39 @@ public final class JMasterDetailDemo extends JPanel {
         masterList.setComponentPopupMenu(popup);
         detailPane.setComponentPopupMenu(popup);
         detailArea.setComponentPopupMenu(popup);
+        addPopupToDividers(masterDetail, popup);
 
         setLayout(new BorderLayout());
         add(BorderLayout.CENTER, masterDetail);
     }
 
-    //<editor-fold defaultstate="collapsed" desc="Popup menu">
+    private static void addPopupToDividers(Container root, JPopupMenu popup) {
+        for (Component c : root.getComponents()) {
+            if (c instanceof BasicSplitPaneDivider) {
+                c.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                        showPopup(e);
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        showPopup(e);
+                    }
+
+                    private void showPopup(MouseEvent e) {
+                        if (e.isPopupTrigger()) {
+                            popup.show(e.getComponent(), e.getX(), e.getY());
+                        }
+                    }
+                });
+            } else if (c instanceof Container) {
+                addPopupToDividers((Container) c, popup);
+            }
+        }
+    }
+
+    // <editor-fold defaultstate="collapsed" desc="Popup menu">
     private JPopupMenu createPopupMenu() {
         JPopupMenu result = new JPopupMenu();
 
@@ -112,23 +139,25 @@ public final class JMasterDetailDemo extends JPanel {
         result.addSeparator();
         JMenu sideMenu = new JMenu("Detail Side");
         for (JMasterDetail.DetailSide side : JMasterDetail.DetailSide.values()) {
-            sideMenu.add(new JCheckBoxMenuItem(apply(masterDetail, "detailSide", side))).setText(side.name());
+            sideMenu.add(new JCheckBoxMenuItem(apply(masterDetail, "detailSide", side)))
+                    .setText(side.name());
         }
         result.add(sideMenu);
 
         result.addSeparator();
         JMenu dividerMenu = new JMenu("Divider Position");
-        for (double pos : new double[]{0.2, 0.3, 0.5, 0.7, 0.8}) {
-            dividerMenu.add(new JCheckBoxMenuItem(apply(masterDetail, "dividerPosition", pos)))
+        for (double pos : new double[] {0.2, 0.3, 0.5, 0.7, 0.8}) {
+            dividerMenu
+                    .add(new JCheckBoxMenuItem(apply(masterDetail, "dividerPosition", pos)))
                     .setText((int) (pos * 100) + "%");
         }
         result.add(dividerMenu);
 
         return result;
     }
-    //</editor-fold>
+    // </editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="Commands">
+    // <editor-fold defaultstate="collapsed" desc="Commands">
     private static Action apply(JMasterDetail c, String propertyName, Object value) {
         return new ApplyProperty<>(JMasterDetail.class, propertyName, value).toAction(c);
     }
@@ -211,6 +240,5 @@ public final class JMasterDetailDemo extends JPanel {
             return super.toAction(component).withWeakPropertyChangeListener(component, property.getName());
         }
     }
-    //</editor-fold>
+    // </editor-fold>
 }
-

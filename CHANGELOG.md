@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix JMasterDetail divider position [#626](https://github.com/nbbrd/java-desktop-util/issues/626)
+- Fix JMasterDetail master or detail disappearing when changing detail side [#627](https://github.com/nbbrd/java-desktop-util/issues/627)
 
 ## [2.7.0] - 2026-04-10
 
