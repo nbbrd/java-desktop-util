@@ -1,12 +1,11 @@
 package nbbrd.desktop.swing;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.*;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
+import javax.swing.*;
+import org.junit.jupiter.api.Test;
 
 public class JMasterDetailTest {
 
@@ -77,6 +76,24 @@ public class JMasterDetailTest {
     }
 
     @Test
+    public void testDividerPositionAppliedOnLayout() {
+        for (JMasterDetail.DetailSide side : JMasterDetail.DetailSide.values()) {
+            JMasterDetail x = new JMasterDetail();
+            x.setDetailSide(side);
+            x.setDividerPosition(0.3);
+
+            x.setSize(400, 400);
+            x.doLayout();
+            JSplitPane splitPane = (JSplitPane) x.getComponent(0);
+            splitPane.doLayout();
+
+            int total = 400 - splitPane.getDividerSize();
+            assertThat(x.getDividerPosition()).isEqualTo(0.3);
+            assertThat(splitPane.getDividerLocation()).isEqualTo((int) (total * 0.3));
+        }
+    }
+
+    @Test
     public void testSetDividerPositionOutOfRange() {
         JMasterDetail x = new JMasterDetail();
 
@@ -114,13 +131,12 @@ public class JMasterDetailTest {
         x.setDetailVisible(false);
         x.setDividerPosition(0.7);
 
-        assertThat(fired).contains(
-                JMasterDetail.MASTER_NODE_PROPERTY,
-                JMasterDetail.DETAIL_NODE_PROPERTY,
-                JMasterDetail.DETAIL_SIDE_PROPERTY,
-                JMasterDetail.DETAIL_VISIBLE_PROPERTY,
-                JMasterDetail.DIVIDER_POSITION_PROPERTY
-        );
+        assertThat(fired)
+                .contains(
+                        JMasterDetail.MASTER_NODE_PROPERTY,
+                        JMasterDetail.DETAIL_NODE_PROPERTY,
+                        JMasterDetail.DETAIL_SIDE_PROPERTY,
+                        JMasterDetail.DETAIL_VISIBLE_PROPERTY,
+                        JMasterDetail.DIVIDER_POSITION_PROPERTY);
     }
 }
-
