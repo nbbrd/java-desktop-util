@@ -6,7 +6,7 @@
             <username>${env.CENTRAL_PORTAL_USERNAME}</username>
             <password>${env.CENTRAL_PORTAL_TOKEN}</password>
             <configuration>
-                <repositoryOrigins>https://sonatype.com</repositoryOrigins>
+                <repositoryOrigins>https://central.sonatype.com</repositoryOrigins>
             </configuration>
         </server>
     </servers>
