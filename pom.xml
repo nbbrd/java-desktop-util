@@ -58,6 +58,7 @@
         <!-- dependencies -->
         <jfreesvg.version>3.4.4</jfreesvg.version>
         <heylogs.version>0.19.1</heylogs.version>
+        <flatlaf.version>3.7.2</flatlaf.version>
     </properties>
 
     <dependencyManagement>

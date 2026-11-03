@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add optional source search to JListSelection, with customizable search text and filtered transfers [#633](https://github.com/nbbrd/java-desktop-util/issues/633)
+
 ### Fixed
 
 - Fix JMasterDetail divider position [#626](https://github.com/nbbrd/java-desktop-util/issues/626)
