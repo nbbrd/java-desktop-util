@@ -17,10 +17,9 @@
 package nbbrd.desktop.swing;
 
 import ec.util.various.swing.ModernUI;
-import lombok.NonNull;
-
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import lombok.NonNull;
 
 /**
  * A Swing component that provides a master/detail layout using a split pane.
@@ -49,7 +48,10 @@ public final class JMasterDetail extends JPanel {
      * The side where the detail node is placed relative to the master node.
      */
     public enum DetailSide {
-        TOP, BOTTOM, LEFT, RIGHT
+        TOP,
+        BOTTOM,
+        LEFT,
+        RIGHT
     }
 
     public static final String MASTER_NODE_PROPERTY = "masterNode";
@@ -72,6 +74,7 @@ public final class JMasterDetail extends JPanel {
 
     private final JSplitPane splitPane;
     private boolean updatingDivider = false;
+    private boolean dividerPending = false;
 
     public JMasterDetail() {
         this.masterNode = new JPanel();
@@ -80,7 +83,23 @@ public final class JMasterDetail extends JPanel {
         this.detailVisible = true;
         this.dividerPosition = 0.5;
 
-        this.splitPane = ModernUI.withEmptyBorders(new JSplitPane());
+        this.splitPane = ModernUI.withEmptyBorders(new JSplitPane() {
+            @Override
+            public void doLayout() {
+                // layout-driven divider changes must not override the user-defined position
+                boolean old = updatingDivider;
+                updatingDivider = true;
+                try {
+                    if (dividerPending && getWidth() > 0 && getHeight() > 0) {
+                        dividerPending = false;
+                        setDividerLocation(dividerPosition);
+                    }
+                    super.doLayout();
+                } finally {
+                    updatingDivider = old;
+                }
+            }
+        });
         this.splitPane.setContinuousLayout(true);
         this.splitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, evt -> {
             if (!updatingDivider) {
@@ -89,8 +108,7 @@ public final class JMasterDetail extends JPanel {
                         ? size.width - splitPane.getDividerSize()
                         : size.height - splitPane.getDividerSize();
                 if (total > 0) {
-                    double newRatio = Math.max(0.0, Math.min(1.0,
-                            (double) splitPane.getDividerLocation() / total));
+                    double newRatio = Math.max(0.0, Math.min(1.0, (double) splitPane.getDividerLocation() / total));
                     double old = dividerPosition;
                     dividerPosition = newRatio;
                     firePropertyChange(DIVIDER_POSITION_PROPERTY, old, dividerPosition);
@@ -121,6 +139,10 @@ public final class JMasterDetail extends JPanel {
 
     private void onLayoutChange() {
         removeAll();
+        // components must be detached first: moving a child from one slot to the other
+        // makes JSplitPane.remove() clear the newly assigned slot
+        splitPane.setLeftComponent(null);
+        splitPane.setRightComponent(null);
         if (!detailVisible) {
             add(masterNode, BorderLayout.CENTER);
         } else {
@@ -164,13 +186,11 @@ public final class JMasterDetail extends JPanel {
     }
 
     private void applyDividerPosition() {
-        updatingDivider = true;
-        try {
-            splitPane.setResizeWeight(dividerPosition);
-            splitPane.setDividerLocation(dividerPosition);
-        } finally {
-            updatingDivider = false;
-        }
+        splitPane.setResizeWeight(dividerPosition);
+        // proportional location can only be computed once the split pane has a valid size
+        dividerPending = true;
+        splitPane.revalidate();
+        splitPane.repaint();
     }
 
     // </editor-fold>
@@ -182,8 +202,7 @@ public final class JMasterDetail extends JPanel {
      *
      * @return non-null component
      */
-    @NonNull
-    public Component getMasterNode() {
+    @NonNull public Component getMasterNode() {
         return masterNode;
     }
 
@@ -191,8 +210,12 @@ public final class JMasterDetail extends JPanel {
      * Sets the master (primary) node component.
      *
      * @param masterNode non-null component
+     * @throws IllegalArgumentException if the component is the detail node
      */
     public void setMasterNode(@NonNull Component masterNode) {
+        if (masterNode == this.detailNode) {
+            throw new IllegalArgumentException("masterNode must be different from detailNode");
+        }
         Component old = this.masterNode;
         this.masterNode = masterNode;
         firePropertyChange(MASTER_NODE_PROPERTY, old, this.masterNode);
@@ -203,8 +226,7 @@ public final class JMasterDetail extends JPanel {
      *
      * @return non-null component
      */
-    @NonNull
-    public Component getDetailNode() {
+    @NonNull public Component getDetailNode() {
         return detailNode;
     }
 
@@ -212,8 +234,12 @@ public final class JMasterDetail extends JPanel {
      * Sets the detail node component.
      *
      * @param detailNode non-null component
+     * @throws IllegalArgumentException if the component is the master node
      */
     public void setDetailNode(@NonNull Component detailNode) {
+        if (detailNode == this.masterNode) {
+            throw new IllegalArgumentException("detailNode must be different from masterNode");
+        }
         Component old = this.detailNode;
         this.detailNode = detailNode;
         firePropertyChange(DETAIL_NODE_PROPERTY, old, this.detailNode);
@@ -224,8 +250,7 @@ public final class JMasterDetail extends JPanel {
      *
      * @return non-null side
      */
-    @NonNull
-    public DetailSide getDetailSide() {
+    @NonNull public DetailSide getDetailSide() {
         return detailSide;
     }
 
@@ -287,4 +312,3 @@ public final class JMasterDetail extends JPanel {
 
     // </editor-fold>
 }
-

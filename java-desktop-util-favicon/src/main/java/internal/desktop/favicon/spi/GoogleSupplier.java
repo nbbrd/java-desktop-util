@@ -9,8 +9,7 @@ import nbbrd.service.ServiceProvider;
 import java.awt.*;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
@@ -37,9 +36,9 @@ public final class GoogleSupplier implements FaviconSupplier {
         }
     }
 
-    private URL getFaviconRequest(FaviconRef ref) throws MalformedURLException {
+    private URI getFaviconRequest(FaviconRef ref) {
         int roundedSize = roundSize(ref.getSize());
-        return new URL("https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://" + ref.getDomain() + "&size=" + roundedSize);
+        return URI.create("https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://" + ref.getDomain() + "&size=" + roundedSize);
     }
 
     private static boolean isDefaultFavicon(int responseCode) {

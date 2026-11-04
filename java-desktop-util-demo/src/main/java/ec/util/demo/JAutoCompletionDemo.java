@@ -120,7 +120,7 @@ public final class JAutoCompletionDemo extends javax.swing.JPanel {
 
     final void initExample3() {
         List<String> propertyNames = new ArrayList<>(System.getProperties().stringPropertyNames());
-        Collections.sort(propertyNames);
+        propertyNames.sort(Comparator.naturalOrder());
 
         JAutoCompletion ac = new JAutoCompletion(systemProperty);
         ac.setSource(AutoCompletionSources.of(false, propertyNames));

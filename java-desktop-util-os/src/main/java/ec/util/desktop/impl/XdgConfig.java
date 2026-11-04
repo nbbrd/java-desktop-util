@@ -1,23 +1,20 @@
 /*
  * Copyright 2013 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.util.desktop.impl;
-
-import lombok.NonNull;
-import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.util.*;
+import lombok.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  *
@@ -33,30 +32,25 @@ import java.util.*;
  */
 abstract class XdgConfig {
 
-    @Nullable
-    abstract public String get(@NonNull String name);
+    @Nullable public abstract String get(@NonNull String name);
 
-    @NonNull
-    abstract public Set<String> keySet();
+    @NonNull public abstract Set<String> keySet();
 
-    @NonNull
-    public static XdgConfig getInstance(ZSystem system) throws IOException {
+    @NonNull public static XdgConfig getInstance(ZSystem system) throws IOException {
         File configFile = getConfigFile(system);
-        if (configFile != null) {
-            try (InputStream stream = Files.newInputStream(configFile.toPath())) {
-                return parseConfig(stream, system.getEnv());
-            }
+        if (configFile == null) {
+            return XdgConfig.noOp();
         }
-        throw new IOException("Config file not found");
+        try (InputStream stream = Files.newInputStream(configFile.toPath())) {
+            return parseConfig(stream, system.getEnv());
+        }
     }
 
-    @NonNull
-    public static XdgConfig noOp() {
+    @NonNull public static XdgConfig noOp() {
         return NoOpConfig.INSTANCE;
     }
 
-    @Nullable
-    static File getConfigFile(@NonNull ZSystem system) {
+    @Nullable static File getConfigFile(@NonNull ZSystem system) {
         // http://www.freedesktop.org/wiki/Software/xdg-user-dirs/
         File result;
         if (isFile(result = newFile(system.getEnv("XDG_CONFIG_HOME"), "user-dirs.dirs"))) {
@@ -68,8 +62,7 @@ abstract class XdgConfig {
         return null;
     }
 
-    @NonNull
-    static XdgConfig parseConfig(@NonNull InputStream stream, @NonNull Map<String, String> env) throws IOException {
+    @NonNull static XdgConfig parseConfig(@NonNull InputStream stream, @NonNull Map<String, String> env) throws IOException {
         Map<String, String> result = new HashMap<>();
 
         Map<String, String> tmp = new HashMap<>();
@@ -79,7 +72,7 @@ abstract class XdgConfig {
                 if (!line.startsWith("#")) {
                     int idx = line.indexOf('=');
                     if (idx != -1) {
-                        tmp.put(line.substring(0, idx), line.substring(idx));
+                        tmp.put(line.substring(0, idx), line.substring(idx + 1));
                     }
                 }
             }
@@ -98,8 +91,7 @@ abstract class XdgConfig {
         return new MapConfig(result);
     }
 
-    @Nullable
-    private static File newFile(@Nullable String parent, @NonNull String... children) {
+    @Nullable private static File newFile(@Nullable String parent, @NonNull String... children) {
         if (parent == null || parent.isEmpty()) {
             return null;
         }
@@ -118,7 +110,7 @@ abstract class XdgConfig {
         return file != null && file.isFile();
     }
 
-    //<editor-fold defaultstate="collapsed" desc="Implementation">
+    // <editor-fold defaultstate="collapsed" desc="Implementation">
     private static final class MapConfig extends XdgConfig {
 
         private final Map<String, String> map;
@@ -152,5 +144,5 @@ abstract class XdgConfig {
             return Collections.emptySet();
         }
     }
-    //</editor-fold>
+    // </editor-fold>
 }

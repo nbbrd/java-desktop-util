@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.0] - 2026-11-04
+
+### Added
+
+- Add optional source search to JListSelection, with customizable search text and filtered transfers [#633](https://github.com/nbbrd/java-desktop-util/issues/633)
+
+### Fixed
+
+- Fix JMasterDetail divider position [#626](https://github.com/nbbrd/java-desktop-util/issues/626)
+- Fix JMasterDetail master or detail disappearing when changing detail side [#627](https://github.com/nbbrd/java-desktop-util/issues/627)
+- Fix XdgConfig parsing when file is missing [#634](https://github.com/nbbrd/java-desktop-util/issues/634)
+
 ## [2.7.0] - 2026-04-10
 
 ### Added
@@ -48,15 +60,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Trim terms in JAutoCompletion [#470](https://github.com/nbbrd/java-desktop-util/issues/470)
 
-### Fixed
-
-- Fix dead favicon supplier [#471](https://github.com/nbbrd/java-desktop-util/issues/471)
-- Fix grid colors on flatlaf l&f [#472](https://github.com/nbbrd/java-desktop-util/issues/472)
-
 ### Changed
 
 - Modernize use of NIO API
 - Migrate OSSRH to Central Portal
+
+### Fixed
+
+- Fix dead favicon supplier [#471](https://github.com/nbbrd/java-desktop-util/issues/471)
+- Fix grid colors on flatlaf l&f [#472](https://github.com/nbbrd/java-desktop-util/issues/472)
 
 ## [2.4.0] - 2024-07-09
 
@@ -158,7 +170,8 @@ java-desktop-util follows [semantic versioning](https://semver.org/).
 
 - JDK11 cleanup
 
-[Unreleased]: https://github.com/nbbrd/java-desktop-util/compare/v2.7.0...HEAD
+[Unreleased]: https://github.com/nbbrd/java-desktop-util/compare/v2.8.0...HEAD
+[2.8.0]: https://github.com/nbbrd/java-desktop-util/compare/v2.7.0...v2.8.0
 [2.7.0]: https://github.com/nbbrd/java-desktop-util/compare/v2.6.2...v2.7.0
 [2.6.2]: https://github.com/nbbrd/java-desktop-util/compare/v2.6.1...v2.6.2
 [2.6.1]: https://github.com/nbbrd/java-desktop-util/compare/v2.6.0...v2.6.1

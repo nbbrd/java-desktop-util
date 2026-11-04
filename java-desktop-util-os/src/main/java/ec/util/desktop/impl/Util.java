@@ -21,10 +21,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.*;
 import java.util.function.Function;
 
@@ -82,11 +79,12 @@ final class Util {
 
     @NonNull
     public static File extractResource(@NonNull String resourceName, @NonNull String filePrefix, @NonNull String fileSuffix) throws IOException {
-        File result = File.createTempFile(filePrefix, fileSuffix);
-        result.deleteOnExit();
+        Path tempFile = Files.createTempFile(filePrefix, fileSuffix);
         try (InputStream in = AwtDesktop.class.getResourceAsStream(resourceName)) {
-            Files.copy(in, result.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(Objects.requireNonNull(in), tempFile, StandardCopyOption.REPLACE_EXISTING);
         }
+        File result = tempFile.toFile();
+        result.deleteOnExit();
         return result;
     }
 

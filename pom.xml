@@ -1,19 +1,16 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.nbbrd.java-desktop-util</groupId>
     <artifactId>java-desktop-util-parent</artifactId>
-    <version>2.7.0</version>
+    <version>2.8.0</version>
     <packaging>pom</packaging>
 
     <name>java-desktop-util</name>
     <description>Desktop utilities for Java</description>
     <url>https://github.com/${x.github.user}/${x.github.repo}</url>
     <inceptionYear>2014</inceptionYear>
-
     <licenses>
         <license>
             <name>European Union Public Licence (EUPL)</name>
@@ -30,28 +27,6 @@
         </developer>
     </developers>
 
-    <scm>
-        <connection>scm:git:git://github.com/${x.github.user}/${x.github.repo}.git</connection>
-        <developerConnection>scm:git:ssh://github.com:${x.github.user}/${x.github.repo}.git</developerConnection>
-        <url>https://github.com/${x.github.user}/${x.github.repo}/tree/master</url>
-    </scm>
-
-    <properties>
-        <!-- Java 8+ config -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.outputTimestamp>2026-04-10T13:54:48Z</project.build.outputTimestamp>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <requiredMavenVersion>3.9.11</requiredMavenVersion>
-
-        <!-- GitHub hosting -->
-        <x.github.user>nbbrd</x.github.user>
-        <x.github.repo>java-desktop-util</x.github.repo>
-
-        <!-- dependencies -->
-        <jfreesvg.version>3.4.4</jfreesvg.version>
-    </properties>
-
     <modules>
         <module>java-desktop-util-fa</module>
         <module>java-desktop-util-chart</module>
@@ -62,20 +37,44 @@
         <module>java-desktop-util-bom</module>
     </modules>
 
+    <scm>
+        <connection>scm:git:git://github.com/${x.github.user}/${x.github.repo}.git</connection>
+        <developerConnection>scm:git:ssh://github.com:${x.github.user}/${x.github.repo}.git</developerConnection>
+        <url>https://github.com/${x.github.user}/${x.github.repo}/tree/master</url>
+    </scm>
+
+    <properties>
+        <!-- Java 8+ config -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.outputTimestamp>2026-11-04T07:51:56Z</project.build.outputTimestamp>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <requiredMavenVersion>3.9.11</requiredMavenVersion>
+
+        <!-- GitHub hosting -->
+        <x.github.user>nbbrd</x.github.user>
+        <x.github.repo>java-desktop-util</x.github.repo>
+
+        <!-- dependencies -->
+        <jfreesvg.version>3.4.4</jfreesvg.version>
+        <heylogs.version>0.19.1</heylogs.version>
+        <flatlaf.version>3.7.2</flatlaf.version>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <!-- annotations & processors -->
             <dependency>
                 <groupId>org.jspecify</groupId>
                 <artifactId>jspecify</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.1</version>
             </dependency>
 
             <!-- dependencies  -->
             <dependency>
                 <groupId>com.github.nbbrd.java-io-util</groupId>
                 <artifactId>java-io-bom</artifactId>
-                <version>0.0.36</version>
+                <version>0.0.39</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -89,7 +88,7 @@
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>6.0.3</version>
+                <version>6.1.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -113,22 +112,22 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.15.0</version>
+                    <version>3.16.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.1.4</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>3.1.4</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.5.0</version>
+                    <version>3.5.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -138,38 +137,60 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.21.0</version>
+                    <version>3.22.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.5.5</version>
+                    <version>3.6.1</version>
                 </plugin>
                 <!-- Other plugins -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.10.0</version>
+                    <version>3.11.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.6.2</version>
+                    <version>3.7.0</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.kordamp.maven</groupId>
+                            <artifactId>pomchecker-enforcer-rules</artifactId>
+                            <version>1.15.0</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>extra-enforcer-rules</artifactId>
+                            <version>1.12.1</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.github.nbbrd.heylogs</groupId>
+                            <artifactId>heylogs-enforcer-rules</artifactId>
+                            <version>${heylogs.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.github.nbbrd.nbbrd-maven-tools</groupId>
+                            <artifactId>nbbrd-enforcer-rules</artifactId>
+                            <version>1.3.1</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.gaul</groupId>
                     <artifactId>modernizer-maven-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.5.0</version>
                 </plugin>
                 <plugin>
                     <groupId>de.thetaphi</groupId>
                     <artifactId>forbiddenapis</artifactId>
-                    <version>3.10</version>
+                    <version>3.11</version>
                 </plugin>
                 <plugin>
                     <groupId>com.github.nbbrd.heylogs</groupId>
                     <artifactId>heylogs-maven-plugin</artifactId>
-                    <version>0.16.1</version>
+                    <version>${heylogs.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>com.amashchenko.maven.plugin</groupId>
@@ -187,41 +208,38 @@
                     <version>3.12.0</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.simplify4u.plugins</groupId>
-                    <artifactId>sign-maven-plugin</artifactId>
-                    <version>1.1.0</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>3.2.8</version>
                 </plugin>
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
-                    <version>0.10.0</version>
+                    <version>0.12.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.14</version>
+                    <version>0.8.16</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>tidy-maven-plugin</artifactId>
+                    <version>1.4.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>3.10.4</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jreleaser</groupId>
                     <artifactId>jreleaser-maven-plugin</artifactId>
-                    <version>1.23.0</version>
+                    <version>1.26.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
-            <plugin>
-                <groupId>com.github.nbbrd.heylogs</groupId>
-                <artifactId>heylogs-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>check-changelog</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <inherited>false</inherited>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -260,6 +278,39 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>tidy-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <configuration>
+                    <java>
+                        <palantirJavaFormat/>
+                        <importOrder/>
+                        <removeUnusedImports />
+                        <formatAnnotations />
+                    </java>
+                    <ratchetFrom>origin/develop</ratchetFrom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -294,9 +345,9 @@
                 </property>
             </activation>
             <properties>
-                <lombok.version>1.18.44</lombok.version>
-                <java-service.version>2.0.0</java-service.version>
-                <java-design.version>1.9.0</java-design.version>
+                <lombok.version>1.18.48</lombok.version>
+                <java-service.version>2.1.0</java-service.version>
+                <java-design.version>1.10.2</java-design.version>
             </properties>
             <dependencyManagement>
                 <dependencies>
@@ -373,26 +424,28 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
                         <executions>
-                            <!-- First: compile all as Java9 -->
+                            <!-- First: compile all but module-info as Java8 -->
                             <execution>
                                 <id>default-compile</id>
-                                <configuration>
-                                    <release>9</release>
-                                    <createMissingPackageInfoClass>false</createMissingPackageInfoClass>
-                                </configuration>
-                            </execution>
-                            <!-- Second: recompile all but module-info as Java8 -->
-                            <execution>
-                                <id>base-compile</id>
-                                <goals>
-                                    <goal>compile</goal>
-                                </goals>
                                 <configuration>
                                     <source>8</source>
                                     <target>8</target>
                                     <excludes>
                                         <exclude>module-info.java</exclude>
                                     </excludes>
+                                </configuration>
+                            </execution>
+                            <!-- Second: compile only module-info as Java9 -->
+                            <execution>
+                                <id>compile-module-info</id>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <release>9</release>
+                                    <includes>
+                                        <include>module-info.java</include>
+                                    </includes>
                                 </configuration>
                             </execution>
                         </executions>
@@ -440,21 +493,30 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-enforcer-plugin</artifactId>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.kordamp.maven</groupId>
-                                <artifactId>pomchecker-enforcer-rules</artifactId>
-                                <version>1.15.0</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.codehaus.mojo</groupId>
-                                <artifactId>extra-enforcer-rules</artifactId>
-                                <version>1.12.0</version>
-                            </dependency>
-                        </dependencies>
                         <executions>
                             <execution>
-                                <id>enforce</id>
+                                <id>enforce-root-on-validate</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <inherited>false</inherited>
+                                <configuration>
+                                    <rules>
+                                        <!-- Required project files -->
+                                        <requireFilesExist>
+                                            <files>
+                                                <file>${project.basedir}/.gitignore</file>
+                                                <file>${project.basedir}/CHANGELOG.md</file>
+                                                <file>${project.basedir}/LICENSE</file>
+                                                <file>${project.basedir}/lombok.config</file>
+                                                <file>${project.basedir}/README.md</file>
+                                            </files>
+                                        </requireFilesExist>
+                                    </rules>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>enforce-on-validate</id>
                                 <goals>
                                     <goal>enforce</goal>
                                 </goals>
@@ -476,14 +538,29 @@
                                         </requireReleaseDeps>
                                         <requireUpperBoundDeps/>
                                         <!-- pomchecker-enforcer-rules -->
-                                        <checkMavenCentral
-                                                implementation="org.kordamp.maven.enforcer.checker.CheckMavenCentral">
+                                        <checkMavenCentral>
                                             <release>false</release>
                                             <strict>false</strict>
                                         </checkMavenCentral>
+                                        <!-- heylogs-enforcer-rules -->
+                                        <checkChangelog/>
+                                        <formatChangelog/>
+                                    </rules>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>enforce-on-verify</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
                                         <!-- extra-enforcer-rules -->
                                         <banCircularDependencies/>
-                                        <banDuplicateClasses/>
+                                        <banDuplicateClasses>
+                                            <ignoredScopes>test</ignoredScopes>
+                                        </banDuplicateClasses>
                                         <enforceBytecodeVersion>
                                             <maxJdkVersion>8</maxJdkVersion>
                                             <ignoredScopes>
@@ -619,8 +696,29 @@
                         </configuration>
                     </plugin>
                     <plugin>
-                        <groupId>org.simplify4u.plugins</groupId>
-                        <artifactId>sign-maven-plugin</artifactId>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>enforce-javadoc</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <phase>verify</phase>
+                                <configuration>
+                                    <rules>
+                                        <requireJavadocJar/>
+                                    </rules>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <configuration>
+                            <signer>bc</signer>
+                        </configuration>
                         <executions>
                             <execution>
                                 <goals>
@@ -680,6 +778,8 @@
                 <forbiddenapis.skip>true</forbiddenapis.skip>
                 <jacoco.skip>true</jacoco.skip>
                 <heylogs.skip>true</heylogs.skip>
+                <tidy.skip>true</tidy.skip>
+                <spotless.skip>true</spotless.skip>
             </properties>
         </profile>
     </profiles>
